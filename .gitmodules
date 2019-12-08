@@ -1,0 +1,9 @@
+[submodule "bundle/syntastic"]
+	path = bundle/syntastic
+	url = https://github.com/vim-syntastic/syntastic.git
+[submodule "bundle/jedi-vim"]
+	path = bundle/jedi-vim
+	url = https://github.com/davidhalter/jedi-vim.git
+[submodule "pack/themes/opt/solarized8"]
+	path = pack/themes/opt/solarized8
+	url = https://github.com/lifepillar/vim-solarized8.git
