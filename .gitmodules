@@ -10,12 +10,15 @@
 [submodule "bundle/vim-markdown"]
 	path = bundle/vim-markdown
 	url = https://github.com/plasticboy/vim-markdown.git
-[submodule "/Users/hugh/.vim/pack/themes/opt/papercolor-theme"]
-	path = /Users/hugh/.vim/pack/themes/opt/papercolor-theme
-	url = https://github.com/NLKNguyen/papercolor-theme.git
-[submodule "/Users/hugh/.vim/pack/dist/start/vim-airline"]
-	path = /Users/hugh/.vim/pack/dist/start/vim-airline
+[submodule "gitgutter"]
+	path = pack/airblade/start/vim-gitgutter
+	url = https://github.com/airblade/vim-gitgutter
+[submodule "vim-airline"]
+	path = pack/dist/start/vim-airline
 	url = https://github.com/vim-airline/vim-airline
-[submodule "/Users/hugh/.vim/pack/dist/start/vim-airline-themes"]
-	path = /Users/hugh/.vim/pack/dist/start/vim-airline-themes
+[submodule "vim-airline-themes"]
+	path = pack/dist/start/vim-airline-themes
 	url = https://github.com/vim-airline/vim-airline-themes
+[submodule "PaperColor"]
+	path = pack/themes/opt/papercolor-theme
+	url = https://github.com/NLKNguyen/papercolor-theme
