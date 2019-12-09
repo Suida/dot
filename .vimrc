@@ -88,7 +88,7 @@ let g:clang_library_path='/usr/lib/llvm-6.0/lib'
 
 " Color scheme
 set background=dark
-colorscheme solarized8_low
+colorscheme PaperColor
 
 " Python
 let g:jedi#goto_command = "<leader>d"
