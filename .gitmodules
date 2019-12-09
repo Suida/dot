@@ -7,3 +7,15 @@
 [submodule "pack/themes/opt/solarized8"]
 	path = pack/themes/opt/solarized8
 	url = https://github.com/lifepillar/vim-solarized8.git
+[submodule "bundle/vim-markdown"]
+	path = bundle/vim-markdown
+	url = https://github.com/plasticboy/vim-markdown.git
+[submodule "/Users/hugh/.vim/pack/themes/opt/papercolor-theme"]
+	path = /Users/hugh/.vim/pack/themes/opt/papercolor-theme
+	url = https://github.com/NLKNguyen/papercolor-theme.git
+[submodule "/Users/hugh/.vim/pack/dist/start/vim-airline"]
+	path = /Users/hugh/.vim/pack/dist/start/vim-airline
+	url = https://github.com/vim-airline/vim-airline
+[submodule "/Users/hugh/.vim/pack/dist/start/vim-airline-themes"]
+	path = /Users/hugh/.vim/pack/dist/start/vim-airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes
