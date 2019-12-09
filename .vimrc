@@ -1,3 +1,12 @@
+" Compatibility
+
+if has('win32') || has('win64')
+    set runtimepath-=~/vimfiles
+    set runtimepath^=~/.vim
+    set runtimepath-=~/vimfiles/after
+    set runtimepath+=~/.vim/after
+endif
+
 " Pathogen settings
 
 execute pathogen#infect()
@@ -48,8 +57,8 @@ highlight ColorColumn ctermbg=yellow
 " Set files as C files
 
 augroup project
-  autocmd!
-  autocmd BufRead,BufNewFile *.h,*.c set filetype=c.doxygen
+    autocmd!
+    autocmd BufRead,BufNewFile *.h,*.c set filetype=c.doxygen
 augroup END
 
 " Spell & Edit settings
@@ -120,5 +129,7 @@ let g:jedi#completions_enabled = 1
 let g:jedi#auto_vim_configuration = 1
 let g:jedi#smart_auto_mappings = 1
 let g:jedi#show_call_signatures = "1"
+let g:jedi#completions_command = "<C-N>"
 
 "" let g:polyglot_disabled = ['python']
+
