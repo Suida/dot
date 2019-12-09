@@ -131,5 +131,7 @@ let g:jedi#smart_auto_mappings = 1
 let g:jedi#show_call_signatures = "1"
 let g:jedi#completions_command = "<C-N>"
 
-"" let g:polyglot_disabled = ['python']
+" Git
 
+set updatetime=100
+let g:gitgutter_highlight_linenrs = 1
