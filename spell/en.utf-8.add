@@ -33,3 +33,6 @@ F1
 F2
 flake8
 env
+#BD
+mysql
+Pymode

@@ -7,6 +7,11 @@ if has('win32') || has('win64')
     set runtimepath+=~/.vim/after
 endif
 
+" Specify the default .vimrc file as the one under working directory
+
+set exrc
+set secure
+
 " Pathogen settings
 
 execute pathogen#infect()
@@ -35,12 +40,7 @@ set statusline+=%*
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-" Specify the default .vimrc file as the one under working directory
-
-set exrc
-set secure
+let g:syntastic_check_on_wq = 1
 
 " Indentation rules
 
@@ -68,9 +68,11 @@ fun! IgnoreCustomItems()
     syn match CamelCase1 /\<[a-z]\+[A-Z].\{-}\>/ contains=@NoSpell transparent
     syn match SnakeCase0 /\<\w*_\+\w\+\>/ contains=@NoSpell transparent
     syn match UpperCase /\<[A-Z0-9]\+\>/ contains=@NoSpell transparent
+    syn match ShortWord /\<\w\{1,4}\>/ contains=@NoSpell transparent
     syn cluster Spell add=CamelCase0
     syn cluster Spell add=CamelCase1
     syn cluster Spell add=SnakeCase0
+    syn cluster Spell add=ShortWord
     "" syn cluster Spell add=UpperCase
 endfun
 autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
@@ -120,8 +122,12 @@ let g:PaperColor_Theme_Options = {
 let g:airline_theme='papercolor'
 
 " Python
+" Highlight and checker of Pymode, all other stuffs are originated from jedi
 
-let syntastic_python_checkers = ["flake8"]
+let g:pymode_python = 'python3'
+let g:pymode_rope_completion = 0
+let g:pymode_rope_complete_on_dot = 0
+let syntastic_python_checkers = []
 let g:jedi#auto_initialization = 1
 let g:jedi#use_tabs_not_buffers = 1
 let g:jedi#use_splits_not_buffers = "left"
@@ -130,6 +136,7 @@ let g:jedi#auto_vim_configuration = 1
 let g:jedi#smart_auto_mappings = 1
 let g:jedi#show_call_signatures = "1"
 let g:jedi#completions_command = "<C-N>"
+let g:jedi#rename_command = "<leader>m"
 
 " Git
 
