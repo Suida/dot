@@ -22,3 +22,6 @@
 [submodule "PaperColor"]
 	path = pack/themes/opt/papercolor-theme
 	url = https://github.com/NLKNguyen/papercolor-theme
+[submodule "tpope/fugitive"]
+	path = pack/tpope/start/fugitive
+	url = https://github.com/tpope/vim-fugitive
