@@ -5,7 +5,7 @@ vimrc
 Pyenv
 zshconfig
 ohmyzsh
-zsh
+#sh
 zshrc
 pyenv
 init
@@ -37,3 +37,9 @@ env
 mysql
 Pymode
 pylint
+zsh
+virtualenv
+golang
+mongodb
+postgresql
+vscode
