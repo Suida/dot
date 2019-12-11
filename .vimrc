@@ -41,6 +41,10 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
+function! FindConfig(prefix, what, where)
+    let cfg = findfile(a:what, fnameescape(a:where) . ';')
+    return cfg !=# '' ? ' ' . a:prefix . ' ' . shellescape(cfg) : ''
+endfunction
 
 " Indentation rules
 
@@ -102,6 +106,7 @@ let g:clang_library_path='/usr/lib/llvm-6.0/lib'
 
 " Markdown
 
+let g:vim_markdown_folding_level = 3
 let g:vim_markdown_autowrite = 1
 let g:vim_markdown_strikethrough = 1
 let g:vim_markdown_no_extensions_in_markdown = 1
@@ -127,16 +132,21 @@ let g:airline_theme='papercolor'
 let g:pymode_python = 'python3'
 let g:pymode_rope_completion = 0
 let g:pymode_rope_complete_on_dot = 0
-let syntastic_python_checkers = []
+let syntastic_python_checkers = ["flake8", "pylint"]
 let g:jedi#auto_initialization = 1
 let g:jedi#use_tabs_not_buffers = 1
-let g:jedi#use_splits_not_buffers = "left"
 let g:jedi#completions_enabled = 1
 let g:jedi#auto_vim_configuration = 1
 let g:jedi#smart_auto_mappings = 1
 let g:jedi#show_call_signatures = "1"
 let g:jedi#completions_command = "<C-N>"
 let g:jedi#rename_command = "<leader>m"
+
+autocmd FileType python let b:syntastic_python_flake8_args =
+    \ get(g:, 'syntastic_python_flake8_args', '') .
+    \ FindConfig('-c', '.flake8', expand('%:p:h'))
+    "" \ FindConfig('-c', 'tox.ini', expand('%:p:h'))
+    "" \ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
 
 " Git
 

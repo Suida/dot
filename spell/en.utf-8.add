@@ -36,3 +36,4 @@ env
 #BD
 mysql
 Pymode
+pylint
