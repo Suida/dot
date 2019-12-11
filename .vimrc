@@ -88,6 +88,8 @@ noremap <leader>y "*y
 noremap <leader>p "*p
 nnoremap / /\v
 vnoremap / /\v
+nnoremap <C-j> 10j
+nnoremap <C-k> 10k
 
 " Arrows are not suggested
 
@@ -99,6 +101,13 @@ inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
+
+" NERDTree
+
+inoremap <leader>e :NERDTreeToggle<CR>
+nnoremap <leader>e :NERDTreeToggle<CR>
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 
 " Clang complete
 
@@ -132,7 +141,7 @@ let g:airline_theme='papercolor'
 let g:pymode_python = 'python3'
 let g:pymode_rope_completion = 0
 let g:pymode_rope_complete_on_dot = 0
-let syntastic_python_checkers = ["flake8", "pylint"]
+let syntastic_python_checkers = ["flake8"]
 let g:jedi#auto_initialization = 1
 let g:jedi#use_tabs_not_buffers = 1
 let g:jedi#completions_enabled = 1
@@ -140,6 +149,7 @@ let g:jedi#auto_vim_configuration = 1
 let g:jedi#smart_auto_mappings = 1
 let g:jedi#show_call_signatures = "1"
 let g:jedi#completions_command = "<C-N>"
+let g:jedi#usages= "<leader>n"
 let g:jedi#rename_command = "<leader>m"
 
 autocmd FileType python let b:syntastic_python_flake8_args =
