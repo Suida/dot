@@ -29,7 +29,7 @@
 	path = pack/python-mode/start/python-mode
 	url = https://github.com/python-mode/python-mode
 [submodule "Nerdtree"]
-	path = /Users/hugh/.vim/pack/vendor/start/nerdtree
+	path = pack/vendor/start/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
 [submodule "Nerdcommenter"]
 	path = pack/vendor/start/nerdcommenter
