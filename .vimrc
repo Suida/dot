@@ -161,3 +161,12 @@ autocmd FileType python let b:syntastic_python_flake8_args =
 
 set updatetime=100
 let g:gitgutter_highlight_linenrs = 1
+
+" Rust
+
+let g:rust_conceal = 1
+let g:rust_conceal_mod_path = 1
+let g:rust_conceal_pub = 1
+let g:rustfmt_command = 'rustfmt'
+let g:rustfmt_autosave = 1
+let g:rustfmt_autosave_if_config_present = 1

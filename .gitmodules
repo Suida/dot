@@ -34,3 +34,6 @@
 [submodule "Nerdcommenter"]
 	path = pack/vendor/start/nerdcommenter
 	url = https://github.com/scrooloose/nerdcommenter
+[submodule "rust.vim"]
+	path = pack/plugins/start/rust.vim
+	url = https://github.com/rust-lang/rust.vim
