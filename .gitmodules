@@ -34,3 +34,6 @@
 [submodule "Nerdcommenter"]
 	path = pack/vendor/start/nerdcommenter
 	url = https://github.com/scrooloose/nerdcommenter
+[submodule "auto-pairs"]
+	path = pack/edit/start/auto-pairs
+	url = https://github.com/jiangmiao/auto-pairs
