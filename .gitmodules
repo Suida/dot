@@ -37,3 +37,6 @@
 [submodule "rust.vim"]
 	path = pack/plugins/start/rust.vim
 	url = https://github.com/rust-lang/rust.vim
+[submodule "auto-pairs"]
+	path = pack/edit/start/auto-pairs
+	url = https://github.com/jiangmiao/auto-pairs
