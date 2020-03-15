@@ -32,6 +32,8 @@ set spell spelllang=en_us,cjk
 set conceallevel=2
 let mapleader = " "
 
+inoremap <C-e> <C-o>A
+
 " Syntastic settings
 
 set statusline+=%#warningmsg#
@@ -56,7 +58,6 @@ set expandtab
 " Highlight the column number 80
 
 set colorcolumn=80
-highlight ColorColumn ctermbg=yellow
 
 " Set files as C files
 
@@ -82,7 +83,7 @@ endfun
 autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
 set number
 nnoremap <leader>f 1z=
-nnoremap <leader>s :set spell!
+nnoremap <leader>s :set spell!<CR>
 inoremap jk <ESC>
 noremap <leader>y "*y
 noremap <leader>p "*p
@@ -133,6 +134,10 @@ let g:PaperColor_Theme_Options = {
   \   }
   \ }
 let g:airline_theme='papercolor'
+hi Normal guibg=NONE ctermbg=NONE
+hi LineNr guibg=NONE ctermbg=NONE
+hi TabLineFill guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE
+hi ColorColumn guifg=NONE guibg=NONE ctermfg=NONE ctermbg=darkgray
 
 " Python
 " Highlight and checker of Pymode, all other stuffs are originated from jedi
