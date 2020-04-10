@@ -46,3 +46,21 @@
 [submodule "pack/themes/opt/tender"]
 	path = pack/themes/opt/tender
 	url = https://github.com/jacoborus/tender.vim
+[submodule "pack/plugins/start/indentLine"]
+	path = pack/plugins/start/indentLine
+	url = https://github.com/Yggdroot/indentLine
+[submodule "pack/plugins/start/tagbar"]
+	path = pack/plugins/start/tagbar
+	url = https://github.com/majutsushi/tagbar
+[submodule "pack/plugins/start/ack.vim"]
+	path = pack/plugins/start/ack.vim
+	url = https://github.com/mileszs/ack.vim
+[submodule "pack/plugins/start/ctrlsf.vim"]
+	path = pack/plugins/start/ctrlsf.vim
+	url = https://github.com/dyng/ctrlsf.vim
+[submodule "pack/plugins/start/vim-unimpaired"]
+	path = pack/plugins/start/vim-unimpaired
+	url = https://github.com/tpope/vim-unimpaired
+[submodule "pack/plugins/YouCompleteMe"]
+	path = pack/plugins/YouCompleteMe
+	url = https://github.com/ycm-core/YouCompleteMe
