@@ -40,3 +40,6 @@
 [submodule "auto-pairs"]
 	path = pack/edit/start/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs
+[submodule "pack/syntax/start/vim-cpp-enhanced-highlight"]
+	path = pack/syntax/start/vim-cpp-enhanced-highlight
+	url = https://github.com/octol/vim-cpp-enhanced-highlight
