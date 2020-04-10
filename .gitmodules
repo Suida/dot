@@ -11,31 +11,31 @@
 	path = bundle/vim-markdown
 	url = https://github.com/plasticboy/vim-markdown.git
 [submodule "gitgutter"]
-	path = pack/airblade/start/vim-gitgutter
+	path = pack/plugins/start/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter
 [submodule "vim-airline"]
-	path = pack/dist/start/vim-airline
+	path = pack/plugins/start/vim-airline
 	url = https://github.com/vim-airline/vim-airline
 [submodule "vim-airline-themes"]
-	path = pack/dist/start/vim-airline-themes
+	path = pack/plugins/start/vim-airline-themes
 	url = https://github.com/vim-airline/vim-airline-themes
 [submodule "PaperColor"]
 	path = pack/themes/opt/papercolor-theme
 	url = https://github.com/NLKNguyen/papercolor-theme
 [submodule "tpope/fugitive"]
-	path = pack/tpope/start/fugitive
+	path = pack/plugins/start/fugitive
 	url = https://github.com/tpope/vim-fugitive
 [submodule "Nerdtree"]
-	path = pack/vendor/start/nerdtree
+	path = pack/plugins/start/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
 [submodule "Nerdcommenter"]
-	path = pack/vendor/start/nerdcommenter
+	path = pack/plugins/start/nerdcommenter
 	url = https://github.com/scrooloose/nerdcommenter
 [submodule "rust.vim"]
 	path = pack/plugins/start/rust.vim
 	url = https://github.com/rust-lang/rust.vim
 [submodule "auto-pairs"]
-	path = pack/edit/start/auto-pairs
+	path = pack/plugins/start/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs
 [submodule "pack/syntax/start/vim-cpp-enhanced-highlight"]
 	path = pack/syntax/start/vim-cpp-enhanced-highlight
