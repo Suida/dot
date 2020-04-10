@@ -29,7 +29,7 @@ set incsearch
 set showmatch
 set encoding=utf-8
 set clipboard=unnamedplus
-set textwidth=80
+set nowrap
 set spelllang=en_us,cjk
 set conceallevel=2
 let mapleader = " "
@@ -149,12 +149,10 @@ hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
 hi ColorColumn guibg=Grey63
 
 " Python
-" Highlight and checker of Pymode, all other stuffs are originated from jedi
+" Highlight and checker of syntastic, all other stuffs are originated from jedi
 
-let g:pymode_python = 'python3'
-let g:pymode_rope_completion = 0
-let g:pymode_rope_complete_on_dot = 0
-let syntastic_python_checkers = ["flake8"]
+let g:python_highlight_all = 1
+let syntastic_python_checkers = ["pylint","flake8"]
 let g:jedi#auto_initialization = 1
 let g:jedi#use_tabs_not_buffers = 1
 let g:jedi#completions_enabled = 1
