@@ -43,3 +43,9 @@
 [submodule "pack/syntax/start/vim-cpp-enhanced-highlight"]
 	path = pack/syntax/start/vim-cpp-enhanced-highlight
 	url = https://github.com/octol/vim-cpp-enhanced-highlight
+[submodule "pack/themes/opt/vim-monokai"]
+	path = pack/themes/opt/vim-monokai
+	url = https://github.com/sickill/vim-monokai
+[submodule "pack/themes/opt/tender"]
+	path = pack/themes/opt/tender
+	url = https://github.com/jacoborus/tender.vim

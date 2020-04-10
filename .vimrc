@@ -17,7 +17,9 @@ set secure
 execute pathogen#infect()
 
 " Basics
-
+if (has("termguicolors"))
+    set termguicolors
+endif
 syntax on
 filetype plugin indent on
 set shell=/bin/zsh
@@ -28,7 +30,7 @@ set showmatch
 set encoding=utf-8
 set clipboard=unnamedplus
 set textwidth=80
-set spell spelllang=en_us,cjk
+set spelllang=en_us,cjk
 set conceallevel=2
 let mapleader = " "
 
@@ -58,6 +60,7 @@ set expandtab
 " Highlight the column number 80
 
 set colorcolumn=80
+set cursorline
 
 " Set files as C files
 
@@ -112,6 +115,12 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 " Clang complete
 
 let g:clang_library_path='/usr/lib/llvm-6.0/lib'
+let g:cpp_class_scope_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight = 1
+let g:cpp_posix_standard = 1
+let g:cpp_experimental_simple_template_highlight = 1
+let g:cpp_concepts_highlight = 1
 
 " Markdown
 
@@ -125,7 +134,7 @@ let g:vim_markdown_no_extensions_in_markdown = 1
 set t_Co=256
 set background=dark
 set laststatus=2
-colorscheme PaperColor
+colorscheme tender
 let g:PaperColor_Theme_Options = {
   \   'theme': {
   \     'default.dark': {
@@ -133,11 +142,11 @@ let g:PaperColor_Theme_Options = {
   \     }
   \   }
   \ }
-let g:airline_theme='papercolor'
+let g:airline_theme='molokai'
 hi Normal guibg=NONE ctermbg=NONE
-hi LineNr guibg=NONE ctermbg=NONE
-hi TabLineFill guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE
-hi ColorColumn guifg=NONE guibg=NONE ctermfg=NONE ctermbg=darkgray
+hi LineNr guifg=DeepPink2 guibg=NONE ctermfg=yellow ctermbg=NONE
+hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
+hi ColorColumn guibg=Grey63
 
 " Python
 " Highlight and checker of Pymode, all other stuffs are originated from jedi
