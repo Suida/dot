@@ -35,6 +35,7 @@ set conceallevel=2
 let mapleader = " "
 
 inoremap <C-e> <C-o>A
+inoremap <C-o> <C-o>A<CR>
 
 " Syntastic settings
 
@@ -43,24 +44,53 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
+let g:syntastic_loc_list_height = 4
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
+function! ToggleErrors()
+    if empty(filter(tabpagebuflist(), 'getbufvar(v:val, "&buftype") is# "quickfix"'))
+        " No location/quickfix list shown, open syntastic error location panel
+        " Nothing was closed, open syntastic error location panel
+        lopen
+    else
+        lclose
+    endif
+endfunction
+nnoremap <leader>sl :call ToggleErrors()<CR>
+nnoremap <leader>sk :SyntasticCheck<CR>
 function! FindConfig(prefix, what, where)
     let cfg = findfile(a:what, fnameescape(a:where) . ';')
     return cfg !=# '' ? ' ' . a:prefix . ' ' . shellescape(cfg) : ''
 endfunction
 
-" Indentation rules
+" YCM settings
+
+nnoremap <leader>ml :call ToggleErrors()<CR>
+nnoremap <leader>mk :YcmForceCompileAndDiagnostics<CR>
+let g:ycm_semantic_triggers =  {
+            \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+            \ 'cs,lua,javascript': ['re!\w{2}'],
+            \ }
+let g:ycm_filetype_whitelist = { 
+            \ "c":1,
+            \ "cpp":1, 
+            \ "rust":1,
+            \ "go":1,
+            \ "sh":1,
+            \ "zsh":1,
+            \ }
+let g:ycm_filetype_blacklist = {
+            \ 'python': 1
+            \ }
+
+" Indentation rules and folding
 
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-
-" Highlight the column number 80
-
-set colorcolumn=80
-set cursorline
+set foldmethod=syntax
+set nofoldenable
 
 " Set files as C files
 
@@ -81,12 +111,12 @@ fun! IgnoreCustomItems()
     syn cluster Spell add=CamelCase1
     syn cluster Spell add=SnakeCase0
     syn cluster Spell add=ShortWord
-    "" syn cluster Spell add=UpperCase
+    syn cluster Spell add=UpperCase
 endfun
 autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
 set number
-nnoremap <leader>f 1z=
-nnoremap <leader>s :set spell!<CR>
+nnoremap <leader>sf 1z=
+nnoremap <leader>ss :set spell!<CR>
 inoremap jk <ESC>
 noremap <leader>y "*y
 noremap <leader>p "*p
@@ -106,11 +136,53 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
-" NERDTree
+" NERDTree & Tagbar
 
+let NERDTreeWinPos = 'right'
 nnoremap <leader>e :NERDTreeToggle<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+let tagbar_left = 1
+let tagbar_width = 32
+let g:tagbar_compact=1
+nmap <leader>w :TagbarToggle<CR>
+let g:tagbar_type_cpp = {
+    \ 'kinds' : [
+         \ 'c:classes:0:1',
+         \ 'd:macros:0:1',
+         \ 'e:enumerators:0:0', 
+         \ 'f:functions:0:1',
+         \ 'g:enumeration:0:1',
+         \ 'l:local:0:1',
+         \ 'm:members:0:1',
+         \ 'n:namespaces:0:1',
+         \ 'p:functions_prototypes:0:1',
+         \ 's:structs:0:1',
+         \ 't:typedefs:0:1',
+         \ 'u:unions:0:1',
+         \ 'v:global:0:1',
+         \ 'x:external:0:1'
+     \ ],
+     \ 'sro'        : '::',
+     \ 'kind2scope' : {
+         \ 'g' : 'enum',
+         \ 'n' : 'namespace',
+         \ 'c' : 'class',
+         \ 's' : 'struct',
+         \ 'u' : 'union'
+     \ },
+     \ 'scope2kind' : {
+         \ 'enum'      : 'g',
+         \ 'namespace' : 'n',
+         \ 'class'     : 'c',
+         \ 'struct'    : 's',
+         \ 'union'     : 'u'
+     \ }
+ \ }
+
+" CtrlSF
+
+let g:ctrlsf_ignore_dir = ['tags']
 
 " Clang complete
 
@@ -131,6 +203,8 @@ let g:vim_markdown_no_extensions_in_markdown = 1
 
 " Color scheme
 
+set colorcolumn=80
+set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
