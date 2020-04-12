@@ -91,6 +91,8 @@ set shiftwidth=4
 set expandtab
 set foldmethod=syntax
 set nofoldenable
+set indentexpr=
+set smartindent
 
 " Set files as C files
 
