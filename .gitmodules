@@ -1,14 +1,14 @@
 [submodule "bundle/syntastic"]
-	path = bundle/syntastic
+	path = pack/plugins/start/syntastic
 	url = https://github.com/vim-syntastic/syntastic.git
 [submodule "bundle/jedi-vim"]
-	path = bundle/jedi-vim
+	path = pack/plugins/start/jedi-vim
 	url = https://github.com/davidhalter/jedi-vim.git
 [submodule "pack/themes/opt/solarized8"]
 	path = pack/themes/opt/solarized8
 	url = https://github.com/lifepillar/vim-solarized8.git
 [submodule "bundle/vim-markdown"]
-	path = bundle/vim-markdown
+	path = pack/plugins/start/vim-markdown
 	url = https://github.com/plasticboy/vim-markdown.git
 [submodule "gitgutter"]
 	path = pack/plugins/start/vim-gitgutter
