@@ -12,16 +12,13 @@ endif
 set exrc
 set secure
 
-" Pathogen settings
-
-execute pathogen#infect()
-
 " Basics
 if (has("termguicolors"))
     set termguicolors
 endif
 syntax on
 filetype plugin indent on
+"set completeopt="menu"
 set shell=/bin/zsh
 set ruler
 set hlsearch
@@ -67,20 +64,11 @@ endfunction
 
 nnoremap <leader>ml :call ToggleErrors()<CR>
 nnoremap <leader>mk :YcmForceCompileAndDiagnostics<CR>
+set completeopt=menuone,menu
+let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
-            \ 'cs,lua,javascript': ['re!\w{2}'],
-            \ }
-let g:ycm_filetype_whitelist = { 
-            \ "c":1,
-            \ "cpp":1, 
-            \ "rust":1,
-            \ "go":1,
-            \ "sh":1,
-            \ "zsh":1,
-            \ }
-let g:ycm_filetype_blacklist = {
-            \ 'python': 1
+            \ 'rust': ['re!\w{2}'],
             \ }
 
 " Indentation rules and folding
@@ -228,8 +216,8 @@ hi ColorColumn guibg=Grey63
 " Highlight and checker of syntastic, all other stuffs are originated from jedi
 
 let g:python_highlight_all = 1
-let syntastic_python_checkers = ["pylint","flake8"]
-let g:jedi#auto_initialization = 1
+let syntastic_python_checkers = ['flake8']
+let g:jedi#auto_initialization = 0
 let g:jedi#use_tabs_not_buffers = 1
 let g:jedi#completions_enabled = 1
 let g:jedi#auto_vim_configuration = 1
@@ -237,7 +225,7 @@ let g:jedi#smart_auto_mappings = 1
 let g:jedi#show_call_signatures = "1"
 let g:jedi#completions_command = "<C-N>"
 let g:jedi#usages= "<leader>n"
-let g:jedi#rename_command = "<leader>m"
+let g:jedi#rename_command = "<leader>mr"
 
 autocmd FileType python let b:syntastic_python_flake8_args =
     \ get(g:, 'syntastic_python_flake8_args', '') .
