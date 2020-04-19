@@ -205,6 +205,11 @@ let g:vim_markdown_folding_level = 3
 let g:vim_markdown_autowrite = 1
 let g:vim_markdown_strikethrough = 1
 let g:vim_markdown_no_extensions_in_markdown = 1
+let g:mkdp_port = '34910'
+let g:mkdp_open_to_the_world = 1
+noremap <leader>mp :MarkdownPreview<CR>
+noremap <leader>ms :MarkdownPreviewStop<CR>
+"noremap <leader>mt :MarkdownPreviewToggle<CR> E492: Not a editor command
 
 
 " Functions

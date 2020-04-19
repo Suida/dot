@@ -82,3 +82,6 @@
 [submodule "pack/plugins/start/vim-snippets"]
 	path = pack/plugins/start/vim-snippets
 	url = https://github.com/honza/vim-snippets
+[submodule "pack/plugins/start/markdown-preview.nvim"]
+	path = pack/plugins/start/markdown-preview.nvim
+	url = https://github.com/iamcco/markdown-preview.nvim
