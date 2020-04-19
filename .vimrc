@@ -7,18 +7,20 @@ if has('win32') || has('win64')
     set runtimepath+=~/.vim/after
 endif
 
+
 " Specify the default .vimrc file as the one under working directory
 
 set exrc
 set secure
 
+
 " Basics
+
 if (has("termguicolors"))
     set termguicolors
 endif
 syntax on
 filetype plugin indent on
-"set completeopt="menu"
 set shell=/bin/zsh
 set ruler
 set hlsearch
@@ -29,50 +31,7 @@ set clipboard=unnamedplus
 set nowrap
 set spelllang=en_us,cjk
 set conceallevel=2
-let mapleader = " "
-
-inoremap <C-e> <C-o>A
-inoremap <C-o> <C-o>A<CR>
-
-" Syntastic settings
-
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_loc_list_height = 4
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 1
-function! ToggleErrors()
-    if empty(filter(tabpagebuflist(), 'getbufvar(v:val, "&buftype") is# "quickfix"'))
-        " No location/quickfix list shown, open syntastic error location panel
-        " Nothing was closed, open syntastic error location panel
-        lopen
-    else
-        lclose
-    endif
-endfunction
-nnoremap <leader>sl :call ToggleErrors()<CR>
-nnoremap <leader>sk :SyntasticCheck<CR>
-function! FindConfig(prefix, what, where)
-    let cfg = findfile(a:what, fnameescape(a:where) . ';')
-    return cfg !=# '' ? ' ' . a:prefix . ' ' . shellescape(cfg) : ''
-endfunction
-
-" YCM settings
-
-nnoremap <leader>ml :call ToggleErrors()<CR>
-nnoremap <leader>mk :YcmForceCompileAndDiagnostics<CR>
-set completeopt=menuone,menu
-let g:ycm_add_preview_to_completeopt = 0
-let g:ycm_semantic_triggers =  {
-            \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
-            \ 'rust': ['re!\w{2}'],
-            \ }
-
 " Indentation rules and folding
-
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
@@ -82,41 +41,21 @@ set nofoldenable
 set indentexpr=
 set smartindent
 
-" Set files as C files
 
-augroup project
-    autocmd!
-    autocmd BufRead,BufNewFile *.h,*.c set filetype=c.doxygen
-augroup END
+" Global key mappings
 
-" Spell & Edit settings
-
-fun! IgnoreCustomItems()
-    syn match CamelCase0 /\<[A-Z][a-z]\+[A-Z].\{-}\>/ contains=@NoSpell transparent
-    syn match CamelCase1 /\<[a-z]\+[A-Z].\{-}\>/ contains=@NoSpell transparent
-    syn match SnakeCase0 /\<\w*_\+\w\+\>/ contains=@NoSpell transparent
-    syn match UpperCase /\<[A-Z0-9]\+\>/ contains=@NoSpell transparent
-    syn match ShortWord /\<\w\{1,4}\>/ contains=@NoSpell transparent
-    syn cluster Spell add=CamelCase0
-    syn cluster Spell add=CamelCase1
-    syn cluster Spell add=SnakeCase0
-    syn cluster Spell add=ShortWord
-    syn cluster Spell add=UpperCase
-endfun
-autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
-set number
-nnoremap <leader>sf 1z=
-nnoremap <leader>ss :set spell!<CR>
+let mapleader = " "
+" Editting
 inoremap jk <ESC>
-noremap <leader>y "*y
-noremap <leader>p "*p
-nnoremap / /\v
-vnoremap / /\v
+inoremap <C-e> <C-o>A
+inoremap <C-o> <C-o>A<CR>
+nnoremap <leader>] <C-w><C-]><C-w>T
+" Navigation
 nnoremap <C-j> 10j
 nnoremap <C-k> 10k
-
+nmap <C-c>h :tabp <CR>
+nmap <C-c>l :tabn <CR>
 " Arrows are not suggested
-
 nnoremap <up> <nop>
 nnoremap <down> <nop>
 nnoremap <left> <nop>
@@ -125,13 +64,73 @@ inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
+" Spell check
+nnoremap <leader>sf 1z=
+nnoremap <leader>ss :set spell!<CR>
+autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
+" Copy & paste
+noremap <leader>y "*y
+noremap <leader>p "*p
+" Search
+nnoremap / /\v
+vnoremap / /\v
 
-" NERDTree & Tagbar
 
+" Color
+
+set number
+set colorcolumn=80
+set cursorline
+set t_Co=256
+set background=dark
+set laststatus=2
+colorscheme gruvbox
+hi Normal guibg=NONE ctermbg=NONE
+hi LineNr guifg=DeepPink2 guibg=NONE ctermfg=yellow ctermbg=NONE
+hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
+hi ColorColumn guibg=Grey63
+
+
+" Ycm & Syntastic settings
+
+nnoremap <leader>gf :YcmCompleter Format<CR>
+nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gt :YcmCompleter GetType<CR>
+nnoremap <leader>gi :YcmCompleter GoToInclude<CR>
+nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
+nnoremap <leader>gp :call TogglePreview()<CR>
+nnoremap <leader>sr :YcmRestartServer<CR>
+nnoremap <leader>sl :call ToggleErrors()<CR>
+nnoremap <leader>sk :call DoSyntasticCheck()<CR>
+
+set completeopt=menuone,menu
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_semantic_triggers =  {
+            \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+            \ 'rust': ['re!\w{2}'],
+            \ }
+let g:syntastic_mode_map = {
+    \ "mode": "passive",
+    \ "active_filetypes": [],
+    \ "passive_filetypes": [] }
+
+
+" Snippet
+let g:UltiSnipsExpandTrigger = '<C-l>'
+
+
+" NERDTree, Git, ctrlsf & Tagbar
+" NERDTree
 let NERDTreeWinPos = 'right'
 nnoremap <leader>e :NERDTreeToggle<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+" Git
+set updatetime=100
+let g:gitgutter_highlight_linenrs = 1
+" CtrlSF
+let g:ctrlsf_ignore_dir = ['tags.d']
+" Tagbar
 let tagbar_left = 1
 let tagbar_width = 32
 let g:tagbar_compact=1
@@ -170,19 +169,35 @@ let g:tagbar_type_cpp = {
      \ }
  \ }
 
-" CtrlSF
 
-let g:ctrlsf_ignore_dir = ['tags']
 
-" Clang complete
-
-let g:clang_library_path='/usr/lib/llvm-6.0/lib'
+" C/C++
+" Set files as C files
+augroup project
+    autocmd!
+    autocmd BufRead,BufNewFile *.h,*.c set filetype=c.doxygen
+augroup END
+" Highlight
 let g:cpp_class_scope_highlight = 1
 let g:cpp_member_variable_highlight = 1
 let g:cpp_class_decl_highlight = 1
 let g:cpp_posix_standard = 1
 let g:cpp_experimental_simple_template_highlight = 1
 let g:cpp_concepts_highlight = 1
+
+
+" Python
+" Highlight and checker of syntastic, all other stuffs are originated from jedi
+
+let g:python_highlight_all = 1
+let syntastic_python_checkers = ['pylint']
+
+autocmd FileType python let b:syntastic_python_flake8_args =
+    \ get(g:, 'syntastic_python_flake8_args', '') .
+    \ FindConfig('-c', '.flake8', expand('%:p:h'))
+    "" \ FindConfig('-c', 'tox.ini', expand('%:p:h'))
+    "" \ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
+
 
 " Markdown
 
@@ -191,58 +206,57 @@ let g:vim_markdown_autowrite = 1
 let g:vim_markdown_strikethrough = 1
 let g:vim_markdown_no_extensions_in_markdown = 1
 
-" Color scheme
 
-set colorcolumn=80
-set cursorline
-set t_Co=256
-set background=dark
-set laststatus=2
-colorscheme tender
-let g:PaperColor_Theme_Options = {
-  \   'theme': {
-  \     'default.dark': {
-  \       'transparent_background': 1
-  \     }
-  \   }
-  \ }
-let g:airline_theme='molokai'
-hi Normal guibg=NONE ctermbg=NONE
-hi LineNr guifg=DeepPink2 guibg=NONE ctermfg=yellow ctermbg=NONE
-hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
-hi ColorColumn guibg=Grey63
+" Functions
 
-" Python
-" Highlight and checker of syntastic, all other stuffs are originated from jedi
+function! DoSyntasticCheck()
+    if &filetype == 'python'
+        SyntasticCheck
+    else
+        YcmForceCompileAndDiagnostics
+    endif
+endfunction
 
-let g:python_highlight_all = 1
-let syntastic_python_checkers = ['flake8']
-let g:jedi#auto_initialization = 0
-let g:jedi#use_tabs_not_buffers = 1
-let g:jedi#completions_enabled = 1
-let g:jedi#auto_vim_configuration = 1
-let g:jedi#smart_auto_mappings = 1
-let g:jedi#show_call_signatures = "1"
-let g:jedi#completions_command = "<C-N>"
-let g:jedi#usages= "<leader>n"
-let g:jedi#rename_command = "<leader>mr"
+function! ToggleErrors()
+    if empty(filter(tabpagebuflist(), 'getbufvar(v:val, "&buftype") is# "quickfix"'))
+        " No location/quickfix list shown, open syntastic error location panel
+        " Nothing was closed, open syntastic error location panel
+        Errors
+    else
+        lclose
+    endif
+endfunction
 
-autocmd FileType python let b:syntastic_python_flake8_args =
-    \ get(g:, 'syntastic_python_flake8_args', '') .
-    \ FindConfig('-c', '.flake8', expand('%:p:h'))
-    "" \ FindConfig('-c', 'tox.ini', expand('%:p:h'))
-    "" \ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
+function! FindConfig(prefix, what, where)
+    let cfg = findfile(a:what, fnameescape(a:where) . ';')
+    return cfg !=# '' ? ' ' . a:prefix . ' ' . shellescape(cfg) : ''
+endfunction
 
-" Git
+function! PreviewWindowOpened()
+    for nr in range(1, winnr('$'))
+        if getwinvar(nr, '&pvw') == 1
+            return 1
+        endif
+    endfor
+endfunction
 
-set updatetime=100
-let g:gitgutter_highlight_linenrs = 1
+function! TogglePreview()
+    if PreviewWindowOpened()
+        pclose
+    else
+        YcmCompleter GetDoc
+    endif
+endfunction
 
-" Rust
-
-let g:rust_conceal = 1
-let g:rust_conceal_mod_path = 1
-let g:rust_conceal_pub = 1
-let g:rustfmt_command = 'rustfmt'
-let g:rustfmt_autosave = 1
-let g:rustfmt_autosave_if_config_present = 1
+function! IgnoreCustomItems()
+    syn match CamelCase0 /\<[A-Z][a-z]\+[A-Z].\{-}\>/ contains=@NoSpell transparent
+    syn match CamelCase1 /\<[a-z]\+[A-Z].\{-}\>/ contains=@NoSpell transparent
+    syn match SnakeCase0 /\<\w*_\+\w\+\>/ contains=@NoSpell transparent
+    syn match UpperCase /\<[A-Z0-9]\+\>/ contains=@NoSpell transparent
+    syn match ShortWord /\<\w\{1,4}\>/ contains=@NoSpell transparent
+    syn cluster Spell add=CamelCase0
+    syn cluster Spell add=CamelCase1
+    syn cluster Spell add=SnakeCase0
+    syn cluster Spell add=ShortWord
+    syn cluster Spell add=UpperCase
+endfunction

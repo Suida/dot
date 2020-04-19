@@ -76,3 +76,9 @@
 [submodule "pack/themes/opt/gruvbox"]
 	path = pack/themes/opt/gruvbox
 	url = https://github.com/morhetz/gruvbox
+[submodule "pack/plugins/start/ultisnips"]
+	path = pack/plugins/start/ultisnips
+	url = https://github.com/SirVer/ultisnips
+[submodule "pack/plugins/start/vim-snippets"]
+	path = pack/plugins/start/vim-snippets
+	url = https://github.com/honza/vim-snippets
