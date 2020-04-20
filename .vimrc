@@ -88,7 +88,6 @@ colorscheme gruvbox
 hi Normal guibg=NONE ctermbg=NONE
 hi LineNr guifg=DeepPink2 guibg=NONE ctermfg=yellow ctermbg=NONE
 hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
-hi ColorColumn guibg=Grey63
 
 
 " Ycm & Syntastic settings
