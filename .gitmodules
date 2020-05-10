@@ -88,3 +88,6 @@
 [submodule "pack/plugins/start/vim-easymotion"]
 	path = pack/plugins/start/vim-easymotion
 	url = https://github.com/easymotion/vim-easymotion
+[submodule "pack/plugins/start/far.vim"]
+	path = pack/plugins/start/far.vim
+	url = https://github.com/brooth/far.vim
