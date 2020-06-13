@@ -199,13 +199,25 @@ autocmd FileType python let b:syntastic_python_flake8_args =
     "" \ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
 
 
+" Front Development
+
+let g:user_emmet_leader_key = '<C-x>'
+let g:bracey_server_port = 34911
+let g:bracey_server_allow_remote_connections = 1
+let g:bracey_refresh_on_save = 1
+let g:bracey_eval_on_save = 1
+let g:bracey_auto_start_server = 1
+
 " Markdown
 
 let g:vim_markdown_folding_level = 3
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
 let g:vim_markdown_autowrite = 1
 let g:vim_markdown_strikethrough = 1
 let g:vim_markdown_no_extensions_in_markdown = 1
 let g:mkdp_port = '34910'
+let g:mkdp_refresh_slow = 1
 let g:mkdp_open_to_the_world = 1
 let g:mkdp_echo_preview_url = 1
 noremap <leader>mp :MarkdownPreview<CR>

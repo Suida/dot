@@ -91,3 +91,12 @@
 [submodule "pack/plugins/start/far.vim"]
 	path = pack/plugins/start/far.vim
 	url = https://github.com/brooth/far.vim
+[submodule "pack/syntax/start/emmet-vim"]
+	path = pack/syntax/start/emmet-vim
+	url = https://github.com/mattn/emmet-vim
+[submodule "pack/syntax/start/vim-css-color"]
+	path = pack/syntax/start/vim-css-color
+	url = https://github.com/ap/vim-css-color
+[submodule "pack/plugins/start/bracey.vim"]
+	path = pack/plugins/start/bracey.vim
+	url = https://github.com/turbio/bracey.vim
