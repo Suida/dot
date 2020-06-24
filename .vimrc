@@ -29,7 +29,7 @@ set incsearch
 set showmatch
 set encoding=utf-8
 set clipboard=unnamedplus
-set nowrap
+set wrap
 set spelllang=en_us,cjk
 set conceallevel=2
 " Indentation rules and folding
@@ -75,6 +75,8 @@ noremap <leader>p "*p
 " Search
 nnoremap / /\v
 vnoremap / /\v
+" Jump to next tag
+inoremap <C-f> <ESC>vit<ESC>i
 
 
 " Color
@@ -85,7 +87,8 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-colorscheme gruvbox
+packadd! onedark.vim
+colorscheme onedark
 hi Normal guibg=NONE ctermbg=NONE
 hi LineNr guifg=DeepPink2 guibg=NONE ctermfg=yellow ctermbg=NONE
 hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
@@ -100,6 +103,7 @@ nnoremap <leader>gi :YcmCompleter GoToInclude<CR>
 nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
 nnoremap <leader>gp :call TogglePreview()<CR>
 nnoremap <leader>sr :YcmRestartServer<CR>
+nnoremap <leader>sd :YcmShowDetailedDiagnostic<CR>
 nnoremap <leader>sl :call ToggleErrors()<CR>
 nnoremap <leader>sk :call DoSyntasticCheck()<CR>
 
@@ -207,6 +211,7 @@ let g:bracey_server_allow_remote_connections = 1
 let g:bracey_refresh_on_save = 1
 let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
+let g:javascript_conceal_function             = "ƒ"
 
 " Markdown
 
