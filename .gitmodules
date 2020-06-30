@@ -70,9 +70,6 @@
 [submodule "pack/themes/opt/molokai"]
 	path = pack/themes/opt/molokai
 	url = https://github.com/tomasr/molokai
-[submodule "pack/themes/opt/vim-colorschemes"]
-	path = pack/themes/opt/vim-colorschemes
-	url = https://github.com/flazz/vim-colorschemes
 [submodule "pack/themes/opt/gruvbox"]
 	path = pack/themes/opt/gruvbox
 	url = https://github.com/morhetz/gruvbox
