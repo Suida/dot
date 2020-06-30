@@ -56,15 +56,15 @@ nnoremap <C-j> 10j
 nnoremap <C-k> 10k
 nmap <C-c>h :tabp <CR>
 nmap <C-c>l :tabn <CR>
+nnoremap <left> :tabp <CR>
+nnoremap <right> :tabn <CR>
+inoremap <left> <ESC> :tabp <CR>
+inoremap <right> <ESC> :tabn <CR>
 " Arrows are not suggested
 nnoremap <up> <nop>
 nnoremap <down> <nop>
-nnoremap <left> <nop>
-nnoremap <right> <nop>
 inoremap <up> <nop>
 inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
 " Spell check
 nnoremap <leader>sf 1z=
 nnoremap <leader>ss :set spell!<CR>

@@ -112,3 +112,6 @@
 [submodule "pack/plugins/start/vim-matchup"]
 	path = pack/plugins/start/vim-matchup
 	url = https://github.com/andymass/vim-matchup
+[submodule "pack/themes/opt/vim-dream"]
+	path = pack/themes/opt/vim-dream
+	url = https://github.com/crusoexia/vim-dream
