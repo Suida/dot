@@ -1,0 +1,161 @@
+{
+    "window.zoomLevel": 0,
+    "editor.fontSize": 14,
+    "editor.fontFamily": "Cascadia Code",
+    "editor.fontLigatures": true,
+    "editor.acceptSuggestionOnCommitCharacter": true,
+	"editor.lineNumbers": "relative",
+    "editor.suggestSelection": "first",
+    "explorer.confirmDelete": false,
+    "terminal.integrated.shell.linux": "/bin/zsh",
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\cmd.exe",
+    "terminal.integrated.env.windows": {"CMDER_ROOT": "G:\\python\\cmder\\"},
+    "terminal.integrated.shellArgs.windows": [
+        "/K G:\\python\\cmder\\vendor\\init.bat",
+    ],
+    "terminal.integrated.scrollback": 5000,
+    "breadcrumbs.enabled": true,
+	"breadcrumbs.icons": false,
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#007ACC",
+        "statusBar.noFolderBackground": "#007ACC",
+        "statusBar.debuggingBackground": "#007ACC"
+    },
+    "remote.SSH.showLoginTerminal": false,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/venv": true,
+        "**/target/debug": true,
+        "**/target/doc": true,
+        "**/target/release": true,
+        "**/target/rls": true,
+    },
+    "kite.showWelcomeNotificationOnStartup": false,
+
+    "vim.disableExtension": false,
+    "vim.leader": "<Space>",
+    "vim.handleKeys": {
+        "<Tab>": false,
+    },
+    // Easymotion
+    "vim.easymotion": true,
+    "vim.easymotionMarkerBackgroundColor": "gray",
+    // Airline
+    "vim.statusBarColorControl": false,
+    "vim.statusBarColors.normal": ["#8FBCBB", "#434C5E"],
+    "vim.statusBarColors.insert": "#BF616A",
+    "vim.statusBarColors.visual": "#B48EAD",
+    "vim.statusBarColors.visualline": "#B48EAD",
+    "vim.statusBarColors.visualblock": "#A3BE8C",
+    "vim.statusBarColors.replace": "#D08770",
+    "vim.statusBarColors.commandlineinprogress": "#007ACC",
+    "vim.statusBarColors.searchinprogressmode": "#007ACC",
+    "vim.statusBarColors.easymotionmode": "#007ACC",
+    "vim.statusBarColors.easymotioninputmode": "#007ACC",
+    "vim.statusBarColors.surroundinputmode": "#007ACC",
+    // Key mapping
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<leader>", "y"],
+            "after": ["\"", "*", "y"],
+        },
+    ],
+    "vim.insertModeKeyBindingsNonRecursive": [
+        {
+            "before": ["j", "k"],
+            "after": ["<Esc>"],
+        },
+        {
+            "before": ["<C-l>"],
+            "after": [" ", " ", " ", " "],
+        },
+        {
+            "before": ["<C-e>"],
+            "after": ["<C-o>", "A"],
+        },
+        {
+            "before": ["<C-o>"],
+            "after": ["<C-o>", "A", "<CR>"],
+        },
+        {
+            "before": ["<C-u>"],
+            "after": ["<CR>", "<Esc>", "k", "A"],
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<C-j>"],
+            "after": ["1", "5", "j"],
+        },
+        {
+            "before": ["<C-k>"],
+            "after": ["1", "5", "k"],
+        },
+        {
+            "before": ["<C-h>"],
+            "after": [":", "t", "a", "b", "p", "<CR>"],
+        },
+        {
+            "before": ["<C-l>"],
+            "after": [":", "t", "a", "b", "n", "<CR>"],
+        },
+        {
+            "before": ["<leader>", "p"],
+            "after": ["\"", "*", "p"],
+        },
+        {
+            "before": ["K", "K"],
+            "after": [":", "w", "<CR>"],
+        },
+        {
+            "before": ["K", "L"],
+            "after": [":", "q", "<CR>"],
+        },
+        {
+            "before": ["\""],
+            "commands": ["workbench.action.showCommands"],
+        },
+        {
+            "before": ["<leader>", "g", "d"],
+            "commands": ["editor.action.goToTypeDefinition"],
+        },
+    ],
+    "emmet.triggerExpansionOnTab": true,
+    "workbench.colorTheme": "Sunset Theme",
+    "maven.executable.path": "D:\\JavaHome\\apache-maven-3.6.3\\bin",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "window.menuBarVisibility": "toggle",
+    "python.pythonPath": "C:\\Users\\You\\AppData\\Local\\Programs\\Python\\Python37\\python37.exe",
+    "workbench.sideBar.location": "right",
+    "remote.SSH.remotePlatform": {
+        "Cursor": "linux"
+    },
+    "gitlens.views.repositories.location": "gitlens",
+    "gitlens.views.fileHistory.location": "gitlens",
+    "gitlens.views.lineHistory.location": "gitlens",
+    "gitlens.views.compare.location": "gitlens",
+    "gitlens.views.search.location": "gitlens",
+    "workbench.activityBar.visible": false,
+    "python.languageServer": "Microsoft",
+    "C_Cpp.updateChannel": "Insiders",
+    "python.dataScience.sendSelectionToInteractiveWindow": true,
+
+    "macros": {
+        "openFileAndCloseSideBar": [
+            "filesExplorer.openFilePreserveFocus",
+            "workbench.action.toggleSidebarVisibility",
+        ]
+    },
+
+    "[html]": {
+        "editor.tabSize": 2,
+    },
+    "[javascript]": {
+        "editor.tabSize": 2,
+    },
+}

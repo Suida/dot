@@ -1,0 +1,163 @@
+// Place your key bindings in this file to override the defaults
+[
+    // Terminal related
+    {
+        "key": "ctrl+tab",
+        "command": "workbench.action.terminal.focusNext", // 切换到下一个终端 
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "workbench.action.terminal.kill", // 关闭当前终端
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+t",
+        "command": "workbench.action.terminal.new", // 打开新的终端
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+1",
+        "command": "workbench.action.terminal.focusAtIndex1", // 打开终端1
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+2",
+        "command": "workbench.action.terminal.focusAtIndex2",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+3",
+        "command": "workbench.action.terminal.focusAtIndex3",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+4",
+        "command": "workbench.action.terminal.focusAtIndex4",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+5",
+        "command": "workbench.action.terminal.focusAtIndex5",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+6",
+        "command": "workbench.action.terminal.focusAtIndex6",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+i",
+        "command": "workbench.action.terminal.manageWorkspaceShellPermissions",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+s",
+        "command": "workbench.action.terminal.split",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.terminal.focusPreviousPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.terminal.focusNextPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.terminal.focusPrevious",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.terminal.focusNext",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+backspace",
+        "command": "workbench.action.toggleActivityBarVisibility",
+    },
+    {
+        "key": "shift+backspace",
+        "command": "workbench.action.toggleSidebarVisibility",
+    },
+    {
+        "key": "alt+backspace",
+        "command": "workbench.action.terminal.toggleTerminal",
+    },
+    {
+        "key": "ctrl+x",
+        "command": "workbench.action.toggleMaximizedPanel",
+        "when": "terminalFocus",
+    },
+
+    // Editing
+    {
+        "key": "alt+x",
+        "command": "editor.emmet.action.wrapWithAbbreviation",
+        "when": "editorTextFocus && !inSnippetMode"
+    },
+    {
+        "key": "ctrl+x",
+        "command": "editor.emmet.action.expandAbbreviation",
+        "when": "editorTextFocus && !inSnippetMode"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "jumpToNextSnippetPlaceholder",
+        "when": "editorTextFocus && hasNextTabstop && inSnippetMode"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "jumpToPrevSnippetPlaceholder",
+        "when": "editorTextFocus && hasPrevTabstop && inSnippetMode"
+    },
+    {
+        "key": "ctrl+m",
+        "command": "acceptSelectedSuggestion",
+        "when": "suggestWidgetVisible && textInputFocus"
+    },
+
+    // Sidebar Operation
+    {
+        "key": "ctrl+s ctrl+s",
+        "command": "workbench.action.toggleSidebarVisibility",
+    },
+    {
+        "key": "ctrl+s ctrl+e",
+        "command": "workbench.view.explorer",
+    },
+    {
+        "key": "ctrl+s ctrl+x",
+        "command": "workbench.view.extensions",
+    },
+    {
+        "key": "ctrl+s ctrl+d",
+        "command": "workbench.view.debug",
+    },
+    {
+        "key": "ctrl+s ctrl+g",
+        "command": "workbench.view.scm",
+    },
+    {
+        "key": "ctrl+s ctrl+g",
+        "command": "workbench.view.scm",
+    },
+    {
+        "key": "ctrl+s ctrl+f",
+        "command": "workbench.view.search",
+    },
+    {
+        "key": "o",
+        // "command": "macros.openFileAndCloseSideBar",
+        // "commands": [
+        //     "filesExplorer.openFilePreserveFocus",
+        //     "workbench.action.toggleSidebarVisibility",
+        // ],
+        "command": "filesExplorer.openFilePreserveFocus",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsFolder && !inputFocus",
+    },
+]
