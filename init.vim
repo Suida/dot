@@ -47,6 +47,8 @@ Plug 'turbio/bracey.vim'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+" Python indent // This really saved my life
+Plug 'Vimjas/vim-python-pep8-indent'
 
 call plug#end()
 
@@ -126,8 +128,8 @@ set shiftwidth=4
 set expandtab
 set foldmethod=syntax
 set nofoldenable
-set indentexpr=
-set smartindent
+set autoindent
+set backspace=indent,eol,start
 
 
 " Global key mappings
