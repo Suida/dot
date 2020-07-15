@@ -1,10 +1,52 @@
-call plug#begin(stdpath('data').'\plugged')
+call plug#begin(stdpath('data').'/plugged')
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'skbolton/embark'
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
+Plug 'vim-syntastic/syntastic'
+
+" Navigation & developing support
+" File & sign navigator
+Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdtree'
+" Commenter & git gutter
+Plug 'preservim/nerdcommenter'
 Plug 'airblade/vim-gitgutter'
+" Better move
+Plug 'easymotion/vim-easymotion'
+Plug 'andymass/vim-matchup'
+Plug 'tpope/vim-surround'
+" Brackets
+Plug 'jiangmiao/auto-pairs'
+Plug 'tpope/vim-unimpaired'
+" Code template
+Plug 'mattn/emmet-vim'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
+" Fuzzy finer
+Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
+" Global finder
+Plug 'brooth/far.vim'
+Plug 'dyng/ctrlsf.vim'
+
+" View
+" Color schemes
+Plug 'arcticicestudio/nord-vim'
+" Status / tabline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Language support
+Plug 'octol/vim-cpp-enhanced-highlight'
+" Font-end tool chain
+Plug 'pangloss/vim-javascript'
+Plug 'ap/vim-css-color'
+Plug 'posva/vim-vue'
+" Html preview
+Plug 'turbio/bracey.vim'
+" Markdown syntax and preview
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 call plug#end()
 
@@ -39,7 +81,7 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 "nnoremap <A-l> <C-w>l
 
 " Provider
-let g:python3_host_prog="/home/hugh/.pyenv/versions/3.7.6/envs/nvim3/bin/python"
+let g:python3_host_prog="/Users/hugh/.pyenv/versions/nvim/bin/python"
 
 
 " Origin vimrc
@@ -67,7 +109,7 @@ if (has("termguicolors"))
 endif
 syntax on
 filetype plugin indent on
-"set shell=/bin/zsh
+set shell=/bin/zsh
 set ruler
 set hlsearch
 set incsearch
@@ -124,8 +166,9 @@ vnoremap / /\v
 inoremap <C-f> <ESC>vit<ESC>i
 
 
-" Color
+" View
 
+" Color
 set number
 set relativenumber
 set colorcolumn=80
@@ -133,13 +176,38 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-colorscheme embark
-let g:lightline = {
-      \ 'colorscheme': 'embark',
-      \ }
+colorscheme nord
 hi Normal guibg=NONE ctermbg=NONE
 hi LineNr guifg=DeepPink2 guibg=NONE ctermfg=yellow ctermbg=NONE
 hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
+" Airline
+let g:airline_theme='nord'
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+
+" Ycm & Syntastic settings
+
+nnoremap <silent> <leader>gf :YcmCompleter Format<CR>
+nnoremap <silent> <leader>gd :YcmCompleter GoToDefinition<CR>
+nnoremap <silent> <leader>gt :YcmCompleter GetType<CR>
+nnoremap <silent> <leader>gi :YcmCompleter GoToInclude<CR>
+nnoremap <silent> <leader>gr :YcmCompleter GoToReferences<CR>
+nnoremap <silent> <leader>gp :call TogglePreview()<CR>
+nnoremap <silent> <leader>sr :YcmRestartServer<CR>
+nnoremap <silent> <leader>sd :YcmShowDetailedDiagnostic<CR>
+nnoremap <silent> <leader>sl :call ToggleErrors()<CR>
+nnoremap <silent> <leader>sk :call DoSyntasticCheck()<CR>
+nnoremap <silent> <leader>sn :SyntasticReset<CR>
+
+set completeopt=menuone,menu
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_semantic_triggers =  {
+            \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+            \ 'rust': ['re!\w{2}'],
+            \ }
+let g:syntastic_mode_map = {
+    \ "mode": "passive",
+    \ "active_filetypes": [],
+    \ "passive_filetypes": [] }
 
 
 " Snippet
@@ -222,8 +290,8 @@ let syntastic_python_checkers = ['pylint']
 autocmd FileType python let b:syntastic_python_flake8_args =
     \ get(g:, 'syntastic_python_flake8_args', '') .
     \ FindConfig('-c', '.flake8', expand('%:p:h'))
-    "" \ FindConfig('-c', 'tox.ini', expand('%:p:h'))
-    "" \ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
+    "\ FindConfig('-c', 'tox.ini', expand('%:p:h'))
+    "\ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
 
 
 " Front Development
@@ -234,7 +302,6 @@ let g:bracey_server_allow_remote_connections = 1
 let g:bracey_refresh_on_save = 1
 let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
-let g:javascript_conceal_function             = "ƒ"
 
 " Markdown
 
