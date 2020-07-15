@@ -141,12 +141,15 @@ nnoremap <leader>] <C-w><C-]><C-w>T
 " Navigation
 nnoremap <C-j> 10j
 nnoremap <C-k> 10k
-nmap <C-c>h :tabp <CR>
-nmap <C-c>l :tabn <CR>
+noremap <expr>0 col('.') == 1 ? '^': '0'
+nnoremap <C-c>h :tabp <CR>
+nnoremap <C-c>l :tabn <CR>
 nnoremap <left> :tabp <CR>
 nnoremap <right> :tabn <CR>
 inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
+nnoremap <silent> <leader>b :call GoToBufferN()<CR>
+nnoremap <silent> <leader>t :call GoToTabN()<CR>
 " Arrows are not suggested
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -178,10 +181,10 @@ set background=dark
 set laststatus=2
 colorscheme nord
 hi Normal guibg=NONE ctermbg=NONE
-hi LineNr guifg=DeepPink2 guibg=NONE ctermfg=yellow ctermbg=NONE
 hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
 " Airline
 let g:airline_theme='nord'
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 
 " Ycm & Syntastic settings
@@ -373,3 +376,32 @@ function! IgnoreCustomItems()
     syn cluster Spell add=ShortWord
     syn cluster Spell add=UpperCase
 endfunction
+
+fun! GoToBufferN()
+    " If typed char is 'l', list all buffers;
+    " if is's a <number>, go to buffer <number>
+    let l:chr = getchar()
+    let l:n = l:chr - 48
+    if l:chr == 108
+        execute 'buffers'
+    elseif 0 < l:n && l:n < 10
+        execute 'buffer '.(l:n)
+    else
+        echo "Only support input [1-9] and char 'l'\n"
+    endif
+endfun
+
+fun! GoToTabN()
+    " If typed char is 'l', list all tabs;
+    " if is's a <number>, go to tab <number>
+    let l:chr = getchar()
+    let l:n = l:chr - 48
+    if l:chr == 108
+        execute 'tabs'
+    elseif 0 < l:n && l:n < 10
+        execute 'normal! '.(l:n).'gt'
+    else
+        echo "Only support input [1-9] and char 'l'\n"
+    endif
+endfun
+
