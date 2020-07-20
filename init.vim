@@ -392,6 +392,8 @@ fun! GoToBufferN()
     let l:n = l:chr - 48
     if l:chr == 108
         execute 'buffers'
+    "elseif l:chr == 98
+        "execute ''
     elseif 0 < l:n && l:n < 10
         execute 'buffer '.(l:n)
     else
