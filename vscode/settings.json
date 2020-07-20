@@ -1,12 +1,24 @@
 {
-    "window.zoomLevel": 0,
+    "window.zoomLevel": -0.5,
+
     "editor.fontSize": 14,
     "editor.fontFamily": "Cascadia Code",
     "editor.fontLigatures": true,
+    "editor.minimap.enabled": false,
     "editor.acceptSuggestionOnCommitCharacter": true,
-	"editor.lineNumbers": "relative",
+    "editor.lineNumbers": "relative",
+	"editor.renderLineHighlight": "all",
+	"editor.stablePeek": true,
     "editor.suggestSelection": "first",
-    "explorer.confirmDelete": false,
+    "editor.peekWidgetDefaultFocus": "editor",
+    "editor.renderWhitespace": "all",
+    "editor.renderControlCharacters": true,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": true,
+        "strings": true,
+    },
+
     "terminal.integrated.shell.linux": "/bin/zsh",
     "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\cmd.exe",
     "terminal.integrated.env.windows": {"CMDER_ROOT": "G:\\python\\cmder\\"},
@@ -14,15 +26,28 @@
         "/K G:\\python\\cmder\\vendor\\init.bat",
     ],
     "terminal.integrated.scrollback": 5000,
+
     "breadcrumbs.enabled": true,
-	"breadcrumbs.icons": false,
+    "breadcrumbs.icons": false,
+
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
         "statusBar.background": "#007ACC",
         "statusBar.noFolderBackground": "#007ACC",
         "statusBar.debuggingBackground": "#007ACC"
     },
-    "remote.SSH.showLoginTerminal": false,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.tabCloseButton": "off",
+    "workbench.sideBar.location": "right",
+    "workbench.activityBar.visible": false,
+
+    "explorer.confirmDelete": false,
+    // "files.autoSave": "afterDelay",
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true
+    },
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -35,7 +60,14 @@
         "**/target/release": true,
         "**/target/rls": true,
     },
-    "kite.showWelcomeNotificationOnStartup": false,
+
+    // Zen Mode
+    "zenMode.hideActivityBar": false,
+    "zenMode.hideLineNumbers": false,
+    "zenMode.hideStatusBar": false,
+    "zenMode.fullScreen": false,
+    "zenMode.hideTabs": false,
+    "zenMode.restore": true,
 
     "vim.disableExtension": false,
     "vim.leader": "<Space>",
@@ -86,15 +118,19 @@
             "before": ["<C-u>"],
             "after": ["<CR>", "<Esc>", "k", "A"],
         },
+        {
+            "before": ["<C-m>"],
+            "after": ["<Enter>"],
+        },
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": ["<C-j>"],
-            "after": ["1", "5", "j"],
+            "after": ["1", "0", "j"],
         },
         {
             "before": ["<C-k>"],
-            "after": ["1", "5", "k"],
+            "after": ["1", "0", "k"],
         },
         {
             "before": ["<C-h>"],
@@ -124,26 +160,42 @@
             "before": ["<leader>", "g", "d"],
             "commands": ["editor.action.goToTypeDefinition"],
         },
+        {
+            "before": ["<leader>", "f"],
+            "commands": ["editor.action.formatDocument"],
+        },
     ],
+
     "emmet.triggerExpansionOnTab": true,
-    "workbench.colorTheme": "Sunset Theme",
-    "maven.executable.path": "D:\\JavaHome\\apache-maven-3.6.3\\bin",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-    "window.menuBarVisibility": "toggle",
-    "python.pythonPath": "C:\\Users\\You\\AppData\\Local\\Programs\\Python\\Python37\\python37.exe",
-    "workbench.sideBar.location": "right",
-    "remote.SSH.remotePlatform": {
-        "Cursor": "linux"
+    // "emmet.showAbbreviationSuggestions": true,
+    "emmet.showExpandedAbbreviation": "always",
+    "emmet.syntaxProfiles": {
+        "vue-html": "html",
+        "vue": "html",
     },
-    "gitlens.views.repositories.location": "gitlens",
-    "gitlens.views.fileHistory.location": "gitlens",
-    "gitlens.views.lineHistory.location": "gitlens",
-    "gitlens.views.compare.location": "gitlens",
-    "gitlens.views.search.location": "gitlens",
-    "workbench.activityBar.visible": false,
+    "emmet.includeLanguages": {
+        "vue-html": "html",
+        "vue": "html",
+    },
+
+    "window.menuBarVisibility": "toggle",
+
+    "remote.SSH.showLoginTerminal": false,
+    "remote.SSH.remotePlatform": {
+        "Cursor": "linux",
+        "cursor": "linux"
+    },
+
     "python.languageServer": "Microsoft",
-    "C_Cpp.updateChannel": "Insiders",
+    "python.pythonPath": "C:\\Users\\You\\AppData\\Local\\Programs\\Python\\Python37\\python37.exe",
     "python.dataScience.sendSelectionToInteractiveWindow": true,
+
+    "C_Cpp.updateChannel": "Insiders",
+
+    // java maven
+    "maven.executable.path": "D:\\JavaHome\\apache-maven-3.6.3\\bin",
+
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 
     "macros": {
         "openFileAndCloseSideBar": [
@@ -158,4 +210,11 @@
     "[javascript]": {
         "editor.tabSize": 2,
     },
+    "files.associations": {
+        "*.vue": "html",
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    },
+    "workbench.colorTheme": "Sunset Theme",
 }

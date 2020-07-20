@@ -11,8 +11,14 @@
     chk = checkout
     d = difftool
 [diff]
-    tool = vimdiff
+    tool = nvimdiff
 [difftool]
     prompt = false
-[core]
-	editor = vim
+[difftool "nvimdiff"]
+    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[merge]
+    tool = nvimdiff
+[mergetool]
+    keepBackup = false
+[mergetool "nvimdiff"]
+    cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'

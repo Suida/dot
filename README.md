@@ -69,3 +69,24 @@ python3 install.py --clangd-completer
 - Complete the description of implemented features
 - Marker plugins
 - Try fcitx.vim
+
+
+## Windows Neovim
+
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Local\nvim\init.vim -Target .\vim\init.vim
+
+
+## Powershell Profile
+
+New-Item -ItemType SymbolicLink -Path $PROFILE -Target .\powershell\Microsoft.PowerShell_profile.ps1
+
+
+## Vscode Settings And Keybindings on Windows
+
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\settings.json -Target .\vscode\settings.json
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\keybindings.json .\vscode\keybindings.json
+
+
+## Windows Terminal
+
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Local\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json -Target .\windows-terminal\settings.json
