@@ -7,9 +7,10 @@ Plug 'vim-syntastic/syntastic'
 " File & sign navigator
 Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdtree'
-" Commenter & git gutter
+" Commenter & git utils
 Plug 'preservim/nerdcommenter'
 Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
 " Better move
 Plug 'easymotion/vim-easymotion'
 Plug 'andymass/vim-matchup'
@@ -47,8 +48,9 @@ Plug 'turbio/bracey.vim'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-" Python indent // This really saved my life
+" Python utils // The indent really saved my life
 Plug 'Vimjas/vim-python-pep8-indent'
+Plug 'jmcantrell/vim-virtualenv'
 
 call plug#end()
 
@@ -188,6 +190,10 @@ hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
 let g:airline_theme='nord'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#virtualenv#enabled = 1
+let g:airline#extensions#ycm#enabled = 1
 
 " Ycm & Syntastic settings
 
