@@ -37,6 +37,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " Language support
+Plug 'Chiel92/vim-autoformat'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " Font-end tool chain
 Plug 'pangloss/vim-javascript'
@@ -142,6 +143,7 @@ inoremap jk <ESC>
 inoremap <C-e> <C-o>A
 inoremap <C-o> <C-o>A<CR>
 nnoremap <leader>] <C-w><C-]><C-w>T
+noremap <leader>ff :Autoformat<CR>
 " Navigation
 nnoremap <C-j> 10j
 nnoremap <C-k> 10k
@@ -195,6 +197,7 @@ let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#virtualenv#enabled = 1
 let g:airline#extensions#ycm#enabled = 1
 
+
 " Ycm & Syntastic settings
 
 nnoremap <silent> <leader>gf :YcmCompleter Format<CR>
@@ -223,6 +226,15 @@ let g:syntastic_mode_map = {
 
 " Snippet
 let g:UltiSnipsExpandTrigger = '<C-l>'
+
+
+" Code format
+"let g:formatterpath = [
+    "\ '~/.pyenv/versions/nvim/bin/black',
+    "\ ]
+let g:autoformat_verbosemode=1
+let g:formatdef_black = '"~/.pyenv/versions/nvim/bin/black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
+let g:formatters_python = ['black']
 
 
 " NERDTree, Git, ctrlsf & Tagbar
@@ -278,6 +290,7 @@ let g:tagbar_type_cpp = {
 
 
 " C/C++
+
 " Set files as C files
 augroup project
     autocmd!
