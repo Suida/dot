@@ -40,6 +40,8 @@ Plug 'arcticicestudio/nord-vim'
 " Status / tabline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+" Indentation line
+Plug 'Yggdroot/indentLine'
 
 " Language support
 Plug 'Chiel92/vim-autoformat'
@@ -146,13 +148,12 @@ set backspace=indent,eol,start
 
 let mapleader = " "
 " Vimrc
-nnoremap <leader>ev :vsplit $MYVIMRC<CR>
+nnoremap <leader>vs :vsplit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
 " Editting
 inoremap jk <ESC>
 inoremap <C-e> <C-o>A
 inoremap <C-o> <C-o>A<CR>
-inoremap <C-d> <C-o>cc
 nnoremap <leader>] <C-w><C-]><C-w>T
 " Navigation
 nnoremap <C-j> 10j
@@ -206,6 +207,15 @@ set t_Co=256
 set background=dark
 set laststatus=2
 colorscheme nord
+" By default, nord highlights `Identifier` with `nord4_gui` which is actually the 
+" same as normal variables, nord7_gui is used here to fix it.
+hi Identifier guifg=#8FBCBB
+hi Constant guifg=#8FBCBB
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
 " This command will force the background to be dark not matter what color
 " scheme is set
 "hi Normal guibg=NONE ctermbg=NONE
