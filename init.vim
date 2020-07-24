@@ -1,3 +1,8 @@
+" Greeting
+echo '[>^.^<] hello!~'
+
+
+" Plug Settings
 call plug#begin(stdpath('data').'/plugged')
 
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
@@ -52,6 +57,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 " Python utils // The indent really saved my life
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'jmcantrell/vim-virtualenv'
+Plug 'vim-python/python-syntax'
 
 call plug#end()
 
@@ -119,6 +125,7 @@ set ruler
 set hlsearch
 set incsearch
 set showmatch
+set shiftround
 set encoding=utf-8
 set clipboard=unnamedplus
 set wrap
@@ -138,12 +145,15 @@ set backspace=indent,eol,start
 " Global key mappings
 
 let mapleader = " "
+" Vimrc
+nnoremap <leader>ev :vsplit $MYVIMRC<CR>
+nnoremap <leader>sv :source $MYVIMRC<CR>
 " Editting
 inoremap jk <ESC>
 inoremap <C-e> <C-o>A
 inoremap <C-o> <C-o>A<CR>
+inoremap <C-d> <C-o>cc
 nnoremap <leader>] <C-w><C-]><C-w>T
-noremap <leader>ff :Autoformat<CR>
 " Navigation
 nnoremap <C-j> 10j
 nnoremap <C-k> 10k
@@ -156,6 +166,8 @@ inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
 nnoremap <silent> <leader>b :call GoToBufferN()<CR>
 nnoremap <silent> <leader>t :call GoToTabN()<CR>
+nnoremap <silent> - :m .+1<CR>
+nnoremap <silent> _ :m .-2<CR>
 " Arrows are not suggested
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -164,7 +176,10 @@ inoremap <down> <nop>
 " Spell check
 nnoremap <leader>sf 1z=
 nnoremap <leader>ss :set spell!<CR>
-autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
+" The reason why highlights disapeared is just this command
+" This was introduced to fix unnecessary spell checking highlights, which is 
+" useless now, so it is commented out.
+"autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
 " Copy & paste
 noremap <leader>y "*y
 noremap <leader>p "*p
@@ -173,6 +188,11 @@ nnoremap / /\v
 vnoremap / /\v
 " Jump to next tag
 inoremap <C-f> <ESC>vit<ESC>i
+
+
+" Abbreviations
+iabbrev @@ suidar@foxmail.com
+iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
 
 
 " View
@@ -186,7 +206,9 @@ set t_Co=256
 set background=dark
 set laststatus=2
 colorscheme nord
-hi Normal guibg=NONE ctermbg=NONE
+" This command will force the background to be dark not matter what color
+" scheme is set
+"hi Normal guibg=NONE ctermbg=NONE
 hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
 " Airline
 let g:airline_theme='nord'
@@ -200,7 +222,7 @@ let g:airline#extensions#ycm#enabled = 1
 
 " Ycm & Syntastic settings
 
-nnoremap <silent> <leader>gf :YcmCompleter Format<CR>
+nnoremap <silent> <leader>gf :call FormatCode()<CR>
 nnoremap <silent> <leader>gd :YcmCompleter GoToDefinition<CR>
 nnoremap <silent> <leader>gt :YcmCompleter GetType<CR>
 nnoremap <silent> <leader>gi :YcmCompleter GoToInclude<CR>
@@ -209,10 +231,11 @@ nnoremap <silent> <leader>gp :call TogglePreview()<CR>
 nnoremap <silent> <leader>sr :YcmRestartServer<CR>
 nnoremap <silent> <leader>sd :YcmShowDetailedDiagnostic<CR>
 nnoremap <silent> <leader>sl :call ToggleErrors()<CR>
-nnoremap <silent> <leader>sk :call DoSyntasticCheck()<CR>
+nnoremap <silent> <leader>sk :call SyntaxCheck()<CR>
 nnoremap <silent> <leader>sn :SyntasticReset<CR>
 
 set completeopt=menuone,menu
+let g:ycm_confirm_extra_conf = 0
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
@@ -346,7 +369,15 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 
 " Functions
 
-function! DoSyntasticCheck()
+function! FormatCode()
+    if &filetype == 'python'
+        Autoformat
+    else
+        YcmCompleter Format
+    endif
+endfunction
+
+function! SyntaxCheck()
     if &filetype == 'python'
         SyntasticCheck
     else
@@ -398,7 +429,7 @@ function! IgnoreCustomItems()
     syn cluster Spell add=UpperCase
 endfunction
 
-fun! GoToBufferN()
+function! GoToBufferN()
     " If typed char is 'l', list all buffers;
     " if is's a <number>, go to buffer <number>
     let l:chr = getchar()
@@ -410,11 +441,11 @@ fun! GoToBufferN()
     elseif 0 < l:n && l:n < 10
         execute 'buffer '.(l:n)
     else
-        echo "Only support input [1-9] and char 'l'\n"
+        echohl WarningMsg | echo "Only support input [1-9] and char 'l'" | echohl None
     endif
-endfun
+endfunction
 
-fun! GoToTabN()
+function! GoToTabN()
     " If typed char is 'l', list all tabs;
     " if is's a <number>, go to tab <number>
     let l:chr = getchar()
@@ -424,7 +455,10 @@ fun! GoToTabN()
     elseif 0 < l:n && l:n < 10
         execute 'normal! '.(l:n).'gt'
     else
-        echo "Only support input [1-9] and char 'l'\n"
+        echohl WarningMsg | echo "Only support input [1-9] and char 'l'" | echohl None
     endif
-endfun
+endfunction
+
+function! ChangeSurroundingQuotes()
+endfunction
 
