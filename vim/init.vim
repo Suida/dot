@@ -94,7 +94,9 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 "nnoremap <A-l> <C-w>l
 
 " Provider
-"let g:python3_host_prog="/Users/hugh/.pyenv/versions/nvim/bin/python"
+if has('unix') || has('macunix')
+    let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
+endif
 
 
 " Origin vimrc
@@ -122,7 +124,9 @@ if (has("termguicolors"))
 endif
 syntax on
 filetype plugin indent on
-"set shell=/bin/zsh
+if has('unix') || has('macunix')
+    set shell=/bin/zsh
+endif
 set ruler
 set hlsearch
 set incsearch
@@ -374,7 +378,6 @@ let g:mkdp_open_to_the_world = 1
 let g:mkdp_echo_preview_url = 1
 noremap <leader>mp :MarkdownPreview<CR>
 noremap <leader>ms :MarkdownPreviewStop<CR>
-"noremap <leader>mt :MarkdownPreviewToggle<CR> E492: Not an editor command
 
 
 " Functions
