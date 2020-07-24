@@ -1,5 +1,7 @@
 # A Configured Vim/Neovim
 
+This project is starting to migrate to **Neovim** for better portability.
+
 ## Features
 
 ### Supported Languages
@@ -21,35 +23,13 @@
 
 ### Installation
 
-**First**, backup your original vim configure file. If it is at default configure
-path, `~/.vim` and `~/.vimrc`, this will help
+First, ensure **Neovim** is installed on your machine, if not, try *this guide*.
+
+Link file `init.vim` to nvim's config directory:
 ```bash
-mv ~/.vim ~/.vim.bkp
-mv ~/.vimrc ~/.vimrc.bkp
-```
-
-*For neovim users*, there is one more step
-```bash
-mv ~/.config/nvim/init.vim ~/.config/nvim/init.vim.bkp
-```
-
-The **next step** is to download the repository to `~/.vim` and link the `.vimrc`
-file to home path.
-
-```bash
-git clone https://github.com/suida/vim ~/.vim
-ln -s ~/.vim/.vimrc ~/.vimrc
-```
-
-*For neovim users*, run an extra command
-```bash
-ln -s ~/.vim/init.vim ~/config/nvim/init.vim
-```
-
-Then, there are some initialization commands to config plugins. To enable all the
-features, you'd better run each of these vim commands **in vim**:
-```vim
-:call mkdp#util#install()
+git clone 
+mkdir -p ~/.config/nvim
+ln ~/.config/nvim/init.vim vim/init.vim
 ```
 
 Finally, we use [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe) as completer
@@ -89,3 +69,24 @@ python3 install.py --clangd-completer
 - Complete the description of implemented features
 - Marker plugins
 - Try fcitx.vim
+
+
+## Windows Neovim
+
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Local\nvim\init.vim -Target .\vim\init.vim
+
+
+## Powershell Profile
+
+New-Item -ItemType SymbolicLink -Path $PROFILE -Target .\powershell\Microsoft.PowerShell_profile.ps1
+
+
+## Vscode Settings And Keybindings on Windows
+
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\settings.json -Target .\vscode\settings.json
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\keybindings.json .\vscode\keybindings.json
+
+
+## Windows Terminal
+
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Local\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json -Target .\windows-terminal\settings.json

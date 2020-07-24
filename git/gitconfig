@@ -1,0 +1,24 @@
+[user]
+    email = suidar@foxmail.com
+    name = Suida
+[alias]
+    st = status
+    cm = commit
+    br = branch
+    sm = submodule
+    last = log -l
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    chk = checkout
+    d = difftool
+[diff]
+    tool = nvimdiff
+[difftool]
+    prompt = false
+[difftool "nvimdiff"]
+    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[merge]
+    tool = nvimdiff
+[mergetool]
+    keepBackup = false
+[mergetool "nvimdiff"]
+    cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'

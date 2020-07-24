@@ -94,7 +94,7 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 "nnoremap <A-l> <C-w>l
 
 " Provider
-let g:python3_host_prog="/Users/hugh/.pyenv/versions/nvim/bin/python"
+"let g:python3_host_prog="/Users/hugh/.pyenv/versions/nvim/bin/python"
 
 
 " Origin vimrc
@@ -122,7 +122,7 @@ if (has("termguicolors"))
 endif
 syntax on
 filetype plugin indent on
-set shell=/bin/zsh
+"set shell=/bin/zsh
 set ruler
 set hlsearch
 set incsearch
