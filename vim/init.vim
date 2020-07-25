@@ -366,7 +366,8 @@ let g:bracey_auto_start_server = 1
 
 " Markdown
 
-let g:vim_markdown_folding_level = 3
+let g:vim_markdown_folding_level = 1
+let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
 let g:vim_markdown_autowrite = 1
