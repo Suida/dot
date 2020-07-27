@@ -2,7 +2,7 @@
 echo '[>^.^<] hello!~'
 
 
-" Plug Settings
+" Plug Settings -- {{{
 call plug#begin(stdpath('data').'/plugged')
 
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
@@ -62,9 +62,10 @@ Plug 'jmcantrell/vim-virtualenv'
 Plug 'vim-python/python-syntax'
 
 call plug#end()
+" }}}
 
 
-" Origin init.vim
+" Origin init.vim -- {{{
 set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
 
@@ -97,27 +98,17 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 if has('unix') || has('macunix')
     let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
 endif
+" }}}
 
 
-" Origin vimrc
-" Compatibility
-
-set nocp
-if has('win32') || has('win64')
-    set runtimepath-=~/vimfiles
-    set runtimepath^=~/.vim
-    set runtimepath-=~/vimfiles/after
-    set runtimepath+=~/.vim/after
-endif
-
-
-" Specify the default .vimrc file as the one under working directory
+" Specify the default .vimrc file as the one under working directory -- {{{
 
 set exrc
 set secure
+" }}}
 
 
-" Basics
+" Basics -- {{{
 
 if (has("termguicolors"))
     set termguicolors
@@ -127,14 +118,15 @@ filetype plugin indent on
 if has('unix') || has('macunix')
     set shell=/bin/zsh
 endif
+set wrap
 set ruler
 set hlsearch
 set incsearch
 set showmatch
 set shiftround
+set textwidth=80
 set encoding=utf-8
 set clipboard=unnamedplus
-set wrap
 set spelllang=en_us,cjk
 set conceallevel=2
 " Indentation rules and folding
@@ -146,9 +138,10 @@ set foldmethod=syntax
 set nofoldenable
 set autoindent
 set backspace=indent,eol,start
+" }}}
 
 
-" Global key mappings
+" Global key mappings -- {{{
 
 let mapleader = " "
 " Vimrc
@@ -159,6 +152,9 @@ inoremap jk <ESC>
 inoremap <C-e> <C-o>A
 inoremap <C-o> <C-o>A<CR>
 nnoremap <leader>] <C-w><C-]><C-w>T
+nnoremap <leader>WW :w<CR>
+nnoremap <leader>WQ :wq<CR>
+nnoremap <leader>QQ :q<CR>
 " Navigation
 nnoremap <C-j> 10j
 nnoremap <C-k> 10k
@@ -169,8 +165,8 @@ nnoremap <left> :tabp <CR>
 nnoremap <right> :tabn <CR>
 inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
-nnoremap <silent> <leader>b :call GoToBufferN()<CR>
-nnoremap <silent> <leader>t :call GoToTabN()<CR>
+nnoremap <silent> <leader>b :call Buffers()<CR>
+nnoremap <silent> <leader>t :call Tabs()<CR>
 nnoremap <silent> - :m .+1<CR>
 nnoremap <silent> _ :m .-2<CR>
 " Arrows are not suggested
@@ -193,14 +189,13 @@ nnoremap / /\v
 vnoremap / /\v
 " Jump to next tag
 inoremap <C-f> <ESC>vit<ESC>i
-
-
 " Abbreviations
 iabbrev @@ suidar@foxmail.com
 iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
+" }}}
 
 
-" View
+" View and Airline plugin settings -- {{{
 
 " Color
 set number
@@ -212,9 +207,12 @@ set background=dark
 set laststatus=2
 colorscheme nord
 " By default, nord highlights `Identifier` with `nord4_gui` which is actually the 
-" same as normal variables, nord7_gui is used here to fix it.
-hi Identifier guifg=#8FBCBB
-hi Constant guifg=#8FBCBB
+" same as normal variables, other nord colors are used here to fix it.
+"hi Identifier guifg=#5E81AC
+"hi Constant guifg=#5E81AC
+"hi Identifier guifg=#8FBCBB
+"hi Constant guifg=#8FBCBB
+"hi Constant guifg=#EBCB8B
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -232,9 +230,10 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#virtualenv#enabled = 1
 let g:airline#extensions#ycm#enabled = 1
+" }}}
 
 
-" Ycm & Syntastic settings
+" Ycm & Syntastic settings -- {{{
 
 nnoremap <silent> <leader>gf :call FormatCode()<CR>
 nnoremap <silent> <leader>gd :YcmCompleter GoToDefinition<CR>
@@ -259,6 +258,10 @@ let g:syntastic_mode_map = {
     \ "mode": "passive",
     \ "active_filetypes": [],
     \ "passive_filetypes": [] }
+" }}}
+
+
+" Plugin Settings -- {{{
 
 
 " Snippet
@@ -323,8 +326,10 @@ let g:tagbar_type_cpp = {
          \ 'union'     : 'u'
      \ }
  \ }
+" }}}
 
 
+" Language Settings -- {{{
 
 " C/C++
 
@@ -348,11 +353,16 @@ let g:cpp_concepts_highlight = 1
 let g:python_highlight_all = 1
 let syntastic_python_checkers = ['pylint']
 
-autocmd FileType python let b:syntastic_python_flake8_args =
-    \ get(g:, 'syntastic_python_flake8_args', '') .
-    \ FindConfig('-c', '.flake8', expand('%:p:h'))
-    "\ FindConfig('-c', 'tox.ini', expand('%:p:h'))
-    "\ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
+augroup pythonAutocmd
+    autocmd!
+    autocmd FileType python let b:syntastic_python_flake8_args =
+        \ get(g:, 'syntastic_python_flake8_args', '') .
+        \ FindConfig('-c', '.flake8', expand('%:p:h'))
+        "\ FindConfig('-c', 'tox.ini', expand('%:p:h'))
+        "\ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
+    " Highlight python constant
+    autocmd FileType python :call HighlightUpperCaseCamel()
+augroup END
 
 
 " Front Development
@@ -378,9 +388,10 @@ let g:mkdp_open_to_the_world = 1
 let g:mkdp_echo_preview_url = 1
 noremap <leader>mp :MarkdownPreview<CR>
 noremap <leader>ms :MarkdownPreviewStop<CR>
+" }}}
 
 
-" Functions
+" Functions -- {{{
 
 function! FormatCode()
     if &filetype == 'python'
@@ -442,7 +453,7 @@ function! IgnoreCustomItems()
     syn cluster Spell add=UpperCase
 endfunction
 
-function! GoToBufferN()
+function! Buffers()
     " If typed char is 'l', list all buffers;
     " if is's a <number>, go to buffer <number>
     let l:chr = getchar()
@@ -458,7 +469,7 @@ function! GoToBufferN()
     endif
 endfunction
 
-function! GoToTabN()
+function! Tabs()
     " If typed char is 'l', list all tabs;
     " if is's a <number>, go to tab <number>
     let l:chr = getchar()
@@ -475,3 +486,20 @@ endfunction
 function! ChangeSurroundingQuotes()
 endfunction
 
+function! HighlightUpperCaseCamel()
+    " Python constants are always written as identifiers only containing upper
+    " case charactors, numbers and underscores. 
+    syn match pythonUpperCamel '\<[A-Z_]\+[A-Z0-9_]\+\>' display
+    highlight def link pythonUpperCamel Constant
+endfunction
+" }}}
+
+
+" Folding Setting ----------------------- {{{
+augroup filtype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldenable
+    autocmd FileType vim setlocal foldlevel=0
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+" }}}
