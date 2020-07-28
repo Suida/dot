@@ -178,7 +178,7 @@ inoremap <down> <nop>
 nnoremap <leader>sf 1z=
 nnoremap <leader>ss :set spell!<CR>
 " The reason why highlights disapeared is just this command
-" This was introduced to fix unnecessary spell checking highlights, which is 
+" This was introduced to fix unnecessary spell checking highlights, which is
 " useless now, so it is commented out.
 "autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
 " Copy & paste
@@ -192,6 +192,8 @@ inoremap <C-f> <ESC>vit<ESC>i
 " Abbreviations
 iabbrev @@ suidar@foxmail.com
 iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
+" Remove trailing spaces
+nnoremap <silent> <leader>ft :%s/ \+$//g<CR>
 " }}}
 
 
@@ -206,13 +208,10 @@ set t_Co=256
 set background=dark
 set laststatus=2
 colorscheme nord
-" By default, nord highlights `Identifier` with `nord4_gui` which is actually the 
+" By default, nord highlights `Identifier` with `nord4_gui` which is actually the
 " same as normal variables, other nord colors are used here to fix it.
-"hi Identifier guifg=#5E81AC
-"hi Constant guifg=#5E81AC
-"hi Identifier guifg=#8FBCBB
-"hi Constant guifg=#8FBCBB
-"hi Constant guifg=#EBCB8B
+hi Identifier guifg=#8FBCBB
+hi Constant guifg=#8FBCBB
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -221,7 +220,7 @@ endif
 " This command will force the background to be dark not matter what color
 " scheme is set
 "hi Normal guibg=NONE ctermbg=NONE
-hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
+"hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
 " Airline
 let g:airline_theme='nord'
 let g:airline#extensions#tabline#enabled = 1
@@ -248,7 +247,7 @@ nnoremap <silent> <leader>sk :call SyntaxCheck()<CR>
 nnoremap <silent> <leader>sn :SyntasticReset<CR>
 
 set completeopt=menuone,menu
-let g:ycm_confirm_extra_conf = 0
+let g:ycm_confirm_extra_conf = 1
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
@@ -297,7 +296,7 @@ let g:tagbar_type_cpp = {
     \ 'kinds' : [
          \ 'c:classes:0:1',
          \ 'd:macros:0:1',
-         \ 'e:enumerators:0:0', 
+         \ 'e:enumerators:0:0',
          \ 'f:functions:0:1',
          \ 'g:enumeration:0:1',
          \ 'l:local:0:1',
@@ -455,8 +454,10 @@ function! IgnoreCustomItems()
 endfunction
 
 function! Buffers()
-    " If typed char is 'l', list all buffers;
-    " if is's a <number>, go to buffer <number>
+    " If getchar returns:
+    "       'a'   : switch to *alternative* buffer;
+    "       'l'   : list all buffers;
+    "       [1-9] : switch to buffer #[1-9];
     let l:chr = getchar()
     let l:n = l:chr - 48
     if l:chr == 108
@@ -465,8 +466,10 @@ function! Buffers()
         "execute ''
     elseif 0 < l:n && l:n < 10
         execute 'buffer '.(l:n)
+    elseif l:n == 49
+        execute 'buffer #'
     else
-        echohl WarningMsg | echo "Only support input [1-9] and char 'l'" | echohl None
+        echohl WarningMsg | echo "Only support input [0-9] and char 'al'" | echohl None
     endif
 endfunction
 
@@ -489,7 +492,7 @@ endfunction
 
 function! HighlightUpperCaseCamel()
     " Python constants are always written as identifiers only containing upper
-    " case charactors, numbers and underscores. 
+    " case charactors, numbers and underscores.
     syn match pythonUpperCamel '\<[A-Z_]\+[A-Z0-9_]\+\>' display
     highlight def link pythonUpperCamel Constant
 endfunction
