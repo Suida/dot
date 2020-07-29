@@ -11,12 +11,12 @@ with numerous configure files across **multiple platforms**.
 
 ##### Supported languages
 
-| Languages | Completion | Syntax check |
-|:--:|:--:|:--:|
-| Markdown | &radic; | N/A |
-| C/C++ | &radic; | &radic; |
-| Python | &radic; | &radic; |
-|Javascript / Typescript| &radic; | &radic; |
+| Languages               | Completion | Syntax check |
+| :--:                    | :--:       | :--:         |
+| Markdown                | &radic;    | N/A          |
+| C/C++                   | &radic;    | &radic;      |
+| Python                  | &radic;    | &radic;      |
+| Javascript / Typescript | &radic;    | &radic;      |
 
 ##### Other features of neovim:
 

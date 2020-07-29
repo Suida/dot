@@ -6,6 +6,7 @@ echo '[>^.^<] hello!~'
 call plug#begin(stdpath('data').'/plugged')
 
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
+Plug 'ycm-core/lsp-examples', { 'do': './vue/install.py' }
 Plug 'vim-syntastic/syntastic'
 
 " Navigation & developing support
@@ -50,6 +51,7 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'pangloss/vim-javascript'
 Plug 'ap/vim-css-color'
 Plug 'posva/vim-vue'
+
 " Html preview
 Plug 'turbio/bracey.vim'
 " Markdown syntax and preview
@@ -234,6 +236,8 @@ let g:airline#extensions#ycm#enabled = 1
 
 " Ycm & Syntastic settings -- {{{
 
+let s:lsp = '~/.local/share/nvim/plugged/lsp-examples'
+
 nnoremap <silent> <leader>gf :call FormatCode()<CR>
 nnoremap <silent> <leader>gd :YcmCompleter GoToDefinition<CR>
 nnoremap <silent> <leader>gt :YcmCompleter GetType<CR>
@@ -249,10 +253,24 @@ nnoremap <silent> <leader>sn :SyntasticReset<CR>
 set completeopt=menuone,menu
 let g:ycm_confirm_extra_conf = 1
 let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_always_populate_location_list = 1
+"let g:ycm_log_level = 'debug'
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
             \ 'rust': ['re!\w{2}'],
             \ }
+let g:ycm_language_server = [
+            \ {
+            \   'name': 'vue',
+            \   'filetypes': [ 'vue' ],
+            \   'cmdline': [ expand( s:lsp . '/vue/node_modules/.bin/vls' ) ]
+            \ },
+            \ {
+            \   'name': 'vim',
+            \   'filetypes': [ 'vim' ],
+            \   'cmdline': [ expand( s:lsp . '/viml/node_modules/.bin/vim-language-server' ), '--stdio' ]
+            \ },
+            \ ]
 let g:syntastic_mode_map = {
     \ "mode": "passive",
     \ "active_filetypes": [],
@@ -372,6 +390,11 @@ let g:bracey_server_allow_remote_connections = 1
 let g:bracey_refresh_on_save = 1
 let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
+imap <C-b> <C-x>,
+augroup html_indent
+    autocmd!
+    autocmd FileType html,js,vue set shiftwidth=2
+augroup END
 
 " Markdown
 
@@ -396,9 +419,17 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 function! FormatCode()
     if &filetype == 'python'
         Autoformat
+    elseif &filetype == 'vue'
+        call FormatVue()
     else
         YcmCompleter Format
     endif
+endfunction
+
+function! FormatVue()
+    let s:lines = split(system('prettier ' . expand('%')), "\n")
+    call nvim_buf_set_lines(buffer_number('%'), 0, -1, 0, s:lines)
+    echo "Format succeed!"
 endfunction
 
 function! SyntaxCheck()
@@ -462,14 +493,12 @@ function! Buffers()
     let l:n = l:chr - 48
     if l:chr == 108
         execute 'buffers'
-    "elseif l:chr == 98
-        "execute ''
     elseif 0 < l:n && l:n < 10
         execute 'buffer '.(l:n)
     elseif l:n == 49
         execute 'buffer #'
     else
-        echohl WarningMsg | echo "Only support input [0-9] and char 'al'" | echohl None
+        echohl WarningMsg | echo "Only support input [0-9] and chars [al]" | echohl None
     endif
 endfunction
 
