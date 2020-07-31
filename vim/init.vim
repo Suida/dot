@@ -252,6 +252,7 @@ let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
             \ 'rust': ['re!\w{2}'],
+            \ 'javascript,typescript': ['re!\w{2}'],
             \ }
 let g:syntastic_mode_map = {
     \ "mode": "passive",
@@ -273,6 +274,8 @@ let g:UltiSnipsExpandTrigger = '<C-l>'
     "\ ]
 let g:autoformat_verbosemode=1
 let g:formatdef_black = '"~/.pyenv/versions/nvim/bin/black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
+let g:formatters_python = ['black']
+let g:formatdef_prettier = '"~/.pyenv/versions/nvim/bin/black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
 let g:formatters_python = ['black']
 
 
