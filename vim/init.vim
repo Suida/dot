@@ -1,7 +1,3 @@
-" Greeting
-echo '[>^.^<] hello!~'
-
-
 " Plug Settings -- {{{
 call plug#begin(stdpath('data').'/plugged')
 
@@ -37,6 +33,8 @@ Plug 'dyng/ctrlsf.vim'
 " View
 " Color schemes
 Plug 'arcticicestudio/nord-vim'
+Plug 'sonph/onehalf', {'rtp': 'vim'}
+Plug 'morhetz/gruvbox'
 " Status / tabline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -50,7 +48,8 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'pangloss/vim-javascript'
 Plug 'ap/vim-css-color'
 Plug 'posva/vim-vue'
-" Html preview
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'maxmellon/vim-jsx-pretty' " Html preview
 Plug 'turbio/bracey.vim'
 " Markdown syntax and preview
 Plug 'godlygeek/tabular'
@@ -150,7 +149,8 @@ nnoremap <leader>sv :source $MYVIMRC<CR>
 " Editting
 inoremap jk <ESC>
 inoremap <C-e> <C-o>A
-inoremap <C-o> <C-o>A<CR>
+inoremap <C-j> <Esc>o
+inoremap <C-k> <Esc>O
 nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <leader>WW :w<CR>
 nnoremap <leader>WQ :wq<CR>
@@ -207,9 +207,8 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-colorscheme nord
-" By default, nord highlights `Identifier` with `nord4_gui` which is actually the
-" same as normal variables, other nord colors are used here to fix it.
+colorscheme gruvbox
+" These 2 colors of nord theme are quite suitable to gruvbox
 hi Identifier guifg=#8FBCBB
 hi Constant guifg=#8FBCBB
 if exists('+termguicolors')
@@ -222,7 +221,7 @@ endif
 "hi Normal guibg=NONE ctermbg=NONE
 "hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
 " Airline
-let g:airline_theme='nord'
+let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline_powerline_fonts = 1
@@ -269,13 +268,10 @@ let g:UltiSnipsExpandTrigger = '<C-l>'
 
 
 " Code format
-"let g:formatterpath = [
-    "\ '~/.pyenv/versions/nvim/bin/black',
-    "\ ]
+let g:python_bin_dir = '/' . join(split(expand(g:python3_host_prog), '/')[0:-2], '/') . '/'
 let g:autoformat_verbosemode=1
-let g:formatdef_black = '"~/.pyenv/versions/nvim/bin/black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
-let g:formatters_python = ['black']
-let g:formatdef_prettier = '"~/.pyenv/versions/nvim/bin/black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
+let g:formatdef_black =  '"' . g:python_bin_dir . 'black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
+"let g:formatdef_black = '"~/.pyenv/versions/nvim/bin/black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
 let g:formatters_python = ['black']
 
 
@@ -334,7 +330,6 @@ let g:tagbar_type_cpp = {
 " Language Settings -- {{{
 
 " C/C++
-
 " Set files as C files
 augroup project
     autocmd!
@@ -351,7 +346,6 @@ let g:cpp_concepts_highlight = 1
 
 " Python
 " Highlight and checker of syntastic, all other stuffs are originated from jedi
-
 let g:python_highlight_all = 1
 let syntastic_python_checkers = ['pylint']
 
@@ -369,15 +363,38 @@ augroup END
 
 " Front Development
 
+let g:front_end_filetypes = {
+            \ "javascript": 1,
+            \ "typescript": 1,
+            \ "html": 1,
+            \ "css": 1,
+            \ "stylus": 1,
+            \ "less": 1,
+            \ "scss": 1,
+            \ "vue": 1,
+            \ "json": 1,
+            \ }
+
+if expand('%')[-3:] ==? '.js'
+    set filetype=javascript
+endif
+
+" Set special indentation and color scheme
+if get(g:front_end_filetypes, &filetype, 0) == 1
+    echom 'Front end project detected...'
+    set shiftwidth=2
+endif
+
 let g:user_emmet_leader_key = '<C-x>'
+inoremap <C-b> <C-x>,
 let g:bracey_server_port = 34911
 let g:bracey_server_allow_remote_connections = 1
 let g:bracey_refresh_on_save = 1
 let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
 
-" Markdown
 
+" Markdown
 let g:vim_markdown_folding_level = 1
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
