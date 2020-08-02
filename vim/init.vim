@@ -238,6 +238,7 @@ nnoremap <silent> <leader>gd :YcmCompleter GoToDefinition<CR>
 nnoremap <silent> <leader>gt :YcmCompleter GetType<CR>
 nnoremap <silent> <leader>gi :YcmCompleter GoToInclude<CR>
 nnoremap <silent> <leader>gr :YcmCompleter GoToReferences<CR>
+nnoremap <silent> <leader>gx :YcmCompleter FixIt<CR>
 nnoremap <silent> <leader>gp :call TogglePreview()<CR>
 nnoremap <silent> <leader>sr :YcmRestartServer<CR>
 nnoremap <silent> <leader>sd :YcmShowDetailedDiagnostic<CR>
@@ -247,6 +248,7 @@ nnoremap <silent> <leader>sn :SyntasticReset<CR>
 
 set completeopt=menuone,menu
 let g:ycm_confirm_extra_conf = 1
+let g:ycm_key_invoke_completion = '<C-b>'
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
@@ -375,18 +377,9 @@ let g:front_end_filetypes = {
             \ "json": 1,
             \ }
 
-if expand('%')[-3:] ==? '.js'
-    set filetype=javascript
-endif
-
-" Set special indentation and color scheme
-if get(g:front_end_filetypes, &filetype, 0) == 1
-    echom 'Front end project detected...'
-    set shiftwidth=2
-endif
+autocmd FileType javascript,css,vue,html,typescript set shiftwidth=2
 
 let g:user_emmet_leader_key = '<C-x>'
-inoremap <C-b> <C-x>,
 let g:bracey_server_port = 34911
 let g:bracey_server_allow_remote_connections = 1
 let g:bracey_refresh_on_save = 1
