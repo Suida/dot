@@ -152,11 +152,14 @@ nnoremap <leader>sv :source $MYVIMRC<CR>
 " Editting
 inoremap jk <ESC>
 inoremap <C-e> <C-o>A
-inoremap <C-o> <C-o>A<CR>
+inoremap <C-o> <Esc>A<CR>
+inoremap <C-j> <Esc>o
+inoremap <C-k> <Esc>O
 nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <leader>WW :w<CR>
 nnoremap <leader>WQ :wq<CR>
 nnoremap <leader>QQ :q<CR>
+nmap <leader>gb ysiw}lysiw{
 " Navigation
 nnoremap <C-j> 10j
 nnoremap <C-k> 10k
@@ -191,6 +194,7 @@ nnoremap / /\v
 vnoremap / /\v
 " Jump to next tag
 inoremap <C-f> <ESC>vit<ESC>i
+nnoremap <leader>i vit<Esc>i
 " Abbreviations
 iabbrev @@ suidar@foxmail.com
 iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
@@ -292,6 +296,8 @@ let g:UltiSnipsExpandTrigger = '<C-l>'
 let g:autoformat_verbosemode=1
 let g:formatdef_black = '"~/.pyenv/versions/nvim/bin/black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
 let g:formatters_python = ['black']
+let g:formatdef_prettier = '"~/.nvm/versions/node/v12.18.2/bin/prettier --parser vue"'
+let g:formatters_vue = ['prettier']
 
 
 " NERDTree, Git, ctrlsf & Tagbar
@@ -393,7 +399,7 @@ let g:bracey_auto_start_server = 1
 imap <C-b> <C-x>,
 augroup html_indent
     autocmd!
-    autocmd FileType html,js,vue set shiftwidth=2
+    autocmd FileType html,javascript,vue set shiftwidth=2
 augroup END
 
 " Markdown
@@ -420,14 +426,16 @@ function! FormatCode()
     if &filetype == 'python'
         Autoformat
     elseif &filetype == 'vue'
-        call FormatVue()
+        Autoformat
+        "call FormatVue()
     else
         YcmCompleter Format
     endif
 endfunction
 
 function! FormatVue()
-    let s:lines = split(system('prettier ' . expand('%')), "\n")
+    let s:lines = nvim_buf_get_lines(buffer_number('%'), 0, -1, 1)
+    let s:lines = split(system('prettier --parser vue', join(s:lines, "\n")), "\n")
     call nvim_buf_set_lines(buffer_number('%'), 0, -1, 0, s:lines)
     echo "Format succeed!"
 endfunction
