@@ -151,8 +151,8 @@ nnoremap <leader>vs :vsplit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
 " Editting
 inoremap jk <ESC>
-inoremap <C-e> <C-o>A
-inoremap <C-j> <Esc>o
+inoremap <C-e> <Esc>A
+inoremap <C-i> <Esc>o
 inoremap <C-k> <Esc>O
 nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <leader>WW :w<CR>
@@ -254,8 +254,7 @@ nnoremap <silent> <leader>sk :call SyntaxCheck()<CR>
 nnoremap <silent> <leader>sn :SyntasticReset<CR>
 
 set completeopt=menuone,menu
-let g:ycm_confirm_extra_conf = 1
-let g:ycm_key_invoke_completion = '<C-b>'
+let g:ycm_confirm_extra_conf = 0
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_always_populate_location_list = 1
 "let g:ycm_log_level = 'debug'
