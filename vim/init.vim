@@ -1,7 +1,7 @@
 " Plug Settings -- {{{
 call plug#begin(stdpath('data').'/plugged')
 
-Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --ts-completer --clang-completer' }
 Plug 'ycm-core/lsp-examples', { 'do': './vue/install.py' }
 Plug 'vim-syntastic/syntastic'
 
@@ -141,6 +141,9 @@ set foldmethod=marker
 set nofoldenable
 set autoindent
 set backspace=indent,eol,start
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 " }}}
 
 

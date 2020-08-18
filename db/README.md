@@ -36,3 +36,29 @@ $ sudo docker run -d \
         -p 6379:6379 \
         redis redis-server /usr/local/etc/redis/redis.conf
 ```
+
+## Connect to The Containers
+
+### Mysql
+
+For mysql, python package `mycli` is recommanded:
+```bash
+pip install mycli
+```
+
+### PostgreSQL
+
+For postgresql, python package `pgcli` is recommanded:
+```bash
+sudo apt install libpq-dev  # required for pg_config
+pip install pgcli
+```
+
+### Redis
+
+As for redis, the native client redis image contains is enough to use. The
+`rdcli` script is to run it and connect to redis server container.
+```bash
+chmod 755 rdcli
+./rdcli
+```
