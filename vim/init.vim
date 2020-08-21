@@ -178,6 +178,7 @@ nnoremap <silent> <leader>b :call Buffers()<CR>
 nnoremap <silent> <leader>t :call Tabs()<CR>
 nnoremap <silent> - :m .+1<CR>
 nnoremap <silent> _ :m .-2<CR>
+tnoremap <silent> <C-w> <C-\><C-n><C-w>
 " Arrows are not suggested
 nnoremap <up> <nop>
 nnoremap <down> <nop>
