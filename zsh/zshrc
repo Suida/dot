@@ -110,6 +110,7 @@ export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export HTTP_PROXY=127.0.0.1:7890
 export HTTPS_PROXY=127.0.0.1:7890
+export NO_PROXY=.docker.internal,$NO_PROXY
 export PYTHON_CONFIGURE_OPTS="--enable-framework"
 
 if command -v pyenv 1>/dev/null 2>&1; then
