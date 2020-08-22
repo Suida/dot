@@ -24,6 +24,8 @@ Plug 'tpope/vim-unimpaired'
 Plug 'mattn/emmet-vim'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+" Better Performance
+Plug 'Konfekt/FastFold'
 
 " Fuzzy finer
 Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
@@ -46,13 +48,12 @@ Plug 'Yggdroot/indentLine'
 Plug 'Chiel92/vim-autoformat'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " Font-end tool chain
-Plug 'pangloss/vim-javascript'
 Plug 'ap/vim-css-color'
 Plug 'posva/vim-vue'
-
-" Html preview
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty'
+
+" Html preview
 Plug 'turbio/bracey.vim'
 " Markdown syntax and preview
 Plug 'godlygeek/tabular'
@@ -162,6 +163,7 @@ nnoremap <leader>WW :w<CR>
 nnoremap <leader>WQ :wq<CR>
 nnoremap <leader>QQ :q<CR>
 nmap <leader>gb ysiw}lysiw{
+nmap <silent> <leader>ft :TableFormat<CR>
 " Navigation
 nnoremap <C-j> 10j
 nnoremap <C-k> 10k
@@ -176,6 +178,7 @@ nnoremap <silent> <leader>b :call Buffers()<CR>
 nnoremap <silent> <leader>t :call Tabs()<CR>
 nnoremap <silent> - :m .+1<CR>
 nnoremap <silent> _ :m .-2<CR>
+tnoremap <silent> <C-w> <C-\><C-n><C-w>
 " Arrows are not suggested
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -200,8 +203,6 @@ nnoremap <leader>i vit<Esc>i
 " Abbreviations
 iabbrev @@ suidar@foxmail.com
 iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
-" Remove trailing spaces
-nnoremap <silent> <leader>ft :%s/ \+$//g<CR>
 " }}}
 
 
@@ -262,9 +263,10 @@ let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_always_populate_location_list = 1
 "let g:ycm_log_level = 'debug'
 let g:ycm_semantic_triggers =  {
-            \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+            \ 'c,cpp,c.doxygen,python,java,go,erlang,perl': ['re!\w{2}'],
             \ 'rust': ['re!\w{2}'],
             \ 'javascript,typescript': ['re!\w{2}'],
+            \ 'javascriptreact,typescriptreact': ['re!\w{2}'],
             \ }
 let g:ycm_language_server = [
             \ {
@@ -402,7 +404,9 @@ let g:front_end_filetypes = {
             \ "json": 1,
             \ }
 
-autocmd FileType javascript,css,vue,html,typescript set shiftwidth=2
+"autocmd BufRead,BufNewFile *.js,*jsx set filetype=javascript
+"autocmd BufRead,BufNewFile *.ts,*tsx set filetype=typescript
+autocmd FileType javascript,css,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
 
 let g:user_emmet_leader_key = '<C-x>'
 let g:bracey_server_port = 34911
