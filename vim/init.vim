@@ -136,7 +136,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-set foldmethod=syntax
+set foldmethod=marker
 set nofoldenable
 set autoindent
 set backspace=indent,eol,start
@@ -155,7 +155,7 @@ nnoremap <leader>sv :source $MYVIMRC<CR>
 " Editting
 inoremap jk <ESC>
 inoremap <C-e> <Esc>A
-inoremap <C-i> <Esc>o
+inoremap <C-j> <Esc>o
 inoremap <C-k> <Esc>O
 nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <leader>WW :w<CR>
