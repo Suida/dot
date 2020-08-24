@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/hugh/.oh-my-zsh"
+export ZSH="/Users/hugh/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -106,15 +106,12 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
-# Example aliases
+# Alias
 alias zshconfig="vi ~/.zshrc"
 alias ohmyzsh="vi ~/.oh-my-zsh"
 alias v="nvim $*"
 alias vi="nvim $*"
 alias vim="nvim $*"
-
-export http_proxy=127.0.0.1:7890
-export https_proxy=127.0.0.1:7890
 
 # Nvm
 export NVM_DIR="$HOME/.nvm"
@@ -140,8 +137,10 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 # Ack fix
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+# Proxy
 export HTTP_PROXY=127.0.0.1:7890
 export HTTPS_PROXY=127.0.0.1:7890
 export NO_PROXY=.docker.internal,$NO_PROXY
+# Bin
 export PATH=$HOME/.yarn/bin:$PATH
 export PATH=$HOME/bin:$PATH
