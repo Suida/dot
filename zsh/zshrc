@@ -75,6 +75,8 @@ plugins=(
     zsh-syntax-highlighting
     zsh-autosuggestions
     history
+    docker 
+    docker-compose
     kubectl
 )
 
