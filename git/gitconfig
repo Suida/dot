@@ -2,6 +2,7 @@
     email = suidar@foxmail.com
     name = Suida
 [alias]
+    a = add
     st = status
     cm = commit
     br = branch
@@ -10,7 +11,7 @@
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     chk = checkout
     d = difftool
-	a = add
+    m = mergetool
 [diff]
     tool = nvimdiff
 [difftool]
@@ -23,3 +24,7 @@
     keepBackup = false
 [mergetool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[https]
+	proxy = 127.0.0.1:7890
+[http]
+	proxy = 127.0.0.1:7890
