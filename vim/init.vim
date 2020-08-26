@@ -179,6 +179,8 @@ nnoremap <silent> <leader>t :call Tabs()<CR>
 nnoremap <silent> - :m .+1<CR>
 nnoremap <silent> _ :m .-2<CR>
 tnoremap <silent> <C-w> <C-\><C-n><C-w>
+nmap <C-l> :tabn<CR>
+nmap <C-h> :tabp<CR>
 " Arrows are not suggested
 nnoremap <up> <nop>
 nnoremap <down> <nop>
