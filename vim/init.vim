@@ -174,13 +174,29 @@ nnoremap <left> :tabp <CR>
 nnoremap <right> :tabn <CR>
 inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
-nnoremap <silent> <leader>b :call Buffers()<CR>
-nnoremap <silent> <leader>t :call Tabs()<CR>
+
+nnoremap <silent> <leader>bb :<C-u>execute 'buffer ' . v:count<CR>
+nnoremap <silent> <leader>bl :buffers<CR>
+nnoremap <silent> <leader>ba :buffer #<CR>
+nnoremap <silent> <leader>1 :normal 1gt<CR>
+nnoremap <silent> <leader>2 :normal 2gt<CR>
+nnoremap <silent> <leader>3 :normal 3gt<CR>
+nnoremap <silent> <leader>4 :normal 4gt<CR>
+nnoremap <silent> <leader>5 :normal 5gt<CR>
+nnoremap <silent> <leader>6 :normal 6gt<CR>
+nnoremap <silent> <leader>7 :normal 7gt<CR>
+nnoremap <silent> <leader>8 :normal 8gt<CR>
+nnoremap <silent> <leader>9 :normal 9gt<CR>
+nnoremap <silent> <leader>tl :tabs<CR>
 nnoremap <silent> - :m .+1<CR>
 nnoremap <silent> _ :m .-2<CR>
 tnoremap <silent> <C-w> <C-\><C-n><C-w>
-nmap <C-l> :tabn<CR>
-nmap <C-h> :tabp<CR>
+nnoremap <C-l> :tabn<CR>
+nnoremap <C-h> :tabp<CR>
+nnoremap <leader>h <C-w>h
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
 " Arrows are not suggested
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -315,6 +331,7 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 " Git
 set updatetime=100
 let g:gitgutter_highlight_linenrs = 1
+let g:gitgutter_map_keys = 0
 " CtrlSF
 let g:ctrlsf_ignore_dir = ['tags.d']
 " Tagbar
@@ -416,7 +433,6 @@ let g:bracey_server_allow_remote_connections = 1
 let g:bracey_refresh_on_save = 1
 let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
-imap <C-b> <C-x>,
 augroup html_indent
     autocmd!
     autocmd FileType html,javascript,vue set shiftwidth=2
@@ -510,41 +526,6 @@ function! IgnoreCustomItems()
     syn cluster Spell add=SnakeCase0
     syn cluster Spell add=ShortWord
     syn cluster Spell add=UpperCase
-endfunction
-
-function! Buffers()
-    " If getchar returns:
-    "       'a'   : switch to *alternative* buffer;
-    "       'l'   : list all buffers;
-    "       [1-9] : switch to buffer #[1-9];
-    let l:chr = getchar()
-    let l:n = l:chr - 48
-    if l:chr == 108
-        execute 'buffers'
-    elseif 0 < l:n && l:n < 10
-        execute 'buffer '.(l:n)
-    elseif l:n == 49
-        execute 'buffer #'
-    else
-        echohl WarningMsg | echo "Only support input [0-9] and chars [al]" | echohl None
-    endif
-endfunction
-
-function! Tabs()
-    " If typed char is 'l', list all tabs;
-    " if is's a <number>, go to tab <number>
-    let l:chr = getchar()
-    let l:n = l:chr - 48
-    if l:chr == 108
-        execute 'tabs'
-    elseif 0 < l:n && l:n < 10
-        execute 'normal! '.(l:n).'gt'
-    else
-        echohl WarningMsg | echo "Only support input [1-9] and char 'l'" | echohl None
-    endif
-endfunction
-
-function! ChangeSurroundingQuotes()
 endfunction
 
 function! HighlightUpperCaseCamel()
