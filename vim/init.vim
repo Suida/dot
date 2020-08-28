@@ -52,6 +52,8 @@ Plug 'ap/vim-css-color'
 Plug 'posva/vim-vue'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty'
+" Go commands
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Html preview
 Plug 'turbio/bracey.vim'
@@ -193,6 +195,8 @@ nnoremap <silent> _ :m .-2<CR>
 tnoremap <silent> <C-w> <C-\><C-n><C-w>
 nnoremap <C-l> :tabn<CR>
 nnoremap <C-h> :tabp<CR>
+tnoremap <C-l> <C-\><C-n>:tabn<CR>
+tnoremap <C-h> <C-\><C-n>:tabp<CR>
 nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
@@ -279,6 +283,7 @@ set completeopt=menuone,menu
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_always_populate_location_list = 1
+let g:ycm_key_invoke_completion = '<C-b>'
 "let g:ycm_log_level = 'debug'
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,c.doxygen,python,java,go,erlang,perl': ['re!\w{2}'],
@@ -390,6 +395,11 @@ let g:cpp_class_decl_highlight = 1
 let g:cpp_posix_standard = 1
 let g:cpp_experimental_simple_template_highlight = 1
 let g:cpp_concepts_highlight = 1
+
+
+" Go
+let g:go_code_completion_enabled = 0
+let g:go_test_show_name = 1
 
 
 " Python
