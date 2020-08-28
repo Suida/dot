@@ -1,0 +1,36 @@
+#!/bin/env bash
+
+if [[ ! -a $1 ]]
+then
+    echo "[ERROR] Source directory not found: [$1]"
+    exit 1
+fi
+
+if [[ ! -a $2 ]]
+then
+    if [[ -f $2 ]]
+    then
+        echo "[ERROR] Specified destination path [$(realpath $2)] is not directory!"
+        exit 1
+    fi
+    mkdir -p $dst_dir
+fi
+
+src_dir=$(realpath $1)
+dst_dir=$(realpath $2)
+
+echo "[INFO] source directory: $src_dir"
+echo "[INFO] destination directory: $dst_dir"
+
+for src in "$src_dir"/*
+do
+    dst=$dst_dir/$(basename $src)
+    if [[ -a $dst ]]
+    then
+        echo "[WARNING] $dst already exists, please remove it if you really want to override it"
+    else
+        sudo ln -s $src $dst
+        echo "[INFO] Linked [$src] to [$dst]"
+    fi
+done
+

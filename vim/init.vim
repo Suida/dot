@@ -261,6 +261,7 @@ set completeopt=menuone,menu
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_always_populate_location_list = 1
+let g:ycm_key_invoke_completion = '<C-b>'
 "let g:ycm_log_level = 'debug'
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,c.doxygen,python,java,go,erlang,perl': ['re!\w{2}'],
@@ -414,7 +415,6 @@ let g:bracey_server_allow_remote_connections = 1
 let g:bracey_refresh_on_save = 1
 let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
-imap <C-b> <C-x>,
 augroup html_indent
     autocmd!
     autocmd FileType html,javascript,vue set shiftwidth=2
