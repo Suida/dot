@@ -201,6 +201,8 @@ nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
+" Command
+nnoremap ! :!
 " Arrows are not suggested
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -283,7 +285,7 @@ set completeopt=menuone,menu
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_always_populate_location_list = 1
-let g:ycm_key_invoke_completion = '<C-b>'
+"let g:ycm_key_invoke_completion = '<C-Space>'
 "let g:ycm_log_level = 'debug'
 let g:ycm_semantic_triggers =  {
             \ 'c,cpp,c.doxygen,python,java,go,erlang,perl': ['re!\w{2}'],

@@ -81,6 +81,7 @@ plugins=(
     docker-compose
     kubectl
     golang
+    cargo
 )
 
 source $ZSH/oh-my-zsh.sh
