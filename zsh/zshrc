@@ -82,6 +82,7 @@ plugins=(
     kubectl
     golang
     cargo
+    yarn
 )
 
 source $ZSH/oh-my-zsh.sh
