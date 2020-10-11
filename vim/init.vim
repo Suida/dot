@@ -143,8 +143,12 @@ set foldmethod=marker
 set nofoldenable
 set autoindent
 set backspace=indent,eol,start
+set guicursor+=n:blinkon300-nCursor,i:hor50-blinkon300
 if has("autocmd")
+    " Jump to the line viewed at last time
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    " Disable auto-launch of gitgutter
+    au BufReadPost * execute "GitGutterLineNrHighlightsDisable\nGitGutterDisable"
 endif
 " }}}
 
@@ -242,14 +246,25 @@ set background=dark
 set laststatus=2
 colorscheme gruvbox
 " These 2 colors of nord theme are quite suitable to gruvbox
-hi Identifier guifg=#8FBCBB
-hi Constant guifg=#8FBCBB
+highlight Identifier guifg=#8FBCBB
+highlight Constant guifg=#8FBCBB
+" Set signs column's color the same as bg
+execute 'hi GitGutterAdd    guifg=' . g:terminal_color_10 . ' ctermfg=2'
+execute 'hi GitGutterChange guifg=' . g:terminal_color_14 . ' ctermfg=3'
+execute 'hi GitGutterDelete guifg=' . g:terminal_color_9  . ' ctermfg=1'
+execute 'hi SignColumn guibg=' . g:terminal_color_0
+" Hide (~) at the end of buffer
+highlight NonText guifg=bg
+" Cursor stuff
+highlight CursorLineNr guifg=white
+highlight nCursor guifg=white guibg=black gui=reverse
+
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
-" This command will force the background to be dark not matter what color
+" This command will enforce the background to be dark not matter what color
 " scheme is set
 "hi Normal guibg=NONE ctermbg=NONE
 "hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
@@ -339,6 +354,9 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 set updatetime=100
 let g:gitgutter_highlight_linenrs = 1
 let g:gitgutter_map_keys = 0
+nnoremap <silent> ]c :GitGutterNextHunk<CR>
+nnoremap <silent> [c :GitGutterPrevHunk<CR>
+nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 " CtrlSF
 let g:ctrlsf_ignore_dir = ['tags.d']
 " Tagbar
@@ -388,7 +406,7 @@ let g:tagbar_type_cpp = {
 " Set files as C files
 augroup project
     autocmd!
-    autocmd BufRead,BufNewFile *.h,*.c set filetype=c.doxygen
+    autocmd BufRead,BufNewFile *.h,*.c,*.cpp set sw=2
 augroup END
 " Highlight
 let g:cpp_class_scope_highlight = 1
