@@ -3,7 +3,10 @@ def Settings(**kwargs):
 
     if lang == 'cfamily':
         return {
-            'flags': ['-Wall', '-Wextra', '-Werror'],
+            'flags': [
+                '-Wall', '-Wextra', '-Werror',
+                '-x', 'c++',
+            ],
         }
 
     if lang == 'vue':
