@@ -79,6 +79,8 @@ let &packpath = &runtimepath
 " Exit tmode
 tnoremap <Esc> <C-\><C-n>
 tnoremap jk <C-\><C-n>
+tnoremap Jk <C-\><C-n>
+tnoremap JK <C-\><C-n>
 
 " Ctrl+R
 tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
@@ -125,6 +127,7 @@ if has('unix') || has('macunix')
 endif
 set wrap
 set ruler
+set hidden
 set hlsearch
 set incsearch
 set showmatch
@@ -143,9 +146,26 @@ set foldmethod=marker
 set nofoldenable
 set autoindent
 set backspace=indent,eol,start
+set autoread
 if has("autocmd")
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    " Go to line last time left at
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    " Reload file every time the cursor get into a buffer
+    autocmd FocusGained,BufEnter * :silent! !
+    " Disable line breaking in markdown file
+    autocmd BufNewFile,BufRead,BufEnter *.md set textwidth=0
 endif
+
+" Persistent undo
+let g:undo_path = fnamemodify(expand($MYVIMRC), ':h') . '/undo'
+if !isdirectory(g:undo_path)
+    call system('mkdir -p ' . g:undo_path)
+endif
+set undofile
+execute 'set undodir=' . g:undo_path
+
+set undolevels=1000
+set undoreload=10000
 " }}}
 
 
@@ -157,6 +177,10 @@ nnoremap <leader>vs :vsplit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
 " Editting
 inoremap jk <ESC>
+inoremap Jk <C-\><C-n>
+inoremap JK <C-\><C-n>
+inoremap jjk jk
+
 inoremap <C-e> <Esc>A
 inoremap <C-j> <Esc>o
 inoremap <C-k> <Esc>O
@@ -164,6 +188,7 @@ nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <leader>WW :w<CR>
 nnoremap <leader>WQ :wq<CR>
 nnoremap <leader>QQ :q<CR>
+nnoremap QQ :q<CR>
 nmap <leader>gb ysiw}lysiw{
 nmap <silent> <leader>ft :TableFormat<CR>
 " Navigation
@@ -345,6 +370,7 @@ let g:ctrlsf_ignore_dir = ['tags.d']
 let tagbar_left = 1
 let tagbar_width = 32
 let g:tagbar_compact=1
+let g:tagbar_sort = 0
 nmap <leader>w :TagbarToggle<CR>
 let g:tagbar_type_cpp = {
     \ 'kinds' : [
@@ -386,10 +412,10 @@ let g:tagbar_type_cpp = {
 
 " C/C++
 " Set files as C files
-augroup project
-    autocmd!
-    autocmd BufRead,BufNewFile *.h,*.c set filetype=c.doxygen
-augroup END
+"augroup project
+    "autocmd!
+    "autocmd BufRead,BufNewFile *.h,*.c set filetype=c.doxygen
+"augroup END
 " Highlight
 let g:cpp_class_scope_highlight = 1
 let g:cpp_member_variable_highlight = 1
