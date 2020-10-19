@@ -155,8 +155,6 @@ if has("autocmd")
     autocmd FocusGained,BufEnter * :silent! !
     " Disable line breaking in markdown file
     autocmd BufNewFile,BufRead,BufEnter *.md set textwidth=0
-    " Disable auto-launch of gitgutter
-    au BufReadPost * execute "GitGutterLineNrHighlightsDisable\nGitGutterDisable"
 endif
 
 " Persistent undo
@@ -192,6 +190,7 @@ nnoremap <leader>WW :w<CR>
 nnoremap <leader>WQ :wq<CR>
 nnoremap <leader>QQ :q<CR>
 nnoremap QQ :q<CR>
+nnoremap <leader>sb :vert sb 
 nmap <leader>gb ysiw}lysiw{
 nmap <silent> <leader>ft :TableFormat<CR>
 " Navigation
@@ -204,6 +203,8 @@ nnoremap <left> :tabp <CR>
 nnoremap <right> :tabn <CR>
 inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
 
 nnoremap <silent> <leader>bb :<C-u>execute 'buffer ' . v:count<CR>
 nnoremap <silent> <leader>bl :buffers<CR>
@@ -237,7 +238,7 @@ nnoremap <down> <nop>
 inoremap <up> <nop>
 inoremap <down> <nop>
 " Spell check
-nnoremap <leader>sf 1z=
+nnoremap <leader>sw 1z=
 nnoremap <leader>ss :set spell!<CR>
 " The reason why highlights disapeared is just this command
 " This was introduced to fix unnecessary spell checking highlights, which is
@@ -258,7 +259,7 @@ iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
 " }}}
 
 
-" View and Airline plugin settings -- {{{
+" View and Airline/ indentLine plugin settings -- {{{
 
 " Color
 set number
@@ -294,12 +295,29 @@ endif
 "hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
 " Airline
 let g:airline_theme='gruvbox'
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#tab_nr_type = 1 " # of splits (default)
+let g:airline#extensions#tabline#show_splits = 0
+let g:airline#extensions#tabline#show_tab_count = 0
+let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#right_alt_sep = ''
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#virtualenv#enabled = 1
 let g:airline#extensions#ycm#enabled = 1
+
+" indentLine
+let g:indentLine_enabled = 0
+augroup indent_launch
+    autocmd!
+    autocmd FileType * IndentLinesEnable
+augroup END
 " }}}
 
 
@@ -376,13 +394,27 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 " Git
 set updatetime=100
-let g:gitgutter_highlight_linenrs = 1
+let g:gitgutter_enabled = 0
+" <leader>h is used to switch split, while <leader>h* is used in gitgutter,
+" which leads to unacceptable delay when pressing <leader>h, thus gitggutter key
+" mappings are disabled and re-mapped.
 let g:gitgutter_map_keys = 0
+nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 nnoremap <silent> ]c :GitGutterNextHunk<CR>
 nnoremap <silent> [c :GitGutterPrevHunk<CR>
-nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 " CtrlSF
-let g:ctrlsf_ignore_dir = ['tags.d']
+let g:ctrlsf_ignore_dir = [
+            \ 'tags', 
+            \ 'tags.d', 
+            \ '*.log', 
+            \ 'tsconfig.json',
+            \ 'node_module', 
+            \ 'static', 
+            \ 'dist',
+            \ '.vscode',
+            \ '.ycm_extra_conf.py',
+            \ ]
+nnoremap <leader>sf :CtrlSF 
 " Tagbar
 let tagbar_left = 1
 let tagbar_width = 32
@@ -480,7 +512,6 @@ let g:front_end_filetypes = {
 
 "autocmd BufRead,BufNewFile *.js,*jsx set filetype=javascript
 "autocmd BufRead,BufNewFile *.ts,*tsx set filetype=typescript
-autocmd FileType javascript,css,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
 
 let g:user_emmet_leader_key = '<C-x>'
 let g:bracey_server_port = 34911
@@ -490,7 +521,7 @@ let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
 augroup html_indent
     autocmd!
-    autocmd FileType html,javascript,vue set shiftwidth=2
+    autocmd FileType javascript,css,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
 augroup END
 
 
