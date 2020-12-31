@@ -1,5 +1,6 @@
 " Plug Settings -- {{{
-call plug#begin(stdpath('data').'/plugged')
+"call plug#begin(stdpath('data').'/plugged')
+call plug#begin('~/.local/share/nvim/data/plugged')
 
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --ts-completer --clang-completer' }
 Plug 'ycm-core/lsp-examples', { 'do': './vue/install.py' }
@@ -72,6 +73,8 @@ call plug#end()
 
 " Origin init.vim -- {{{
 set runtimepath^=~/.vim runtimepath+=~/.vim/after
+set runtimepath+=~/.local/share/nvim
+set runtimepath+=~/.local/share/nvim
 let &packpath = &runtimepath
 
 " Terminal settings
@@ -190,7 +193,7 @@ nnoremap <leader>WW :w<CR>
 nnoremap <leader>WQ :wq<CR>
 nnoremap <leader>QQ :q<CR>
 nnoremap QQ :q<CR>
-nnoremap <leader>sb :vert sb 
+nnoremap <silent> <leader>pp :set paste!<CR>
 nmap <leader>gb ysiw}lysiw{
 nmap <silent> <leader>ft :TableFormat<CR>
 " Navigation
@@ -206,6 +209,8 @@ inoremap <right> <ESC> :tabn <CR>
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
+nnoremap <leader>bt :b 
+nnoremap <leader>bs :vert sb 
 nnoremap <silent> <leader>bb :<C-u>execute 'buffer ' . v:count<CR>
 nnoremap <silent> <leader>bl :buffers<CR>
 nnoremap <silent> <leader>ba :buffer #<CR>
