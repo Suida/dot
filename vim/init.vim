@@ -1,5 +1,6 @@
 " Plug Settings -- {{{
-call plug#begin(stdpath('data').'/plugged')
+"call plug#begin(stdpath('data').'/plugged')
+call plug#begin('~/.local/share/nvim/data/plugged')
 
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --ts-completer --clang-completer' }
 Plug 'ycm-core/lsp-examples', { 'do': './vue/install.py' }
@@ -72,6 +73,8 @@ call plug#end()
 
 " Origin init.vim -- {{{
 set runtimepath^=~/.vim runtimepath+=~/.vim/after
+set runtimepath+=~/.local/share/nvim
+set runtimepath+=~/.local/share/nvim
 let &packpath = &runtimepath
 
 " Terminal settings
@@ -79,6 +82,8 @@ let &packpath = &runtimepath
 " Exit tmode
 tnoremap <Esc> <C-\><C-n>
 tnoremap jk <C-\><C-n>
+tnoremap Jk <C-\><C-n>
+tnoremap JK <C-\><C-n>
 
 " Ctrl+R
 tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
@@ -125,6 +130,7 @@ if has('unix') || has('macunix')
 endif
 set wrap
 set ruler
+set hidden
 set hlsearch
 set incsearch
 set showmatch
@@ -143,13 +149,27 @@ set foldmethod=marker
 set nofoldenable
 set autoindent
 set backspace=indent,eol,start
+set autoread
 set guicursor+=n:blinkon300-nCursor,i:hor50-blinkon300
 if has("autocmd")
     " Jump to the line viewed at last time
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-    " Disable auto-launch of gitgutter
-    au BufReadPost * execute "GitGutterLineNrHighlightsDisable\nGitGutterDisable"
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    " Reload file every time the cursor get into a buffer
+    autocmd FocusGained,BufEnter * :silent! !
+    " Disable line breaking in markdown file
+    autocmd BufNewFile,BufRead,BufEnter *.md set textwidth=0
 endif
+
+" Persistent undo
+let g:undo_path = fnamemodify(expand($MYVIMRC), ':h') . '/undo'
+if !isdirectory(g:undo_path)
+    call system('mkdir -p ' . g:undo_path)
+endif
+set undofile
+execute 'set undodir=' . g:undo_path
+
+set undolevels=1000
+set undoreload=10000
 " }}}
 
 
@@ -161,6 +181,10 @@ nnoremap <leader>vs :vsplit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
 " Editting
 inoremap jk <ESC>
+inoremap Jk <C-\><C-n>
+inoremap JK <C-\><C-n>
+inoremap jjk jk
+
 inoremap <C-e> <Esc>A
 inoremap <C-j> <Esc>o
 inoremap <C-k> <Esc>O
@@ -168,6 +192,8 @@ nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <leader>WW :w<CR>
 nnoremap <leader>WQ :wq<CR>
 nnoremap <leader>QQ :q<CR>
+nnoremap QQ :q<CR>
+nnoremap <silent> <leader>pp :set paste!<CR>
 nmap <leader>gb ysiw}lysiw{
 nmap <silent> <leader>ft :TableFormat<CR>
 " Navigation
@@ -180,7 +206,11 @@ nnoremap <left> :tabp <CR>
 nnoremap <right> :tabn <CR>
 inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
 
+nnoremap <leader>bt :b 
+nnoremap <leader>bs :vert sb 
 nnoremap <silent> <leader>bb :<C-u>execute 'buffer ' . v:count<CR>
 nnoremap <silent> <leader>bl :buffers<CR>
 nnoremap <silent> <leader>ba :buffer #<CR>
@@ -213,7 +243,7 @@ nnoremap <down> <nop>
 inoremap <up> <nop>
 inoremap <down> <nop>
 " Spell check
-nnoremap <leader>sf 1z=
+nnoremap <leader>sw 1z=
 nnoremap <leader>ss :set spell!<CR>
 " The reason why highlights disapeared is just this command
 " This was introduced to fix unnecessary spell checking highlights, which is
@@ -234,7 +264,7 @@ iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
 " }}}
 
 
-" View and Airline plugin settings -- {{{
+" View and Airline/ indentLine plugin settings -- {{{
 
 " Color
 set number
@@ -270,12 +300,29 @@ endif
 "hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
 " Airline
 let g:airline_theme='gruvbox'
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#tab_nr_type = 1 " # of splits (default)
+let g:airline#extensions#tabline#show_splits = 0
+let g:airline#extensions#tabline#show_tab_count = 0
+let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#right_alt_sep = ''
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#virtualenv#enabled = 1
 let g:airline#extensions#ycm#enabled = 1
+
+" indentLine
+let g:indentLine_enabled = 0
+augroup indent_launch
+    autocmd!
+    autocmd FileType * IndentLinesEnable
+augroup END
 " }}}
 
 
@@ -352,17 +399,32 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 " Git
 set updatetime=100
-let g:gitgutter_highlight_linenrs = 1
+let g:gitgutter_enabled = 0
+" <leader>h is used to switch split, while <leader>h* is used in gitgutter,
+" which leads to unacceptable delay when pressing <leader>h, thus gitggutter key
+" mappings are disabled and re-mapped.
 let g:gitgutter_map_keys = 0
+nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 nnoremap <silent> ]c :GitGutterNextHunk<CR>
 nnoremap <silent> [c :GitGutterPrevHunk<CR>
-nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 " CtrlSF
-let g:ctrlsf_ignore_dir = ['tags.d']
+let g:ctrlsf_ignore_dir = [
+            \ 'tags', 
+            \ 'tags.d', 
+            \ '*.log', 
+            \ 'tsconfig.json',
+            \ 'node_module', 
+            \ 'static', 
+            \ 'dist',
+            \ '.vscode',
+            \ '.ycm_extra_conf.py',
+            \ ]
+nnoremap <leader>sf :CtrlSF 
 " Tagbar
 let tagbar_left = 1
 let tagbar_width = 32
 let g:tagbar_compact=1
+let g:tagbar_sort = 0
 nmap <leader>w :TagbarToggle<CR>
 let g:tagbar_type_cpp = {
     \ 'kinds' : [
@@ -455,7 +517,6 @@ let g:front_end_filetypes = {
 
 "autocmd BufRead,BufNewFile *.js,*jsx set filetype=javascript
 "autocmd BufRead,BufNewFile *.ts,*tsx set filetype=typescript
-autocmd FileType javascript,css,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
 
 let g:user_emmet_leader_key = '<C-x>'
 let g:bracey_server_port = 34911
@@ -465,7 +526,7 @@ let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
 augroup html_indent
     autocmd!
-    autocmd FileType html,javascript,vue set shiftwidth=2
+    autocmd FileType javascript,css,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
 augroup END
 
 
