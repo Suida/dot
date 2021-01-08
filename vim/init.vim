@@ -1,8 +1,8 @@
 " Plug Settings -- {{{
 call plug#begin(stdpath('data').'/plugged')
 
-Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --ts-completer --clang-completer' }
-Plug 'ycm-core/lsp-examples', { 'do': './vue/install.py' }
+Plug 'neoclide/coc.nvim', {'branck': 'master', 'do': 'yarn install --frozen-lockfile'}
+
 Plug 'vim-syntastic/syntastic'
 
 " Navigation & developing support
@@ -10,7 +10,7 @@ Plug 'vim-syntastic/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdtree'
 " Commenter & git utils
-Plug 'preservim/nerdcommenter'
+Plug 'tomtom/tcomment_vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 " Better move
@@ -32,12 +32,15 @@ Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
 " Global finder
 Plug 'brooth/far.vim'
 Plug 'dyng/ctrlsf.vim'
+" Session manager
+Plug 'mhinz/vim-startify'
 
 " View
 " Color schemes
 Plug 'arcticicestudio/nord-vim'
 Plug 'sonph/onehalf', {'rtp': 'vim'}
 Plug 'morhetz/gruvbox'
+Plug 'mhinz/vim-janah'
 " Status / tabline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -50,6 +53,7 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " Font-end tool chain
 Plug 'ap/vim-css-color'
 Plug 'posva/vim-vue'
+Plug 'leafOfTree/vim-vue-plugin'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 " Go commands
@@ -190,7 +194,6 @@ nnoremap <leader>WW :w<CR>
 nnoremap <leader>WQ :wq<CR>
 nnoremap <leader>QQ :q<CR>
 nnoremap QQ :q<CR>
-nnoremap <leader>sb :vert sb 
 nmap <leader>gb ysiw}lysiw{
 nmap <silent> <leader>ft :TableFormat<CR>
 " Navigation
@@ -206,7 +209,8 @@ inoremap <right> <ESC> :tabn <CR>
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
-nnoremap <silent> <leader>bb :<C-u>execute 'buffer ' . v:count<CR>
+nnoremap <leader>bb :b 
+nnoremap <leader>bs :vert sb 
 nnoremap <silent> <leader>bl :buffers<CR>
 nnoremap <silent> <leader>ba :buffer #<CR>
 nnoremap <silent> <leader>1 :normal 1gt<CR>
@@ -250,8 +254,7 @@ noremap <leader>p "*p
 " Search
 nnoremap / /\v
 vnoremap / /\v
-" Jump to next tag
-inoremap <C-f> <ESC>vit<ESC>i
+" Edit current tag
 nnoremap <leader>i vit<Esc>i
 " Abbreviations
 iabbrev @@ suidar@foxmail.com
@@ -323,49 +326,175 @@ augroup END
 
 " Ycm & Syntastic settings -- {{{
 
-let s:lsp = '~/.local/share/nvim/plugged/lsp-examples'
+" let s:lsp = '~/.local/share/nvim/plugged/lsp-examples'
 
-nnoremap <silent> <leader>gf :call FormatCode()<CR>
-nnoremap <silent> <leader>gd :YcmCompleter GoToDefinition<CR>
-nnoremap <silent> <leader>gt :YcmCompleter GetType<CR>
-nnoremap <silent> <leader>gi :YcmCompleter GoToInclude<CR>
-nnoremap <silent> <leader>gr :YcmCompleter GoToReferences<CR>
-nnoremap <silent> <leader>gx :YcmCompleter FixIt<CR>
-nnoremap <silent> <leader>gp :call TogglePreview()<CR>
-nnoremap <silent> <leader>sr :YcmRestartServer<CR>
-nnoremap <silent> <leader>sd :YcmShowDetailedDiagnostic<CR>
-nnoremap <silent> <leader>sl :call ToggleErrors()<CR>
-nnoremap <silent> <leader>sk :call SyntaxCheck()<CR>
-nnoremap <silent> <leader>sn :SyntasticReset<CR>
+"nnoremap <silent> <leader>gf :call FormatCode()<CR>
+"nnoremap <silent> <leader>gd :YcmCompleter GoToDefinition<CR>
+"nnoremap <silent> <leader>gt :YcmCompleter GetType<CR>
+"nnoremap <silent> <leader>gi :YcmCompleter GoToInclude<CR>
+"nnoremap <silent> <leader>gr :YcmCompleter GoToReferences<CR>
+"nnoremap <silent> <leader>gx :YcmCompleter FixIt<CR>
+"nnoremap <silent> <leader>gp :call TogglePreview()<CR>
+"nnoremap <silent> <leader>sr :YcmRestartServer<CR>
+"nnoremap <silent> <leader>sd :YcmShowDetailedDiagnostic<CR>
+"nnoremap <silent> <leader>sl :call ToggleErrors()<CR>
+"nnoremap <silent> <leader>sk :call SyntaxCheck()<CR>
+"nnoremap <silent> <leader>sn :SyntasticReset<CR>
 
-set completeopt=menuone,menu
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_add_preview_to_completeopt = 0
-let g:ycm_always_populate_location_list = 1
-"let g:ycm_key_invoke_completion = '<C-Space>'
-"let g:ycm_log_level = 'debug'
-let g:ycm_semantic_triggers =  {
-            \ 'c,cpp,c.doxygen,python,java,go,erlang,perl': ['re!\w{2}'],
-            \ 'rust': ['re!\w{2}'],
-            \ 'javascript,typescript': ['re!\w{2}'],
-            \ 'javascriptreact,typescriptreact': ['re!\w{2}'],
-            \ }
-let g:ycm_language_server = [
-            \ {
-            \   'name': 'vue',
-            \   'filetypes': [ 'vue' ],
-            \   'cmdline': [ expand( s:lsp . '/vue/node_modules/.bin/vls' ) ]
-            \ },
-            \ {
-            \   'name': 'vim',
-            \   'filetypes': [ 'vim' ],
-            \   'cmdline': [ expand( s:lsp . '/viml/node_modules/.bin/vim-language-server' ), '--stdio' ]
-            \ },
-            \ ]
-let g:syntastic_mode_map = {
-    \ "mode": "passive",
-    \ "active_filetypes": [],
-    \ "passive_filetypes": [] }
+" set completeopt=menuone,menu
+" let g:ycm_confirm_extra_conf = 0
+" let g:ycm_add_preview_to_completeopt = 0
+" let g:ycm_always_populate_location_list = 1
+" "let g:ycm_key_invoke_completion = '<C-Space>'
+" let g:ycm_log_level = 'debug'
+" let g:ycm_semantic_triggers =  {
+"             \ 'c,cpp,c.doxygen,python,java,go,erlang,perl': ['re!\w{2}'],
+"             \ 'rust': ['re!\w{2}'],
+"             \ 'javascript,typescript': ['re!\w{2}'],
+"             \ 'javascriptreact,typescriptreact': ['re!\w{2}'],
+"             \ }
+" let g:ycm_language_server = [
+"             \ {
+"             \   'name': 'vue',
+"             \   'filetypes': [ 'vue' ],
+"             \   'cmdline': [ expand( s:lsp . '/vue/node_modules/.bin/vls' ) ]
+"             \ },
+"             \ {
+"             \   'name': 'vim',
+"             \   'filetypes': [ 'vim' ],
+"             \   'cmdline': [ expand( s:lsp . '/viml/node_modules/.bin/vim-language-server' ), '--stdio' ]
+"             \ },
+"             \ ]
+" let g:syntastic_mode_map = {
+"     \ "mode": "passive",
+"     \ "active_filetypes": [],
+"     \ "passive_filetypes": [] }
+" let g:ycm_filetype_blacklist = {
+"             \ 'vue': 1,
+"             \ 'javascript': 1,
+"             \}
+" }}}
+
+
+" Coc.nvim -- {{{
+
+
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+" Give more space for displaying messages.
+set cmdheight=2
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+" Code edit
+nmap <silent> <leader>gd <Plug>(coc-definition)
+nmap <silent> <leader>gt <Plug>(coc-type-definition)
+nmap <silent> <leader>gi <Plug>(coc-implementation)
+nmap <silent> <leader>gr <Plug>(coc-references)
+xmap <leader>gf  <Plug>(coc-format-selected)
+nmap <leader>gf  <Plug>(coc-format-selected)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Quick fix
+nmap <leader>qf  <Plug>(coc-fix-current)
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of language server.
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <leader>cd  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <leader>cx  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <leader>cl  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <leader>co  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+noremap <silent><nowait> <leader>cs  :<C-u>CocList -I symbols<cr>
+" Resume latest coc list.
+nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
 " }}}
 
 
@@ -386,7 +515,7 @@ let g:formatdef_prettier = '"~/.nvm/versions/node/v12.18.2/bin/prettier --parser
 let g:formatters_vue = ['prettier']
 
 
-" NERDTree, Git, ctrlsf & Tagbar
+" NERDTree, Git, ctrlsf, startify & Tagbar
 " NERDTree
 let NERDTreeWinPos = 'right'
 nnoremap <leader>e :NERDTreeToggle<CR>
@@ -415,6 +544,22 @@ let g:ctrlsf_ignore_dir = [
             \ '.ycm_extra_conf.py',
             \ ]
 nnoremap <leader>sf :CtrlSF 
+" Startify
+let g:startify_session_before_save = [
+            \ 'execute bufname() =~ "^NERD_tree_." ? ":NERDTreeClose" : ""',
+            \ 'let g:startify_tmp_tabpagenr = tabpagenr()',
+            \ 'let g:startify_tmp_winnr = winnr()',
+            \ 'echo "Cleaning up before saving.."',
+            \ 'silent! tabdo NERDTreeClose',
+            \ 'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
+            \ 'execute g:startify_tmp_winnr . "wincmd w"'
+            \ ]
+autocmd VimEnter *
+            \   if !argc()
+            \ |   Startify
+            \ |   NERDTree
+            \ |   wincmd w
+            \ | endif
 " Tagbar
 let tagbar_left = 1
 let tagbar_width = 32
@@ -510,6 +655,15 @@ let g:front_end_filetypes = {
             \ "json": 1,
             \ }
 
+" Recommanded by coc-css
+autocmd FileType scss setl iskeyword+=@-@
+" vim-vue-plugin
+let g:vim_vue_plugin_use_less = 1
+let g:vim_vue_plugin_use_sass = 1
+let g:vim_vue_plugin_use_scss = 1
+let g:vim_vue_plugin_use_stylus = 1
+let g:vim_vue_plugin_highlight_vue_attr = 1
+let g:vim_vue_plugin_highlight_vue_keyword = 1
 "autocmd BufRead,BufNewFile *.js,*jsx set filetype=javascript
 "autocmd BufRead,BufNewFile *.ts,*tsx set filetype=typescript
 
