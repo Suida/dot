@@ -156,7 +156,7 @@ fi
 # Set hosts related vars
 hosts=$(cat $hosts_path)
 proxy_host_name=proxyhost
-proxy_host_setting="${PROXY_HOST} ${proxy_host_name}"
+proxy_host_setting="${PROXY_ADDR} ${proxy_host_name}"
 
 # Add proxy host
 if [[ ! $hosts = *$proxy_host_name* ]]
