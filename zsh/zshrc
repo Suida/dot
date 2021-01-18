@@ -120,64 +120,97 @@ alias vim="nvim $*"
 ################################################################################
 #                             PROXY SETTINGS                                   #
 ################################################################################
-#
+
+# P / V mutex operations
+# Lock on /etc/hosts
+function P
+{
+    while [[ -e $1 ]]
+    do
+        echo -ne "Waiting for host temporary file to be deleted, if you are \
+                  sure there is no other zsh process running, delete ${1}\r"
+        sleep 2
+    done
+    sudo touch $1
+}
+
+# Unlock
+function V
+{
+    if [[ -e $1 ]]
+    then
+        sudo rm -rf $1
+    fi
+}
+
 # Get windows host ip address if it is under WSL environment.
-if [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
+if [[ -e "/etc/sys/kernel/osrelease" ]] && [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
 then
-    export PROXY_ADDR=$(cat /etc/resolv.conf | awk '$1=="nameserver" {print $2}')
+    PROXY_IP=$(cat /etc/resolv.conf | awk '$1=="nameserver" {print $2}')
 else
-    export PROXY_ADDR=127.0.0.1
+    # If not, the default ip address is localhost
+    PROXY_IP=127.0.0.1
 fi
 
 # Set default proxy port which will possibly be reformed when meeting new
 # requirements.
-export PROXY_PORT=7890
-export PROXY_HOST=$PROXY_ADDR:$PROXY_PORT
+PROXY_PORT=7890
+PROXY_ADDR=$PROXY_IP:$PROXY_PORT
+SED=sed
 
-# Lock on /etc/hosts
-tmp_lock=/tmp/zsh-host-lock.txt 
-while [[ -e $tmp_lock ]]
-do
-    echo -ne "Waiting for host file, if you are sure there is no other zsh process running, delete ${tmp_lock}\r"
-done
-
-sudo touch $tmp_lock
-
-# Get hosts file location
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
+# Get hosts file location depending on os type
+if [[ $OSTYPE == *linux-gnu* ]]; then
     hosts_path=/etc/hosts
-elif [[ "$OSTYPE" == "darwin" ]]; then
+elif [[ $OSTYPE == *darwin* ]]; then
     hosts_path=/private/etc/hosts
+    # `sed` on MacOS is so fucking hard to use or maintain.
+    # Use gnu-sed instead.
+    if [[ ! $(which gsed) == */gsed ]]; then
+        brew install gnu-sed
+    fi
+    alias sed="gsed $*"
+    SED=$(which gsed)
+    # Also, `awk` here is also like a piece of shit,
+    # use `gawk` instead.
+    if [[ ! $(which gawk) == */gawk ]]; then
+        brew install gawk
+    fi
+    alias awk="gawk $*"
+    AWK=$(which gawk)
 else
     echo "Unsupportted os type $OSTYPE"
     exit 1
 fi
 
+tmp_lock=/tmp/zsh-host-lock.txt 
+
+P $tmp_lock
+
 # Set hosts related vars
 hosts=$(cat $hosts_path)
 proxy_host_name=proxyhost
-proxy_host_setting="${PROXY_ADDR} ${proxy_host_name}"
+proxy_host_setting="${PROXY_IP} ${proxy_host_name}"
 
 # Add proxy host
 if [[ ! $hosts = *$proxy_host_name* ]]
 then
+    echo "Original hosts file content:"
+    $SED 's/^/... /' $hosts_path
     echo $proxy_host_setting | sudo tee -a $hosts_path >> /dev/null
-elif [[ ! $(echo $hosts | awk "\$2==\"${proxy_host_name}\" {print \$1}") = $PROXY_ADDR ]]
-    sudo sed -i "/.*\s*${proxy_host_name}/d" $hosts_path
-    sudo sed -i "\$a\\${proxy_host_setting}" $hosts_path
+elif [[ ! $(echo $hosts | grep $proxy_host_name) == *$PROXY_IP* ]]
 then
+    echo "Original hosts file content:"
+    $SED 's/^/... /' $hosts_path
+    sudo $SED -i "/.*\s*${proxy_host_name}/d" $hosts_path
+    sudo $SED -i "\$a\\${proxy_host_setting}" $hosts_path
 fi
 
-# Unlock
-if [[ -e $tmp_lock ]]
-then
-    sudo rm -rf $tmp_lock
-fi
+V $tmp_lock
 
-export http_proxy=$PROXY_HOST
-export https_proxy=$PROXY_HOST
-export HTTP_PROXY=$PROXY_HOST
-export HTTPS_PROXY=$PROXY_HOST
+export http_proxy=http://$PROXY_ADDR
+export https_proxy=http://$PROXY_ADDR
+export HTTP_PROXY=http://$PROXY_ADDR
+export HTTPS_PROXY=http://$PROXY_ADDR
 
 ################################################################################
 #                             PROXY SETTINGS END                               #
