@@ -153,6 +153,14 @@
             "after": [":", "q", "<CR>"],
         },
         {
+            "before": ["<leader>", "h"],
+            "after": ["<C-w>", "h"],
+        },
+        {
+            "before": ["<leader>", "l"],
+            "after": ["<C-w>", "l"],
+        },
+        {
             "before": ["\""],
             "commands": ["workbench.action.showCommands"],
         },

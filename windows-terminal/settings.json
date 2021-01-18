@@ -2,150 +2,210 @@
 // For documentation on these settings, see: https://aka.ms/terminal-documentation
 
 {
-    "$schema": "https://aka.ms/terminal-profiles-schema",
+  "$schema": "https://aka.ms/terminal-profiles-schema",
 
-    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-    "profiles": [
-        {
-            // Make changes here to the powershell.exe profile
-            "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-            "name": "Windows PowerShell",
-            "commandline": "powershell.exe",
-            "fontFace": "Cascadia Code PL",
-            "fontSize": 10,
-            "useAcrylic": true,
-            "acrylicOpacity": 0.8,
-            "colorScheme": "One Half Dark",
-            "hidden": false
-        },
-        {
-            // Make changes here to the powershell.exe profile
-            "guid": "{adbb07d9-6e02-42d5-bc16-cd406e2fb8a8}",
-            "name": "Cmder",
-            "commandline": "cmd.exe /K G:\\python\\cmder\\vendor\\init.bat",
-            "startingDirectory": "D:\\workspace",
-            "useAcrylic": true,
-            "acrylicOpacity": 0.85,
-            "colorScheme": "One Half Dark",
-            "hidden": false
-        },
-        {
-            // Make changes here to the cmd.exe profile
-            "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-            "name": "cmd",
-            "commandline": "cmd.exe",
-            "hidden": false
-        },
-        {
-            "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-            "hidden": false,
-            "name": "Azure Cloud Shell",
-            "source": "Windows.Terminal.Azure"
-        }
-    ],
+  "defaultProfile": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
+  "profiles": [
+    {
+      // Make changes here to the powershell.exe profile
+      "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+      "name": "Windows PowerShell",
+      "commandline": "powershell.exe",
+      "fontFace": "Cascadia Code PL",
+      "fontSize": 10,
+      "useAcrylic": true,
+      "acrylicOpacity": 0.8,
+      "colorScheme": "One Half Dark",
+      "hidden": false
+    },
+    {
+      // Make changes here to the powershell.exe profile
+      "guid": "{adbb07d9-6e02-42d5-bc16-cd406e2fb8a8}",
+      "name": "Cmder",
+      "commandline": "cmd.exe /K G:\\python\\cmder\\vendor\\init.bat",
+      "startingDirectory": "D:\\workspace",
+      "useAcrylic": true,
+      "acrylicOpacity": 0.85,
+      "colorScheme": "One Half Dark",
+      "hidden": false
+    },
+    {
+      // Make changes here to the cmd.exe profile
+      "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+      "name": "cmd",
+      "commandline": "cmd.exe",
+      "hidden": false
+    },
+    {
+      "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+      "hidden": false,
+      "name": "Azure Cloud Shell",
+      "source": "Windows.Terminal.Azure"
+    },
+    {
+      "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
+      "name": "ubuntu",
+      "source": "Windows.Terminal.Wsl",
+      "fontFace": "Cascadia Code PL",
+      "fontSize": 10,
+      "useAcrylic": true,
+      "acrylicOpacity": 0.8,
+      "colorScheme": "One Half Dark",
+      "startingDirectory": "//wsl$/Ubuntu-20.04/home/hugh/",
+      "hidden": false
+    }
+  ],
 
-    // Add custom color schemes to this array
-    "schemes": [],
+  // Add custom color schemes to this array
+  "schemes": [],
 
-    // Add any keybinding overrides to this array.
-    // To unbind a default keybinding, set the command to "unbound"
-    "keybindings": [
-        {
-            "keys": ["alt+c"],
-            "command": "copy"
-        },
-        {
-            "keys": ["alt+v"],
-            "command": "paste"
-        },
-        {
-            "keys": ["ctrl+t"],
-            "command": "newTab"
-        },
-        {
-            "keys": ["alt+t"],
-            "command": "newTab"
-        },
-        {
-            "keys": ["alt+w"],
-            "command": "closeTab"
-        },
-        {
-            "keys": ["ctrl+shift+="],
-            "command": {"action": "splitPane", "split": "horizontal"} 
-        },
-        {
-            "keys": ["ctrl+shift+\\"],
-            "command": {"action": "splitPane", "split": "vertical"} 
-        },
-        {
-            "keys": ["ctrl+shift+-"],
-            "command": "closePane"
-        },
-        {
-            "keys": ["ctrl+shift+k"],
-            "command": {"action": "moveFocus", "direction": "up"}
-        },
-        {
-            "keys": ["ctrl+shift+j"],
-            "command": {"action": "moveFocus", "direction": "down"}
-        },
-        {
-            "keys": ["ctrl+shift+h"],
-            "command": {"action": "moveFocus", "direction": "left"}
-        },
-        {
-            "keys": ["ctrl+shift+l"],
-            "command": {"action": "moveFocus", "direction": "right"}
-        },
-        {
-            "keys": ["ctrl+shift+i"],
-            "command": {"action": "resizePane", "direction": "up"}
-        },
-        {
-            "keys": ["ctrl+shift+u"],
-            "command": {"action": "resizePane", "direction": "down"}
-        },
-        {
-            "keys": ["ctrl+shift+y"],
-            "command": {"action": "resizePane", "direction": "left"}
-        },
-        {
-            "keys": ["ctrl+shift+o"],
-            "command": {"action": "resizePane", "direction": "right"}
-        },
-        {
-            "keys": ["alt+1"],
-            "command": {"action": "switchToTab", "index": 0}
-        },
-        {
-            "keys": ["alt+2"],
-            "command": {"action": "switchToTab", "index": 1}
-        },
-        {
-            "keys": ["alt+3"],
-            "command": {"action": "switchToTab", "index": 2}
-        },
-        {
-            "keys": ["alt+4"],
-            "command": {"action": "switchToTab", "index": 3}
-        },
-        {
-            "keys": ["alt+5"],
-            "command": {"action": "switchToTab", "index": 4}
-        },
-        {
-            "keys": ["alt+6"],
-            "command": {"action": "switchToTab", "index": 5}
-        },
-        {
-            "keys": ["alt+c"],
-            "command": "copy"
-        },
-        {
-            "keys": ["alt+v"],
-            "command": "paste"
-        }
-    ],
-    "theme": "dark"
+  // Add any keybinding overrides to this array.
+  // To unbind a default keybinding, set the command to "unbound"
+  "keybindings": [
+    {
+      "keys": [ "alt+c" ],
+      "command": "copy"
+    },
+    {
+      "keys": [ "alt+v" ],
+      "command": "paste"
+    },
+    {
+      "keys": [ "ctrl+t" ],
+      "command": "newTab"
+    },
+    {
+      "keys": [ "alt+t" ],
+      "command": "newTab"
+    },
+    {
+      "keys": [ "alt+w" ],
+      "command": "closeTab"
+    },
+    {
+      "keys": [ "ctrl+shift+=" ],
+      "command": {
+        "action": "splitPane",
+        "split": "horizontal"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+\\" ],
+      "command": {
+        "action": "splitPane",
+        "split": "vertical"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+-" ],
+      "command": "closePane"
+    },
+    {
+      "keys": [ "ctrl+shift+k" ],
+      "command": {
+        "action": "moveFocus",
+        "direction": "up"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+j" ],
+      "command": {
+        "action": "moveFocus",
+        "direction": "down"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+h" ],
+      "command": {
+        "action": "moveFocus",
+        "direction": "left"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+l" ],
+      "command": {
+        "action": "moveFocus",
+        "direction": "right"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+i" ],
+      "command": {
+        "action": "resizePane",
+        "direction": "up"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+u" ],
+      "command": {
+        "action": "resizePane",
+        "direction": "down"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+y" ],
+      "command": {
+        "action": "resizePane",
+        "direction": "left"
+      }
+    },
+    {
+      "keys": [ "ctrl+shift+o" ],
+      "command": {
+        "action": "resizePane",
+        "direction": "right"
+      }
+    },
+    {
+      "keys": [ "alt+1" ],
+      "command": {
+        "action": "switchToTab",
+        "index": 0
+      }
+    },
+    {
+      "keys": [ "alt+2" ],
+      "command": {
+        "action": "switchToTab",
+        "index": 1
+      }
+    },
+    {
+      "keys": [ "alt+3" ],
+      "command": {
+        "action": "switchToTab",
+        "index": 2
+      }
+    },
+    {
+      "keys": [ "alt+4" ],
+      "command": {
+        "action": "switchToTab",
+        "index": 3
+      }
+    },
+    {
+      "keys": [ "alt+5" ],
+      "command": {
+        "action": "switchToTab",
+        "index": 4
+      }
+    },
+    {
+      "keys": [ "alt+6" ],
+      "command": {
+        "action": "switchToTab",
+        "index": 5
+      }
+    },
+    {
+      "keys": [ "alt+c" ],
+      "command": "copy"
+    },
+    {
+      "keys": [ "alt+v" ],
+      "command": "paste"
+    }
+  ],
+  "theme": "dark"
 }

@@ -2,7 +2,11 @@
 "call plug#begin(stdpath('data').'/plugged')
 call plug#begin('~/.local/share/nvim/data/plugged')
 
-Plug 'neoclide/coc.nvim', {'branck': 'master', 'do': 'yarn install --frozen-lockfile'}
+Plug 'junegunn/vim-plug'
+Plug 'neoclide/coc.nvim', {
+            \ 'branck': 'master',
+            \ 'do': ':call CocHook()',
+            \ }
 
 Plug 'vim-syntastic/syntastic'
 
@@ -29,7 +33,8 @@ Plug 'honza/vim-snippets'
 Plug 'Konfekt/FastFold'
 
 " Fuzzy finer
-Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() }}
+Plug 'junegunn/fzf.vim'
 " Global finder
 Plug 'brooth/far.vim'
 Plug 'dyng/ctrlsf.vim'
@@ -90,22 +95,6 @@ tnoremap JK <C-\><C-n>
 
 " Ctrl+R
 tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
-
-" Navigate
-" On my 60% keyboard, I have mapped <A-hjkl> to left/down/up/right arrows.
-" So the settings following are useful somewhere, but not on my PC.
-"tnoremap <A-h> <C-\><C-N><C-w>h
-"tnoremap <A-j> <C-\><C-N><C-w>j
-"tnoremap <A-k> <C-\><C-N><C-w>k
-"tnoremap <A-l> <C-\><C-N><C-w>l
-"inoremap <A-h> <C-\><C-N><C-w>h
-"inoremap <A-j> <C-\><C-N><C-w>j
-"inoremap <A-k> <C-\><C-N><C-w>k
-"inoremap <A-l> <C-\><C-N><C-w>l
-"nnoremap <A-h> <C-w>h
-"nnoremap <A-j> <C-w>j
-"nnoremap <A-k> <C-w>k
-"nnoremap <A-l> <C-w>l
 
 " Provider
 if has('unix') || has('macunix')
@@ -649,6 +638,11 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 
 
 " Functions -- {{{
+
+function! CocHook()
+    !yarn install --frozen-lockfile
+    :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-clangd
+endfunction
 
 function! FormatCode()
     if &filetype == 'python'

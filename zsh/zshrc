@@ -116,8 +116,72 @@ alias v="nvim $*"
 alias vi="nvim $*"
 alias vim="nvim $*"
 
-export http_proxy=127.0.0.1:7890
-export https_proxy=127.0.0.1:7890
+
+################################################################################
+#                             PROXY SETTINGS                                   #
+################################################################################
+#
+# Get windows host ip address if it is under WSL environment.
+if [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
+then
+    export PROXY_ADDR=$(cat /etc/resolv.conf | awk '$1=="nameserver" {print $2}')
+else
+    export PROXY_ADDR=127.0.0.1
+fi
+
+# Set default proxy port which will possibly be reformed when meeting new
+# requirements.
+export PROXY_PORT=7890
+export PROXY_HOST=$PROXY_ADDR:$PROXY_PORT
+
+# Lock on /etc/hosts
+tmp_lock=/tmp/zsh-host-lock.txt 
+while [[ -e $tmp_lock ]]
+do
+    echo -ne "Waiting for host file, if you are sure there is no other zsh process running, delete ${tmp_lock}\r"
+done
+
+sudo touch $tmp_lock
+
+# Get hosts file location
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    hosts_path=/etc/hosts
+elif [[ "$OSTYPE" == "darwin" ]]; then
+    hosts_path=/private/etc/hosts
+else
+    echo "Unsupportted os type $OSTYPE"
+    exit 1
+fi
+
+# Set hosts related vars
+hosts=$(cat $hosts_path)
+proxy_host_name=proxyhost
+proxy_host_setting="${PROXY_ADDR} ${proxy_host_name}"
+
+# Add proxy host
+if [[ ! $hosts = *$proxy_host_name* ]]
+then
+    echo $proxy_host_setting | sudo tee -a $hosts_path >> /dev/null
+elif [[ ! $(echo $hosts | awk "\$2==\"${proxy_host_name}\" {print \$1}") = $PROXY_ADDR ]]
+    sudo sed -i "/.*\s*${proxy_host_name}/d" $hosts_path
+    sudo sed -i "\$a\\${proxy_host_setting}" $hosts_path
+then
+fi
+
+# Unlock
+if [[ -e $tmp_lock ]]
+then
+    sudo rm -rf $tmp_lock
+fi
+
+export http_proxy=$PROXY_HOST
+export https_proxy=$PROXY_HOST
+export HTTP_PROXY=$PROXY_HOST
+export HTTPS_PROXY=$PROXY_HOST
+
+################################################################################
+#                             PROXY SETTINGS END                               #
+################################################################################
 
 # LLVM & Clangd
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
@@ -147,8 +211,6 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 # Ack fix
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-export HTTP_PROXY=127.0.0.1:7890
-export HTTPS_PROXY=127.0.0.1:7890
 export NO_PROXY=.docker.internal,$NO_PROXY
 export PATH=$HOME/.yarn/bin:$PATH
 export PATH=$HOME/go/bin:$PATH
