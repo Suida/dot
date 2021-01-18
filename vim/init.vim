@@ -53,7 +53,6 @@ Plug 'Chiel92/vim-autoformat'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " Font-end tool chain
 Plug 'ap/vim-css-color'
-Plug 'posva/vim-vue'
 Plug 'leafOfTree/vim-vue-plugin'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty'
@@ -326,58 +325,6 @@ augroup indent_launch
     autocmd!
     autocmd FileType * IndentLinesEnable
 augroup END
-" }}}
-
-
-" Ycm & Syntastic settings -- {{{
-
-" let s:lsp = '~/.local/share/nvim/plugged/lsp-examples'
-
-"nnoremap <silent> <leader>gf :call FormatCode()<CR>
-"nnoremap <silent> <leader>gd :YcmCompleter GoToDefinition<CR>
-"nnoremap <silent> <leader>gt :YcmCompleter GetType<CR>
-"nnoremap <silent> <leader>gi :YcmCompleter GoToInclude<CR>
-"nnoremap <silent> <leader>gr :YcmCompleter GoToReferences<CR>
-"nnoremap <silent> <leader>gx :YcmCompleter FixIt<CR>
-"nnoremap <silent> <leader>gp :call TogglePreview()<CR>
-"nnoremap <silent> <leader>sr :YcmRestartServer<CR>
-"nnoremap <silent> <leader>sd :YcmShowDetailedDiagnostic<CR>
-"nnoremap <silent> <leader>sl :call ToggleErrors()<CR>
-"nnoremap <silent> <leader>sk :call SyntaxCheck()<CR>
-"nnoremap <silent> <leader>sn :SyntasticReset<CR>
-
-" set completeopt=menuone,menu
-" let g:ycm_confirm_extra_conf = 0
-" let g:ycm_add_preview_to_completeopt = 0
-" let g:ycm_always_populate_location_list = 1
-" "let g:ycm_key_invoke_completion = '<C-Space>'
-" let g:ycm_log_level = 'debug'
-" let g:ycm_semantic_triggers =  {
-"             \ 'c,cpp,c.doxygen,python,java,go,erlang,perl': ['re!\w{2}'],
-"             \ 'rust': ['re!\w{2}'],
-"             \ 'javascript,typescript': ['re!\w{2}'],
-"             \ 'javascriptreact,typescriptreact': ['re!\w{2}'],
-"             \ }
-" let g:ycm_language_server = [
-"             \ {
-"             \   'name': 'vue',
-"             \   'filetypes': [ 'vue' ],
-"             \   'cmdline': [ expand( s:lsp . '/vue/node_modules/.bin/vls' ) ]
-"             \ },
-"             \ {
-"             \   'name': 'vim',
-"             \   'filetypes': [ 'vim' ],
-"             \   'cmdline': [ expand( s:lsp . '/viml/node_modules/.bin/vim-language-server' ), '--stdio' ]
-"             \ },
-"             \ ]
-" let g:syntastic_mode_map = {
-"     \ "mode": "passive",
-"     \ "active_filetypes": [],
-"     \ "passive_filetypes": [] }
-" let g:ycm_filetype_blacklist = {
-"             \ 'vue': 1,
-"             \ 'javascript': 1,
-"             \}
 " }}}
 
 

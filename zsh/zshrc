@@ -119,6 +119,11 @@ alias vim="nvim $*"
 export http_proxy=127.0.0.1:7890
 export https_proxy=127.0.0.1:7890
 
+# LLVM & Clangd
+export LDFLAGS="-L/usr/local/opt/llvm/lib"
+export PATH="/usr/local/opt/llvm/bin:$PATH"
+export CPPFLAGS="-I/usr/local/opt/llvm/include"
+
 # Nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
