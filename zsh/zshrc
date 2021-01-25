@@ -144,7 +144,7 @@ function V
 }
 
 # Get windows host ip address if it is under WSL environment.
-if [[ -e "/etc/sys/kernel/osrelease" ]] && [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
+if [[ -e "/proc/sys/kernel/osrelease" ]] && [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
 then
     PROXY_IP=$(cat /etc/resolv.conf | awk '$1=="nameserver" {print $2}')
 else

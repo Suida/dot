@@ -9,6 +9,7 @@ Plug 'neoclide/coc.nvim', {
             \ }
 
 Plug 'vim-syntastic/syntastic'
+Plug 'Shirk/vim-gas'
 
 " Navigation & developing support
 " File & sign navigator
@@ -319,7 +320,6 @@ augroup END
 
 " Coc.nvim -- {{{
 
-
 " Some servers have issues with backup files, see #649.
 set nobackup
 set nowritebackup
@@ -417,6 +417,8 @@ nnoremap <silent><nowait> <leader>co  :<C-u>CocList outline<cr>
 noremap <silent><nowait> <leader>cs  :<C-u>CocList -I symbols<cr>
 " Resume latest coc list.
 nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
+" Restart coc service
+nnoremap <silent><nowait> <leader>sr  :<C-u>CocRestart<CR>
 
 augroup mygroup
   autocmd!
