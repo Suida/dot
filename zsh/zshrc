@@ -76,7 +76,6 @@ plugins=(
     z
     zsh-autosuggestions
     zsh-syntax-highlighting
-    history
     docker 
     docker-compose
     kubectl
@@ -112,9 +111,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 alias zshconfig="vi ~/.zshrc"
 alias ohmyzsh="vi ~/.oh-my-zsh"
-alias v="nvim $*"
-alias vi="nvim $*"
-alias vim="nvim $*"
+alias nv="nvim $*"
 
 
 ################################################################################

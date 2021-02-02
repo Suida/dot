@@ -130,7 +130,9 @@ set showmatch
 set shiftround
 set textwidth=80
 set encoding=utf-8
-set clipboard=unnamedplus
+if has('nvim')
+    set clipboard=unnamedplus
+endif
 set spelllang=en_us,cjk
 set conceallevel=2
 " Indentation rules and folding
@@ -271,10 +273,12 @@ colorscheme gruvbox
 highlight Identifier guifg=#8FBCBB
 highlight Constant guifg=#8FBCBB
 " Set signs column's color the same as bg
-execute 'hi GitGutterAdd    guifg=' . g:terminal_color_10 . ' ctermfg=2'
-execute 'hi GitGutterChange guifg=' . g:terminal_color_14 . ' ctermfg=3'
-execute 'hi GitGutterDelete guifg=' . g:terminal_color_9  . ' ctermfg=1'
-execute 'hi SignColumn guibg=' . g:terminal_color_0
+if has('nvim')
+    execute 'hi GitGutterAdd    guifg=' . g:terminal_color_10 . ' ctermfg=2'
+    execute 'hi GitGutterChange guifg=' . g:terminal_color_14 . ' ctermfg=3'
+    execute 'hi GitGutterDelete guifg=' . g:terminal_color_9  . ' ctermfg=1'
+    execute 'hi SignColumn guibg=' . g:terminal_color_0
+endif
 " Hide (~) at the end of buffer
 highlight NonText guifg=bg
 " Cursor stuff
@@ -461,6 +465,8 @@ let g:formatters_vue = ['prettier']
 " NERDTree, Git, ctrlsf, startify & Tagbar
 " NERDTree
 let NERDTreeWinPos = 'right'
+let NERDTreeIgnore = ['.*\.swp']
+let NERDTreeShowHidden = 1
 nnoremap <leader>e :NERDTreeToggle<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
