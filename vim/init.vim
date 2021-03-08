@@ -9,6 +9,7 @@ Plug 'neoclide/coc.nvim', {
             \ }
 
 Plug 'vim-syntastic/syntastic'
+Plug 'cespare/vim-toml'
 
 " Navigation & developing support
 " File & sign navigator
@@ -181,10 +182,8 @@ inoremap <C-e> <Esc>A
 inoremap <C-j> <Esc>o
 inoremap <C-k> <Esc>O
 nnoremap <leader>] <C-w><C-]><C-w>T
-nnoremap <leader>WW :w<CR>
-nnoremap <leader>WQ :wq<CR>
-nnoremap <leader>QQ :q<CR>
-nnoremap QQ :q<CR>
+nnoremap <silent> XX :w<CR>
+nnoremap <silent> XC :w \| bd<CR>
 nnoremap <silent> <leader>pp :set paste!<CR>
 nmap <leader>gb ysiw}lysiw{
 nmap <silent> <leader>ft :TableFormat<CR>
@@ -417,6 +416,8 @@ nnoremap <silent><nowait> <leader>co  :<C-u>CocList outline<cr>
 noremap <silent><nowait> <leader>cs  :<C-u>CocList -I symbols<cr>
 " Resume latest coc list.
 nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
+" CocRestart
+nnoremap <silent><nowait> <leader>sr  :<C-u>CocRestart<CR>
 
 augroup mygroup
   autocmd!

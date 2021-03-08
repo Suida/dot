@@ -83,6 +83,8 @@ plugins=(
     golang
     cargo
     yarn
+    cargo
+    rustup
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -115,6 +117,7 @@ alias ohmyzsh="vi ~/.oh-my-zsh"
 alias v="nvim $*"
 alias vi="nvim $*"
 alias vim="nvim $*"
+alias bat="batcat $*"
 
 
 ################################################################################
@@ -131,14 +134,16 @@ fi
 
 # Set default proxy port which will possibly be reformed when meeting new
 # requirements.
-export PROXY_PORT=7890
-export PROXY_HOST=$PROXY_ADDR:$PROXY_PORT
+PROXY_PORT=7890
+PROXY_HOST=$PROXY_ADDR:$PROXY_PORT
+PROXY_URI=http://$PROXY_HOST
 
 # Lock on /etc/hosts
 tmp_lock=/tmp/zsh-host-lock.txt 
 while [[ -e $tmp_lock ]]
 do
     echo -ne "Waiting for host file, if you are sure there is no other zsh process running, delete ${tmp_lock}\r"
+    sleep 2
 done
 
 sudo touch $tmp_lock
@@ -174,10 +179,10 @@ then
     sudo rm -rf $tmp_lock
 fi
 
-export http_proxy=$PROXY_HOST
-export https_proxy=$PROXY_HOST
-export HTTP_PROXY=$PROXY_HOST
-export HTTPS_PROXY=$PROXY_HOST
+export http_proxy=$PROXY_URI
+export https_proxy=$PROXY_URI
+export HTTP_PROXY=$PROXY_URI
+export HTTPS_PROXY=$PROXY_URI
 
 ################################################################################
 #                             PROXY SETTINGS END                               #
