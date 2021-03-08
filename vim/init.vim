@@ -8,16 +8,13 @@ Plug 'neoclide/coc.nvim', {
             \ 'do': ':call CocHook()',
             \ }
 
-Plug 'vim-syntastic/syntastic'
-Plug 'cespare/vim-toml'
-
 " Navigation & developing support
 " File & sign navigator
 Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdtree'
 " Commenter & git utils
 Plug 'tomtom/tcomment_vim'
-Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
 Plug 'tpope/vim-fugitive'
 " Better move
 Plug 'easymotion/vim-easymotion'
@@ -45,7 +42,7 @@ Plug 'mhinz/vim-startify'
 " View
 " Color schemes
 Plug 'arcticicestudio/nord-vim'
-Plug 'sonph/onehalf', {'rtp': 'vim'}
+Plug 'sonph/onehalf'
 Plug 'morhetz/gruvbox'
 Plug 'mhinz/vim-janah'
 " Status / tabline
@@ -54,17 +51,15 @@ Plug 'vim-airline/vim-airline-themes'
 " Indentation line
 Plug 'Yggdroot/indentLine'
 
-" Language support
-Plug 'Chiel92/vim-autoformat'
-Plug 'octol/vim-cpp-enhanced-highlight'
+" Language supports
+Plug 'octol/vim-cpp-enhanced-highlight', { 'for': ['cpp', 'c'] }
 " Font-end tool chain
-Plug 'ap/vim-css-color'
-Plug 'leafOfTree/vim-vue-plugin'
+Plug 'ap/vim-css-color', { 'for': ['css', 'less', 'scss', 'tsx', 'ts', 'vim'] }
+Plug 'leafOfTree/vim-vue-plugin', { 'for': 'vue' }
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 " Go commands
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-
 " Html preview
 Plug 'turbio/bracey.vim'
 " Markdown syntax and preview
@@ -75,8 +70,39 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'jmcantrell/vim-virtualenv'
 Plug 'vim-python/python-syntax'
+" Asm
+Plug 'Shirk/vim-gas', { 'for': 'asm' }
+Plug 'cespare/vim-toml'
+
+" Other utilities
+Plug 'mhinz/vim-rfc'
 
 call plug#end()
+
+autocmd VimEnter *
+  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \|   PlugInstall --sync | q
+  \| endif
+
+function! s:plug_gx()
+  let line = getline('.')
+  let sha  = matchstr(line, '^  \X*\zs\x\{7,9}\ze ')
+  let name = empty(sha) ? matchstr(line, '^[-x+] \zs[^:]\+\ze:')
+                      \ : getline(search('^- .*:$', 'bn'))[2:-2]
+  let uri  = get(get(g:plugs, name, {}), 'uri', '')
+  if uri !~ 'github.com'
+    return
+  endif
+  let repo = matchstr(uri, '[^:/]*/'.name)
+  let url  = empty(sha) ? 'https://github.com/'.repo
+                      \ : printf('https://github.com/%s/commit/%s', repo, sha)
+  call netrw#BrowseX(url, 0)
+endfunction
+
+augroup PlugGx
+  autocmd!
+  autocmd FileType vim-plug nnoremap <buffer> <silent> gx :call <sid>plug_gx()<cr>
+augroup END
 " }}}
 
 
@@ -113,26 +139,27 @@ set secure
 
 " Basics -- {{{
 
-if (has("termguicolors"))
-    set termguicolors
-endif
 syntax on
 filetype plugin indent on
-if has('unix') || has('macunix')
-    set shell=/bin/zsh
-endif
 set wrap
 set ruler
 set hidden
+if (has('termguicolors'))
+    set termguicolors
+endif
+if has('unix') || has('macunix')
+    set shell=/bin/zsh
+endif
+
 set hlsearch
 set incsearch
+
 set showmatch
-set shiftround
 set textwidth=80
 set encoding=utf-8
-set clipboard=unnamedplus
 set spelllang=en_us,cjk
 set conceallevel=2
+set clipboard+=unnamed
 " Indentation rules and folding
 set tabstop=4
 set softtabstop=4
@@ -144,7 +171,8 @@ set autoindent
 set backspace=indent,eol,start
 set autoread
 set guicursor+=n:blinkon300-nCursor,i:hor50-blinkon300
-if has("autocmd")
+set formatoptions+=jn
+if has('autocmd')
     " Jump to the line viewed at last time
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
     " Reload file every time the cursor get into a buffer
@@ -163,42 +191,61 @@ execute 'set undodir=' . g:undo_path
 
 set undolevels=1000
 set undoreload=10000
+
+set ttimeout
+set ttimeoutlen=100
 " }}}
 
 
 " Global key mappings -- {{{
 
 let mapleader = " "
+
 " Vimrc
 nnoremap <leader>vs :vsplit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
+
 " Editting
 inoremap jk <ESC>
 inoremap Jk <C-\><C-n>
 inoremap JK <C-\><C-n>
 inoremap jjk jk
+nnoremap <leader>i vit<Esc>i
 
 inoremap <C-e> <Esc>A
 inoremap <C-j> <Esc>o
 inoremap <C-k> <Esc>O
 nnoremap <leader>] <C-w><C-]><C-w>T
-nnoremap <silent> XX :w<CR>
-nnoremap <silent> XC :w \| bd<CR>
+nnoremap <silent> XC :w<CR>
+nnoremap <silent> XX :w \| bd<CR>
 nnoremap <silent> <leader>pp :set paste!<CR>
 nmap <leader>gb ysiw}lysiw{
 nmap <silent> <leader>ft :TableFormat<CR>
+nnoremap <silent> - :m .+1<CR>
+nnoremap <silent> _ :m .-2<CR>
+
 " Navigation
-nnoremap <C-j> 10j
-nnoremap <C-k> 10k
 noremap <expr>0 col('.') == 1 ? '^': '0'
+nnoremap <C-j> 15j
+nnoremap <C-k> 15k
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
 nnoremap <C-c>h :tabp <CR>
 nnoremap <C-c>l :tabn <CR>
 nnoremap <left> :tabp <CR>
 nnoremap <right> :tabn <CR>
 inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
+nnoremap <C-l> :tabn<CR>
+nnoremap <C-h> :tabp<CR>
+tnoremap <C-l> <C-\><C-n>:tabn<CR>
+tnoremap <C-h> <C-\><C-n>:tabp<CR>
+nnoremap <silent> <leader>tl :tabs<CR>
+nnoremap <leader>h <C-w>h
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
+tnoremap <silent> <C-w> <C-\><C-n><C-w>
 
 nnoremap <leader>bt :b 
 nnoremap <leader>bs :vert sb 
@@ -214,40 +261,20 @@ nnoremap <silent> <leader>6 :normal 6gt<CR>
 nnoremap <silent> <leader>7 :normal 7gt<CR>
 nnoremap <silent> <leader>8 :normal 8gt<CR>
 nnoremap <silent> <leader>9 :normal 9gt<CR>
-nnoremap <silent> <leader>tl :tabs<CR>
-nnoremap <silent> - :m .+1<CR>
-nnoremap <silent> _ :m .-2<CR>
-tnoremap <silent> <C-w> <C-\><C-n><C-w>
-nnoremap <C-l> :tabn<CR>
-nnoremap <C-h> :tabp<CR>
-tnoremap <C-l> <C-\><C-n>:tabn<CR>
-tnoremap <C-h> <C-\><C-n>:tabp<CR>
-nnoremap <leader>h <C-w>h
-nnoremap <leader>j <C-w>j
-nnoremap <leader>k <C-w>k
-nnoremap <leader>l <C-w>l
+" Use <space>sl to clear the highlighting of :set hlsearch.
+nnoremap <silent> <leader>sl :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+
 " Command
 nnoremap ! :!
-" Arrows are not suggested
-nnoremap <up> <nop>
-nnoremap <down> <nop>
-inoremap <up> <nop>
-inoremap <down> <nop>
 " Spell check
 nnoremap <leader>sw 1z=
 nnoremap <leader>ss :set spell!<CR>
-" The reason why highlights disapeared is just this command
-" This was introduced to fix unnecessary spell checking highlights, which is
-" useless now, so it is commented out.
-"autocmd BufRead,BufNewFile * :call IgnoreCustomItems()
 " Copy & paste
 noremap <leader>y "*y
 noremap <leader>p "*p
 " Search
 nnoremap / /\v
 vnoremap / /\v
-" Edit current tag
-nnoremap <leader>i vit<Esc>i
 " Abbreviations
 iabbrev @@ suidar@foxmail.com
 iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
@@ -264,32 +291,35 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-colorscheme gruvbox
-" These 2 colors of nord theme are quite suitable to gruvbox
-highlight Identifier guifg=#8FBCBB
-highlight Constant guifg=#8FBCBB
-" Set signs column's color the same as bg
-execute 'hi GitGutterAdd    guifg=' . g:terminal_color_10 . ' ctermfg=2'
-execute 'hi GitGutterChange guifg=' . g:terminal_color_14 . ' ctermfg=3'
-execute 'hi GitGutterDelete guifg=' . g:terminal_color_9  . ' ctermfg=1'
-execute 'hi SignColumn guibg=' . g:terminal_color_0
-" Hide (~) at the end of buffer
-highlight NonText guifg=bg
-" Cursor stuff
-highlight CursorLineNr guifg=white
-highlight nCursor guifg=white guibg=black gui=reverse
-
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
+colorscheme janah
+let g:_color = get(g:, 'colors_name', 'default') 
+if g:_color == 'janah'
+    highlight LineNr guifg=#878787 ctermfg=102 guibg=#262626 ctermbg=237 gui=NONE cterm=NONE
+    highlight CursorLineNr guifg=#878787 ctermfg=102 guibg=#303030 ctermbg=237 gui=NONE cterm=NONE
+    highlight SignColumn ctermfg=NONE guibg=#262626 ctermbg=237 gui=NONE cterm=NONE
+    highlight GitGutterAdd guifg=#87dfdf ctermfg=119 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
+    highlight GitGutterDelete guifg=#df5f5f ctermfg=167 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
+    highlight GitGutterChange guifg=#ffff5f ctermfg=227 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
+    highlight GitGutterText guifg=#ff5f5f ctermfg=203 guibg=#5f0000 ctermbg=52 gui=bold cterm=bold
+elseif g:_color == 'gruvbox'
+    " These 2 colors of nord theme are quite suitable to gruvbox
+    highlight Identifier guifg=#8FBCBB
+    highlight Constant guifg=#8FBCBB
+    " Set signs column's color the same as bg
+    if has('nvim')
+        execute 'hi GitGutterAdd    guifg=' . g:terminal_color_10 . ' ctermfg=2'
+        execute 'hi GitGutterChange guifg=' . g:terminal_color_14 . ' ctermfg=3'
+        execute 'hi GitGutterDelete guifg=' . g:terminal_color_9  . ' ctermfg=1'
+        execute 'hi SignColumn guibg=' . g:terminal_color_0
+    endif
+    " Hide (~) at the end of buffer
+    highlight NonText guifg=bg
+    Cursor stuff
+    highlight CursorLineNr guifg=white
+    highlight nCursor guifg=white guibg=black gui=reverse
 endif
-" This command will enforce the background to be dark not matter what color
-" scheme is set
-"hi Normal guibg=NONE ctermbg=NONE
-"hi TabLineFill guibg=NONE ctermfg=NONE ctermbg=NONE
+
 " Airline
-let g:airline_theme='gruvbox'
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 let g:airline_powerline_fonts = 1
@@ -308,16 +338,12 @@ let g:airline#extensions#virtualenv#enabled = 1
 let g:airline#extensions#ycm#enabled = 1
 
 " indentLine
-let g:indentLine_enabled = 0
-augroup indent_launch
-    autocmd!
-    autocmd FileType * IndentLinesEnable
-augroup END
+let g:indentLine_leadingSpaceChar = '·'
+let g:indentLine_leadingSpaceEnabled = 1
 " }}}
 
 
 " Coc.nvim -- {{{
-
 
 " Some servers have issues with backup files, see #649.
 set nobackup
@@ -331,7 +357,7 @@ set shortmess+=c
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-if has("patch-8.1.1564")
+if has('nvim-0.5.0') || has('patch-8.1.1564')
   " Recently vim can merge signcolumn and number column into one
   set signcolumn=number
 else
@@ -416,10 +442,10 @@ nnoremap <silent><nowait> <leader>co  :<C-u>CocList outline<cr>
 noremap <silent><nowait> <leader>cs  :<C-u>CocList -I symbols<cr>
 " Resume latest coc list.
 nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
-" CocRestart
+" Restart coc service
 nnoremap <silent><nowait> <leader>sr  :<C-u>CocRestart<CR>
 
-augroup mygroup
+augroup CocGroup
   autocmd!
   " Setup formatexpr specified filetype(s).
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
@@ -446,20 +472,11 @@ endfunction
 " Snippet
 let g:UltiSnipsExpandTrigger = '<C-l>'
 
-
-" Code format
-let g:python_bin_dir = '/' . join(split(expand(g:python3_host_prog), '/')[0:-2], '/') . '/'
-let g:autoformat_verbosemode=1
-let g:formatdef_black =  '"' . g:python_bin_dir . 'black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
-"let g:formatdef_black = '"~/.pyenv/versions/nvim/bin/black -S -q ".(&textwidth ? "-l".&textwidth : "")." -"'
-let g:formatters_python = ['black']
-let g:formatdef_prettier = '"~/.nvm/versions/node/v12.18.2/bin/prettier --parser vue"'
-let g:formatters_vue = ['prettier']
-
-
 " NERDTree, Git, ctrlsf, startify & Tagbar
 " NERDTree
 let NERDTreeWinPos = 'right'
+let NERDTreeIgnore = ['.*\.swp']
+let NERDTreeShowHidden = 1
 nnoremap <leader>e :NERDTreeToggle<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
@@ -541,6 +558,7 @@ let g:tagbar_type_cpp = {
          \ 'union'     : 'u'
      \ }
  \ }
+let g:typescript_use_builtin_tagbar_defs = 0
 " }}}
 
 
@@ -567,21 +585,7 @@ let g:go_test_show_name = 1
 
 
 " Python
-" Highlight and checker of syntastic, all other stuffs are originated from jedi
-let g:python_highlight_all = 1
-let syntastic_python_checkers = ['pylint']
-
-augroup pythonAutocmd
-    autocmd!
-    autocmd FileType python let b:syntastic_python_flake8_args =
-        \ get(g:, 'syntastic_python_flake8_args', '') .
-        \ FindConfig('-c', '.flake8', expand('%:p:h'))
-        "\ FindConfig('-c', 'tox.ini', expand('%:p:h'))
-        "\ FindConfig('-c', 'setup.cfg', expand('%:p:h'))
-    " Highlight python constant
-    autocmd FileType python :call HighlightUpperCaseCamel()
-augroup END
-
+" Python configs has outdated
 
 " Front Development
 
@@ -643,83 +647,6 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 function! CocHook()
     !yarn install --frozen-lockfile
     :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-clangd
-endfunction
-
-function! FormatCode()
-    if &filetype == 'python'
-        Autoformat
-    elseif &filetype == 'vue'
-        Autoformat
-        "call FormatVue()
-    else
-        YcmCompleter Format
-    endif
-endfunction
-
-function! FormatVue()
-    let s:lines = nvim_buf_get_lines(buffer_number('%'), 0, -1, 1)
-    let s:lines = split(system('prettier --parser vue', join(s:lines, "\n")), "\n")
-    call nvim_buf_set_lines(buffer_number('%'), 0, -1, 0, s:lines)
-    echo "Format succeed!"
-endfunction
-
-function! SyntaxCheck()
-    if &filetype == 'python'
-        SyntasticCheck
-    else
-        YcmForceCompileAndDiagnostics
-    endif
-endfunction
-
-function! ToggleErrors()
-    if empty(filter(tabpagebuflist(), 'getbufvar(v:val, "&buftype") is# "quickfix"'))
-        " No location/quickfix list shown, open syntastic error location panel
-        " Nothing was closed, open syntastic error location panel
-        Errors
-    else
-        lclose
-    endif
-endfunction
-
-function! FindConfig(prefix, what, where)
-    let cfg = findfile(a:what, fnameescape(a:where) . ';')
-    return cfg !=# '' ? ' ' . a:prefix . ' ' . shellescape(cfg) : ''
-endfunction
-
-function! PreviewWindowOpened()
-    for nr in range(1, winnr('$'))
-        if getwinvar(nr, '&pvw') == 1
-            return 1
-        endif
-    endfor
-endfunction
-
-function! TogglePreview()
-    if PreviewWindowOpened()
-        pclose
-    else
-        YcmCompleter GetDoc
-    endif
-endfunction
-
-function! IgnoreCustomItems()
-    syn match CamelCase0 /\<[A-Z][a-z]\+[A-Z].\{-}\>/ contains=@NoSpell transparent
-    syn match CamelCase1 /\<[a-z]\+[A-Z].\{-}\>/ contains=@NoSpell transparent
-    syn match SnakeCase0 /\<\w*_\+\w\+\>/ contains=@NoSpell transparent
-    syn match UpperCase /\<[A-Z0-9]\+\>/ contains=@NoSpell transparent
-    syn match ShortWord /\<\w\{1,4}\>/ contains=@NoSpell transparent
-    syn cluster Spell add=CamelCase0
-    syn cluster Spell add=CamelCase1
-    syn cluster Spell add=SnakeCase0
-    syn cluster Spell add=ShortWord
-    syn cluster Spell add=UpperCase
-endfunction
-
-function! HighlightUpperCaseCamel()
-    " Python constants are always written as identifiers only containing upper
-    " case charactors, numbers and underscores.
-    syn match pythonUpperCamel '\<[A-Z_]\+[A-Z0-9_]\+\>' display
-    highlight def link pythonUpperCamel Constant
 endfunction
 " }}}
 

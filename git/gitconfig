@@ -16,6 +16,7 @@
     tool = nvimdiff
 [difftool]
     prompt = false
+    trustExitCode = true
 [difftool "nvimdiff"]
     cmd = "nvim -d -R \"$LOCAL\" \"$REMOTE\""
 [merge]
