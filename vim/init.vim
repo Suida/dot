@@ -476,7 +476,7 @@ let g:UltiSnipsExpandTrigger = '<C-l>'
 let NERDTreeWinPos = 'right'
 let NERDTreeIgnore = ['.*\.swp']
 let NERDTreeShowHidden = 1
-nnoremap <leader>e :NERDTreeToggle<CR>
+nnoremap <silent> <leader>e :NERDTreeToggle<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 " Git
@@ -620,7 +620,7 @@ let g:bracey_eval_on_save = 1
 let g:bracey_auto_start_server = 1
 augroup html_indent
     autocmd!
-    autocmd FileType javascript,css,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
+    autocmd FileType javascript,css,less,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
 augroup END
 
 
