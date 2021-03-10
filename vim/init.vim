@@ -72,6 +72,7 @@ Plug 'jmcantrell/vim-virtualenv'
 Plug 'vim-python/python-syntax'
 " Asm
 Plug 'Shirk/vim-gas', { 'for': 'asm' }
+Plug 'cespare/vim-toml'
 
 " Other utilities
 Plug 'mhinz/vim-rfc'
@@ -216,7 +217,7 @@ inoremap <C-j> <Esc>o
 inoremap <C-k> <Esc>O
 nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <silent> XC :w<CR>
-nnoremap <silent> XX :execute ':w \| bd'<CR>
+nnoremap <silent> XX :w \| bd<CR>
 nnoremap <silent> <leader>pp :set paste!<CR>
 nmap <leader>gb ysiw}lysiw{
 nmap <silent> <leader>ft :TableFormat<CR>

@@ -82,6 +82,8 @@ plugins=(
     golang
     cargo
     yarn
+    cargo
+    rustup
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -111,7 +113,9 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 alias zshconfig="vi ~/.zshrc"
 alias ohmyzsh="vi ~/.oh-my-zsh"
-alias nv="nvim $*"
+alias v="nvim $*"
+alias vi="nvim $*"
+alias bat="batcat $*"
 
 
 ################################################################################
@@ -152,7 +156,9 @@ fi
 # Set default proxy port which will possibly be reformed when meeting new
 # requirements.
 PROXY_PORT=7890
-PROXY_ADDR=$PROXY_IP:$PROXY_PORT
+PROXY_HOST=$PROXY_IP:$PROXY_PORT
+PROXY_URI=http://$PROXY_HOST
+
 SED=sed
 
 # Get hosts file location depending on os type
@@ -204,10 +210,10 @@ fi
 
 V $tmp_lock
 
-export http_proxy=http://$PROXY_ADDR
-export https_proxy=http://$PROXY_ADDR
-export HTTP_PROXY=http://$PROXY_ADDR
-export HTTPS_PROXY=http://$PROXY_ADDR
+export http_proxy=$PROXY_URI
+export https_proxy=$PROXY_URI
+export HTTP_PROXY=$PROXY_URI
+export HTTPS_PROXY=$PROXY_URI
 
 ################################################################################
 #                             PROXY SETTINGS END                               #
