@@ -25,7 +25,3 @@
     keepBackup = false
 [mergetool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
-[https]
-	proxy = proxyhost:7890
-[http]
-	proxy = proxyhost:7890
