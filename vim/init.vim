@@ -40,7 +40,7 @@ Plug 'mhinz/vim-startify'
 " View
 " Color schemes
 Plug 'arcticicestudio/nord-vim'
-Plug 'sonph/onehalf'
+Plug 'sonph/onehalf', { 'rtp': 'vim/' }
 Plug 'morhetz/gruvbox'
 Plug 'mhinz/vim-janah'
 Plug 'joshdick/onedark.vim'
@@ -53,7 +53,7 @@ Plug 'Yggdroot/indentLine'
 " Language supports
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': ['cpp', 'c'] }
 " Font-end tool chain
-Plug 'ap/vim-css-color', { 'for': [ 'css', 'less', 'scss', 'tsx', 'ts', 'vim', ] }
+Plug 'ap/vim-css-color', { 'for': [ 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', ] }
 Plug 'leafOfTree/vim-vue-plugin', { 'for': 'vue' }
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty', { 'for': [ 'tsx', 'jsx', ] }
@@ -295,7 +295,7 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-colorscheme onedark
+colorscheme onehalflight
 let g:_color = get(g:, 'colors_name', 'default') 
 if g:_color == 'janah'
     highlight LineNr guifg=#878787 ctermfg=102 guibg=#262626 ctermbg=237 gui=NONE cterm=NONE
@@ -318,9 +318,9 @@ elseif g:_color == 'gruvbox'
     endif
     " Hide (~) at the end of buffer
     highlight NonText guifg=bg
-    Cursor stuff
-    highlight CursorLineNr guifg=white
-    highlight nCursor guifg=white guibg=black gui=reverse
+    " Cursor stuff
+    " highlight CursorLineNr guifg=white
+    " highlight nCursor guifg=white guibg=black gui=reverse
 endif
 highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
 
@@ -652,7 +652,8 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 " Functions -- {{{
 
 function! CocHook()
-    !yarn install --frozen-lockfile
+    !npm install --frozen-lockfile
+    !npm run build
     :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-clangd
 endfunction
 " }}}
