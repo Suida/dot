@@ -191,28 +191,28 @@ fi
 
 tmp_lock=/tmp/zsh-host-lock.txt 
 
-P $tmp_lock
-
-# Set hosts related vars
-hosts=$(cat $hosts_path)
-proxy_host_name=proxyhost
-proxy_host_setting="${PROXY_IP} ${proxy_host_name}"
-
-# Add proxy host
-if [[ ! $hosts = *$proxy_host_name* ]]
-then
-    echo "Original hosts file content:"
-    $SED 's/^/... /' $hosts_path
-    echo $proxy_host_setting | sudo tee -a $hosts_path >> /dev/null
-elif [[ ! $(echo $hosts | grep $proxy_host_name) == *$PROXY_IP* ]]
-then
-    echo "Original hosts file content:"
-    $SED 's/^/... /' $hosts_path
-    sudo $SED -i "/.*\s*${proxy_host_name}/d" $hosts_path
-    sudo $SED -i "\$a\\${proxy_host_setting}" $hosts_path
-fi
-
-V $tmp_lock
+# P $tmp_lock
+#
+# # Set hosts related vars
+# hosts=$(cat $hosts_path)
+# proxy_host_name=proxyhost
+# proxy_host_setting="${PROXY_IP} ${proxy_host_name}"
+#
+# # Add proxy host
+# if [[ ! $hosts = *$proxy_host_name* ]]
+# then
+#     echo "Original hosts file content:"
+#     $SED 's/^/... /' $hosts_path
+#     echo $proxy_host_setting | sudo tee -a $hosts_path >> /dev/null
+# elif [[ ! $(echo $hosts | grep $proxy_host_name) == *$PROXY_IP* ]]
+# then
+#     echo "Original hosts file content:"
+#     $SED 's/^/... /' $hosts_path
+#     sudo $SED -i "/.*\s*${proxy_host_name}/d" $hosts_path
+#     sudo $SED -i "\$a\\${proxy_host_setting}" $hosts_path
+# fi
+#
+# V $tmp_lock
 
 export http_proxy=$PROXY_URI
 export https_proxy=$PROXY_URI
@@ -265,3 +265,6 @@ function insource() {
 }
 autoload -U add-zsh-hook
 add-zsh-hook -Uz chpwd insource
+
+# Fix tmux color
+# export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#585c64"

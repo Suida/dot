@@ -27,8 +27,6 @@ Plug 'tpope/vim-unimpaired'
 Plug 'mattn/emmet-vim'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-" Better Performance
-Plug 'Konfekt/FastFold'
 
 " Fuzzy finer
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() }}
@@ -42,9 +40,10 @@ Plug 'mhinz/vim-startify'
 " View
 " Color schemes
 Plug 'arcticicestudio/nord-vim'
-Plug 'sonph/onehalf'
+Plug 'sonph/onehalf', { 'rtp': 'vim/' }
 Plug 'morhetz/gruvbox'
 Plug 'mhinz/vim-janah'
+Plug 'joshdick/onedark.vim'
 " Status / tabline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -54,25 +53,25 @@ Plug 'Yggdroot/indentLine'
 " Language supports
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': ['cpp', 'c'] }
 " Font-end tool chain
-Plug 'ap/vim-css-color', { 'for': ['css', 'less', 'scss', 'tsx', 'ts', 'vim'] }
+Plug 'ap/vim-css-color', { 'for': [ 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', ] }
 Plug 'leafOfTree/vim-vue-plugin', { 'for': 'vue' }
 Plug 'HerringtonDarkholme/yats.vim'
-Plug 'maxmellon/vim-jsx-pretty'
+Plug 'maxmellon/vim-jsx-pretty', { 'for': [ 'tsx', 'jsx', ] }
 " Go commands
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Html preview
-Plug 'turbio/bracey.vim'
+Plug 'turbio/bracey.vim', { 'for': [ 'html', ] }
 " Markdown syntax and preview
 Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'plasticboy/vim-markdown', { 'for': [ 'markdown', ] }
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': [ 'markdown', 'vim-plug', ] }
 " Python utils // The indent really saved my life
-Plug 'Vimjas/vim-python-pep8-indent'
-Plug 'jmcantrell/vim-virtualenv'
-Plug 'vim-python/python-syntax'
+Plug 'Vimjas/vim-python-pep8-indent', { 'for': [ 'python', ] }
+Plug 'jmcantrell/vim-virtualenv', { 'for': [ 'python', ] }
+Plug 'vim-python/python-syntax', { 'for': [ 'python', ] }
 " Asm
 Plug 'Shirk/vim-gas', { 'for': 'asm' }
-Plug 'cespare/vim-toml'
+Plug 'cespare/vim-toml', { 'for': [ 'toml', ] }
 
 " Other utilities
 Plug 'mhinz/vim-rfc'
@@ -263,6 +262,11 @@ nnoremap <silent> <leader>8 :normal 8gt<CR>
 nnoremap <silent> <leader>9 :normal 9gt<CR>
 " Use <space>sl to clear the highlighting of :set hlsearch.
 nnoremap <silent> <leader>sl :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+" Adaption for easymotion
+nmap <silent> F <Plug>(easymotion-f)
+nmap <silent> T <Plug>(easymotion-t)
+nmap <silent> <leader>J <Plug>(easymotion-j)
+nmap <silent> <leader>K <Plug>(easymotion-k)
 
 " Command
 nnoremap ! :!
@@ -281,7 +285,7 @@ iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
 " }}}
 
 
-" View and Airline/ indentLine plugin settings -- {{{
+" View and Airline / indentLine plugin settings -- {{{
 
 " Color
 set number
@@ -291,7 +295,7 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-colorscheme janah
+colorscheme onehalflight
 let g:_color = get(g:, 'colors_name', 'default') 
 if g:_color == 'janah'
     highlight LineNr guifg=#878787 ctermfg=102 guibg=#262626 ctermbg=237 gui=NONE cterm=NONE
@@ -314,10 +318,11 @@ elseif g:_color == 'gruvbox'
     endif
     " Hide (~) at the end of buffer
     highlight NonText guifg=bg
-    Cursor stuff
-    highlight CursorLineNr guifg=white
-    highlight nCursor guifg=white guibg=black gui=reverse
+    " Cursor stuff
+    " highlight CursorLineNr guifg=white
+    " highlight nCursor guifg=white guibg=black gui=reverse
 endif
+highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
 
 " Airline
 let g:airline_left_sep = ''
@@ -647,7 +652,8 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 " Functions -- {{{
 
 function! CocHook()
-    !yarn install --frozen-lockfile
+    !npm install --frozen-lockfile
+    !npm run build
     :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-clangd
 endfunction
 " }}}
