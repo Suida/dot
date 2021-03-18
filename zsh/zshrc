@@ -72,7 +72,6 @@ plugins=(
     git
     history
     vscode
-    pyenv
     z
     zsh-autosuggestions
     zsh-syntax-highlighting

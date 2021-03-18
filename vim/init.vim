@@ -159,6 +159,21 @@ set encoding=utf-8
 set spelllang=en_us,cjk
 set conceallevel=2
 set clipboard+=unnamed
+" Under Wsl environment
+if has('windows') && has('unix')
+    let g:clipboard = {
+              \   'name': 'win32yank-wsl',
+              \   'copy': {
+              \      '+': 'win32yank.exe -i --crlf',
+              \      '*': 'win32yank.exe -i --crlf',
+              \    },
+              \   'paste': {
+              \      '+': 'win32yank.exe -o --lf',
+              \      '*': 'win32yank.exe -o --lf',
+              \   },
+              \   'cache_enabled': 0,
+              \ }
+endif
 " Indentation rules and folding
 set tabstop=4
 set softtabstop=4
