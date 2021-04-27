@@ -51,10 +51,11 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'Yggdroot/indentLine'
 
 " Language supports
+Plug 'sheerun/vim-polyglot'
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': ['cpp', 'c'] }
 " Font-end tool chain
 Plug 'ap/vim-css-color', { 'for': [ 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', ] }
-Plug 'leafOfTree/vim-vue-plugin', { 'for': 'vue' }
+" Plug 'posva/vim-vue', { 'for': 'vue' }
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty', { 'for': [ 'tsx', 'jsx', ] }
 " Go commands
@@ -66,15 +67,17 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown', { 'for': [ 'markdown', ] }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': [ 'markdown', 'vim-plug', ] }
 " Python utils // The indent really saved my life
-Plug 'Vimjas/vim-python-pep8-indent', { 'for': [ 'python', ] }
+" Plug 'Vimjas/vim-python-pep8-indent', { 'for': [ 'python', ] }
 Plug 'jmcantrell/vim-virtualenv', { 'for': [ 'python', ] }
-Plug 'vim-python/python-syntax', { 'for': [ 'python', ] }
+" Plug 'vim-python/python-syntax', { 'for': [ 'python', ] }
 " Asm
 Plug 'Shirk/vim-gas', { 'for': 'asm' }
 Plug 'cespare/vim-toml', { 'for': [ 'toml', ] }
 
 " Other utilities
 Plug 'mhinz/vim-rfc'
+Plug 'vim-scripts/Drawit'
+Plug 'voldikss/vim-translator'
 
 call plug#end()
 
@@ -83,25 +86,47 @@ autocmd VimEnter *
   \|   PlugInstall --sync | q
   \| endif
 
-function! s:plug_gx()
-  let line = getline('.')
-  let sha  = matchstr(line, '^  \X*\zs\x\{7,9}\ze ')
-  let name = empty(sha) ? matchstr(line, '^[-x+] \zs[^:]\+\ze:')
-                      \ : getline(search('^- .*:$', 'bn'))[2:-2]
-  let uri  = get(get(g:plugs, name, {}), 'uri', '')
-  if uri !~ 'github.com'
-    return
-  endif
-  let repo = matchstr(uri, '[^:/]*/'.name)
-  let url  = empty(sha) ? 'https://github.com/'.repo
-                      \ : printf('https://github.com/%s/commit/%s', repo, sha)
-  call netrw#BrowseX(url, 0)
+" function! s:plug_gx()
+"   let line = getline('.')
+"   echo 'line: ' . line
+"   let sha  = matchstr(line, '^  \X*\zs\x\{7,9}\ze ')
+"   echo 'sha: ' . sha
+"   let name = empty(sha) ? matchstr(line, '^[-x+] \zs[^:]\+\ze:')
+"                       \ : getline(search('^- .*:$', 'bn'))[2:-2]
+"   let uri  = get(get(g:plugs, name, {}), 'uri', '')
+"   echo 'uri: ' . uri
+"   if uri !~ 'github.com'
+"     return
+"   endif
+"   let repo = matchstr(uri, '[^:/]*/'.name)
+"   echo 'repo: ' . repo
+"   let url  = empty(sha) ? 'https://github.com/'.repo
+"                       \ : printf('https://github.com/%s/commit/%s', repo, sha)
+"   echo 'url: ' . url
+"   call netrw#BrowseX(url, 0)
+" endfunction
+let g:netrw_browsex_viewer = "cmd.exe /C start"
+function! Lite_gx()
+    let line = getline('.')
+    let url = ''
+    if stridx(line, 'Plug') != 0
+        let url = matchstr(line, '\S*://\(\S\|\.\)*')
+    else
+        let url = 'https://github.com/' . matchlist(getline('.'), 'Plug\s\s*''\(.*\)''')[1]
+    endif
+    if strlen(url) != 0
+        call netrw#BrowseX(url, 0)
+    endif
 endfunction
 
-augroup PlugGx
-  autocmd!
-  autocmd FileType vim-plug nnoremap <buffer> <silent> gx :call <sid>plug_gx()<cr>
-augroup END
+" augroup PlugGx
+"   autocmd!
+"   autocmd FileType vim-plug nnoremap <buffer> <silent> gx :call <sid>plug_gx()<cr>
+" augroup END
+
+" nnoremap <buffer> <silent> gx :call <sid>plug_gx()<cr>
+nnoremap <silent> gx :call Lite_gx()<cr>
+
 " }}}
 
 
@@ -159,6 +184,7 @@ set encoding=utf-8
 set spelllang=en_us,cjk
 set conceallevel=2
 set clipboard+=unnamed
+set noswapfile
 " Under Wsl environment
 if has('windows') && has('unix')
     let g:clipboard = {
@@ -280,6 +306,8 @@ nnoremap <silent> <leader>sl :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<C
 " Adaption for easymotion
 nmap <silent> F <Plug>(easymotion-f)
 nmap <silent> T <Plug>(easymotion-t)
+nmap <silent> <leader>W <Plug>(easymotion-w)
+nmap <silent> <leader>B <Plug>(easymotion-b)
 nmap <silent> <leader>J <Plug>(easymotion-j)
 nmap <silent> <leader>K <Plug>(easymotion-k)
 
@@ -297,6 +325,11 @@ vnoremap / /\v
 " Abbreviations
 iabbrev @@ suidar@foxmail.com
 iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
+" Check color group under cursor
+nnoremap <silent> <leader>cg :echom string(CheckColorGroup())<CR>
+nnoremap <silent> <leader>ch :so $VIMRUNTIME/syntax/hitest.vim<CR>
+" Translate
+nnoremap <silent> <leader>tr :Translate<CR>
 " }}}
 
 
@@ -337,7 +370,12 @@ elseif g:_color == 'gruvbox'
     " highlight CursorLineNr guifg=white
     " highlight nCursor guifg=white guibg=black gui=reverse
 endif
-highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
+if g:_color != 'janah'
+    highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
+endif
+function! CheckColorGroup()
+    return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunction
 
 " Airline
 let g:airline_left_sep = ''
@@ -535,6 +573,7 @@ let g:startify_session_before_save = [
             \ 'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
             \ 'execute g:startify_tmp_winnr . "wincmd w"'
             \ ]
+let g:startify_session_persistence = 1
 autocmd VimEnter *
             \   if !argc()
             \ |   Startify
@@ -607,7 +646,17 @@ let g:go_test_show_name = 1
 
 
 " Python
-" Python configs has outdated
+au FileType python let b:coc_root_patterns = [
+    \ '.git',
+    \ '.env',
+    \ 'venv',
+    \ '.venv',
+    \ 'setup.cfg',
+    \ 'setup.py',
+    \ 'pyrightconfig.json',
+    \ '.python-version',
+    \ ]
+let g:python_highlight_all = 1
 
 " Front Development
 
@@ -625,13 +674,6 @@ let g:front_end_filetypes = {
 
 " Recommanded by coc-css
 autocmd FileType scss setl iskeyword+=@-@
-" vim-vue-plugin
-let g:vim_vue_plugin_use_less = 1
-let g:vim_vue_plugin_use_sass = 1
-let g:vim_vue_plugin_use_scss = 1
-let g:vim_vue_plugin_use_stylus = 1
-let g:vim_vue_plugin_highlight_vue_attr = 1
-let g:vim_vue_plugin_highlight_vue_keyword = 1
 "autocmd BufRead,BufNewFile *.js,*jsx set filetype=javascript
 "autocmd BufRead,BufNewFile *.ts,*tsx set filetype=typescript
 
@@ -669,7 +711,7 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 function! CocHook()
     !npm install --frozen-lockfile
     !npm run build
-    :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-clangd
+    :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-cssmodules coc-clangd coc-rust-analyzer
 endfunction
 " }}}
 
