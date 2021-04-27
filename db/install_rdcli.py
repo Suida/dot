@@ -1,12 +1,13 @@
 #! /bin/env python
-from sys import exit
 from pathlib import Path
 from subprocess import getstatusoutput
 
 
 def run():
-    src = Path('rdcli')
-    dst = Path.home() / 'bin' / 'rdcli'
+    dir = Path.home() / 'bin'
+    dir.mkdir(parents=True, exist_ok=True)
+    src = Path(__file__).parent / 'rdcli'
+    dst = dir / 'rdcli'
     dst.symlink_to(src.absolute())
 
 
