@@ -114,7 +114,22 @@ alias zshconfig="vi ~/.zshrc"
 alias ohmyzsh="vi ~/.oh-my-zsh"
 alias v="nvim $*"
 alias vi="nvim $*"
-alias bat="batcat $*"
+
+
+if [[ -e "/proc/sys/kernel/osrelease" ]] && [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
+then
+    function open
+    {
+        if [[ $1 && ! -e $1 ]]
+        then
+            echo "File not found: $1" 1>&2
+            exit 1
+        fi
+        distro_name=$(awk 'BEGIN{FS="="} $1=="DISTRIB_ID" {print $2}' /etc/lsb-release)-$(awk 'BEGIN{FS="="} $1=="DISTRIB_RELEASE" {print $2}' /etc/lsb-release)
+        absp=$(echo -E '\\wsl$\'$distro_name$(pwd)/$1 | sed 's|\/|\\|g')
+        cmd.exe /C start $absp
+    }
+fi
 
 
 ################################################################################
@@ -267,4 +282,22 @@ autoload -U add-zsh-hook
 add-zsh-hook -Uz chpwd insource
 
 # Fix tmux color
-# export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#585c64"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#989cb4"
+
+# Ninja completion
+fpath=(/home/hugh/workspace/ninja-1.10.2/misc/zsh-completion $fpath)
+
+# Bat theme
+export BAT_THEME=OneHalfLight
+
+# Pipx & pipenv
+export PATH="$PATH:/home/hugh/.local/bin"
+autoload -U bashcompinit
+bashcompinit
+if [[ -e $PYENV_ROOT ]]
+then
+    eval "$(PATH=$PYENV_ROOT/versions/$(pyenv global)/bin:$PATH register-python-argcomplete pipx)"
+else
+    eval "$(register-python-argcomplete pipx)"
+fi
+eval "$(pipenv --completion)"
