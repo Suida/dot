@@ -150,7 +150,7 @@ font:
     #style: Bold Italic
 
   # Point size
-  size: 11.0
+  size: 10.0
 
   # Offset is the extra space around each character. `offset.y` can be thought
   # of as modifying the line spacing, and `offset.x` as modifying the letter
@@ -203,29 +203,54 @@ colors:
   #   white: '#fafafa'
 
   # One half dark
+  # primary:
+  #   background: '#282c34'
+  #   foreground: '#dcdfe4'
+  #
+  # normal:
+  #   black: '#282c34'
+  #   red: '#e06c75'
+  #   green: '#98c379'
+  #   yellow: '#e5c07b'
+  #   blue: '#61afef'
+  #   magenta: '#c678dd'
+  #   cyan: '#56b6c2'
+  #   white: '#dcdfe4'
+  #
+  # bright:
+  #   black: '#585c64'
+  #   red: '#e06c75'
+  #   green: '#98c379'
+  #   yellow: '#e5c07b'
+  #   blue: '#61afef'
+  #   magenta: '#c678dd'
+  #   cyan: '#56b6c2'
+  #   white: '#dcdfe4'
+
+  # One half light
   primary:
-    background: '#282c34'
-    foreground: '#dcdfe4'
+    background: '#fafafa'
+    foreground: '#383a42'
 
   normal:
-    black: '#282c34'
-    red: '#e06c75'
-    green: '#98c379'
-    yellow: '#e5c07b'
-    blue: '#61afef'
-    magenta: '#c678dd'
-    cyan: '#56b6c2'
-    white: '#dcdfe4'
+    black: '#383a42'
+    red: '#e45649'
+    green: '#50a14f'
+    yellow: '#c18401'
+    blue: '#0184bc'
+    magenta: '#a626a4'
+    cyan: '#0997b3'
+    white: '#fafafa'
 
   bright:
-    black: '#585c64'
-    red: '#e06c75'
-    green: '#98c379'
-    yellow: '#e5c07b'
-    blue: '#61afef'
-    magenta: '#c678dd'
-    cyan: '#56b6c2'
-    white: '#dcdfe4'
+    black: '#383a42'
+    red: '#e45649'
+    green: '#50a14f'
+    yellow: '#c18401'
+    blue: '#0184bc'
+    magenta: '#a626a4'
+    cyan: '#0997b3'
+    white: '#fafafa'
 
   # Default colors
   #primary:
@@ -451,9 +476,9 @@ background_opacity: 0.9
 #   - (macOS) /bin/bash --login
 #   - (Linux/BSD) user login shell
 #   - (Windows) powershell
-shell:
+# shell:
 #  program: /bin/bash
-    program: "C:\\Windows\\System32\\wsl.exe --cd ~"
+    # program: "C:\\Windows\\System32\\wsl.exe --cd ~"
 #  args:
 #    - --login
 
@@ -818,11 +843,12 @@ key_bindings:
   #- { key: NumpadSubtract, mods: Control,                         action: DecreaseFontSize }
 
   # (Windows only)
-  - { key: F,   mods: Alt,           action: ToggleFullscreen }
+  - { key: Return,   mods: Alt,           action: ToggleFullscreen }
   - { key: W,   mods: Alt,           action: Quit }
   - { key: N,   mods: Alt,           action: SpawnNewInstance }
   - { key: C,   mods: Alt,           action: Copy }
   - { key: V,   mods: Alt,           action: Paste }
+  - { key: M,   mods: Alt,           action: Minimize }
 
   # (macOS only)
   #- { key: K,              mods: Command, mode: ~Vi|~Search, chars: "\x0c"            }

@@ -1,8 +1,8 @@
 # Dotfile Collection
 
 This repo is originally a **vim/neovim** configuration project with plugins manually
-managed with `git submodule`. And now, it has expanded into a **dotfile collection**
-with numerous configure files across **multiple platforms**.
+managed with `git submodule`. But now, it has be expanded into a **dotfile collection**
+with numerous configuration files across **multiple platforms**.
 
 
 ### Neovim
@@ -109,6 +109,24 @@ New-Item -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\keybinding
 
 ```powershell
 New-Item -ItemType SymbolicLink -Path $HOME\AppData\Local\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json -Target .\windows-terminal\settings.json
+```
+
+
+### Alacritty
+
+For unix like systems:
+```bash
+mkdir -p $HOME/.config/alacritty/alacritty.yml
+ln -s $(pwd)/alacritty/alacritty.yml $HOME/.config/alacritty/alacritty.yml
+```
+
+For bare windows:
+```powershell
+mkdir -Force $Env:APPDATA\alacritty
+New-Item -Type SymbolicLink -Path $Env:APPDATA\alacritty\alacritty.yml -Value alacritty\alacritty.windows.yml
+# Note: The path of WSL files starts with "\\wsl$\<distro_name>\"
+# If this repo is under windows subsystem linux, to link file to windows system:
+# New-Item -Type SymbolicLink -Path $Env:APPDATA\alacritty\alacritty.yml -Value \\wsl$\<distro_name>\<path_to_this_repo>\alacritty\alacritty.windows.yml
 ```
 
 
