@@ -301,3 +301,4 @@ else
     eval "$(register-python-argcomplete pipx)"
 fi
 eval "$(pipenv --completion)"
+export PIPENV_VERBOSITY=-1

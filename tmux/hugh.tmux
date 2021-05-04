@@ -1,4 +1,7 @@
-set -g status-style bg=#fafafa
+# For gruvbox dark
+set -g status-style bg=#282828
+# For onehalflight:
+# set -g status-style bg=default
 
 # right side of status bar holds "[host name] (date time)"
 set -g status-right-length 100
@@ -14,7 +17,7 @@ set-window-option -g window-status-format '#[fg=#6699cc] #I#[fg=#999999] #W#[282
 
 # make foreground window look like bold yellow foreground tab
 set-window-option -g window-status-current-style none
-set-window-option -g window-status-current-format '#[fg=#f99157] #I#[fg=#000000] #W#[282c34]'
+set-window-option -g window-status-current-format '#[fg=#f99157] #I#[fg=#cccccc] #W#[282c34]'
 
 # message bar or "prompt"
 set -g message-style bg="#282c34"

@@ -343,7 +343,9 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-colorscheme onehalflight
+" If it is gruvbox, set signs column's color the same as bg
+let g:gruvbox_sign_column='bg0'
+colorscheme gruvbox
 let g:_color = get(g:, 'colors_name', 'default') 
 if g:_color == 'janah'
     highlight LineNr guifg=#878787 ctermfg=102 guibg=#262626 ctermbg=237 gui=NONE cterm=NONE
@@ -357,22 +359,12 @@ elseif g:_color == 'gruvbox'
     " These 2 colors of nord theme are quite suitable to gruvbox
     highlight Identifier guifg=#8FBCBB
     highlight Constant guifg=#8FBCBB
-    " Set signs column's color the same as bg
-    if has('nvim')
-        execute 'hi GitGutterAdd    guifg=' . g:terminal_color_10 . ' ctermfg=2'
-        execute 'hi GitGutterChange guifg=' . g:terminal_color_14 . ' ctermfg=3'
-        execute 'hi GitGutterDelete guifg=' . g:terminal_color_9  . ' ctermfg=1'
-        execute 'hi SignColumn guibg=' . g:terminal_color_0
-    endif
-    " Hide (~) at the end of buffer
-    highlight NonText guifg=bg
-    " Cursor stuff
-    " highlight CursorLineNr guifg=white
-    " highlight nCursor guifg=white guibg=black gui=reverse
 endif
 if g:_color != 'janah'
     highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
 endif
+" Hide (~) at the end of buffer
+highlight NonText guifg=bg
 function! CheckColorGroup()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
