@@ -114,7 +114,7 @@ font:
     family: 'Cascadia Code PL'
 
     # The `style` can be specified to pick a specific face.
-    #style: Regular
+    style: Regular
 
   # Bold font face
   bold:
@@ -125,29 +125,29 @@ font:
     family: 'Cascadia Code PL'
 
     # The `style` can be specified to pick a specific face.
-    #style: Bold
+    style: Bold
 
   # Italic font face
-  #italic:
+  italic:
     # Font family
     #
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    #family: monospace
+    family: 'Cascadia Code'
 
     # The `style` can be specified to pick a specific face.
-    #style: Italic
+    style: Italic
 
   # Bold italic font face
-  #bold_italic:
+  bold_italic:
     # Font family
     #
     # If the bold italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    #family: monospace
+    family: 'Cascadia Code'
 
     # The `style` can be specified to pick a specific face.
-    #style: Bold Italic
+    style: Bold Italic
 
   # Point size
   size: 10.0
@@ -296,8 +296,8 @@ colors:
     bright_foreground: '#f9f5d7'
     dim_foreground:    '#f2e5bc'
   cursor:
-    text:   CellBackground
-    cursor: CellForeground
+    text:   '#ffffff'
+    cursor: '#427b58'
   vi_mode_cursor:
     text:   CellBackground
     cursor: CellForeground
@@ -534,7 +534,7 @@ background_opacity: 0.9
   #thickness: 0.15
 
 # Live config reload (changes require restart)
-#live_config_reload: true
+live_config_reload: true
 
 # Shell
 #
@@ -919,6 +919,7 @@ key_bindings:
   - { key: C,   mods: Alt,           action: Copy }
   - { key: V,   mods: Alt,           action: Paste }
   - { key: M,   mods: Alt,           action: Minimize }
+  - { key: Space,   mods: Control,           chars: "\x1b" }
 
   # (macOS only)
   #- { key: K,              mods: Command, mode: ~Vi|~Search, chars: "\x0c"            }

@@ -5,5 +5,5 @@ if [ "$container_name" == "" ]; then
     container_name="redis"
 fi
 
-sudo docker run -it --rm --network net redis redis-cli -h $container_name
+docker run -it --rm --network net redis redis-cli -h $container_name
 

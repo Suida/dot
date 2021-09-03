@@ -25,8 +25,8 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-unimpaired'
 " Code template
 Plug 'mattn/emmet-vim'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+" Plug 'SirVer/ultisnips'
+" Plug 'honza/vim-snippets'
 
 " Fuzzy finer
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() }}
@@ -42,7 +42,6 @@ Plug 'mhinz/vim-startify'
 Plug 'arcticicestudio/nord-vim'
 Plug 'sonph/onehalf', { 'rtp': 'vim/' }
 Plug 'morhetz/gruvbox'
-Plug 'mhinz/vim-janah'
 Plug 'joshdick/onedark.vim'
 " Status / tabline
 Plug 'vim-airline/vim-airline'
@@ -64,7 +63,7 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'turbio/bracey.vim', { 'for': [ 'html', ] }
 " Markdown syntax and preview
 Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown', { 'for': [ 'markdown', ] }
+Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': [ 'markdown', 'vim-plug', ] }
 " Python utils // The indent really saved my life
 " Plug 'Vimjas/vim-python-pep8-indent', { 'for': [ 'python', ] }
@@ -76,6 +75,7 @@ Plug 'cespare/vim-toml', { 'for': [ 'toml', ] }
 
 " Other utilities
 Plug 'mhinz/vim-rfc'
+Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-scripts/Drawit'
 Plug 'voldikss/vim-translator'
 
@@ -240,6 +240,10 @@ set ttimeoutlen=100
 " Global key mappings -- {{{
 
 let mapleader = " "
+" Compatibility config for alacritty which dose not support control-space by
+" default, where control-space is mapped to "\xb" (<ESC>) by myself, and here,
+" <ESC> is remapped back to control-space to fit previous settings
+imap <ESC> <C-space>
 
 " Vimrc
 nnoremap <leader>vs :vsplit $MYVIMRC<CR>
@@ -253,7 +257,7 @@ inoremap jjk jk
 nnoremap <leader>i vit<Esc>i
 
 inoremap <C-e> <Esc>A
-inoremap <C-j> <Esc>o
+inoremap <C-j> <Esc>A<Enter>
 inoremap <C-k> <Esc>O
 nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <silent> XC :w<CR>
@@ -276,8 +280,8 @@ nnoremap <left> :tabp <CR>
 nnoremap <right> :tabn <CR>
 inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
-nnoremap <C-l> :tabn<CR>
-nnoremap <C-h> :tabp<CR>
+nnoremap <silent> <C-l> :tabn<CR>
+nnoremap <silent> <C-h> :tabp<CR>
 tnoremap <C-l> <C-\><C-n>:tabn<CR>
 tnoremap <C-h> <C-\><C-n>:tabp<CR>
 nnoremap <silent> <leader>tl :tabs<CR>
@@ -344,27 +348,17 @@ set t_Co=256
 set background=dark
 set laststatus=2
 " If it is gruvbox, set signs column's color the same as bg
-let g:gruvbox_sign_column='bg0'
-colorscheme gruvbox
+let g:gruvbox_sign_column = 'bg0'
+colorscheme onehalflight
 let g:_color = get(g:, 'colors_name', 'default') 
-if g:_color == 'janah'
-    highlight LineNr guifg=#878787 ctermfg=102 guibg=#262626 ctermbg=237 gui=NONE cterm=NONE
-    highlight CursorLineNr guifg=#878787 ctermfg=102 guibg=#303030 ctermbg=237 gui=NONE cterm=NONE
-    highlight SignColumn ctermfg=NONE guibg=#262626 ctermbg=237 gui=NONE cterm=NONE
-    highlight GitGutterAdd guifg=#87dfdf ctermfg=119 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
-    highlight GitGutterDelete guifg=#df5f5f ctermfg=167 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
-    highlight GitGutterChange guifg=#ffff5f ctermfg=227 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
-    highlight GitGutterText guifg=#ff5f5f ctermfg=203 guibg=#5f0000 ctermbg=52 gui=bold cterm=bold
-elseif g:_color == 'gruvbox'
+if g:_color == 'gruvbox'
     " These 2 colors of nord theme are quite suitable to gruvbox
-    highlight Identifier guifg=#8FBCBB
-    highlight Constant guifg=#8FBCBB
-endif
-if g:_color != 'janah'
-    highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
+    " highlight Identifier guifg=#8FBCBB
+    " highlight Constant guifg=#8FBCBB
 endif
 " Hide (~) at the end of buffer
 highlight NonText guifg=bg
+highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
 function! CheckColorGroup()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
@@ -390,10 +384,16 @@ let g:airline#extensions#ycm#enabled = 1
 " indentLine
 let g:indentLine_leadingSpaceChar = '·'
 let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_concealcursor = ''
+let g:indentLine_conceallevel = 2
 " }}}
 
 
 " Coc.nvim -- {{{
+
+" Disable under diff mode
+" autocmd VimEnter * CocDisable
+" autocmd VimEnter * echom 0
 
 " Some servers have issues with backup files, see #649.
 set nobackup
@@ -515,6 +515,8 @@ endfunction
 " Cure linter madness caused by vim-easymotion
 autocmd User EasyMotionPromptBegin silent! CocDisable
 autocmd User EasyMotionPromptEnd silent! CocEnable
+" Disable in vue project for the poor performance
+autocmd BufAdd *.vue let b:coc_enabled=0
 " }}}
 
 
@@ -543,12 +545,10 @@ nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 nnoremap <silent> ]c :GitGutterNextHunk<CR>
 nnoremap <silent> [c :GitGutterPrevHunk<CR>
 " CtrlSF
+let g:ctrlsf_backend = 'rg'
 let g:ctrlsf_ignore_dir = [
-            \ 'tags', 
-            \ 'tags.d', 
             \ '*.log', 
             \ 'tsconfig.json',
-            \ 'node_module', 
             \ 'static', 
             \ 'dist',
             \ '.vscode',
@@ -577,7 +577,7 @@ let tagbar_left = 1
 let tagbar_width = 32
 let g:tagbar_compact=1
 let g:tagbar_sort = 0
-nmap <leader>w :TagbarToggle<CR>
+nmap <silent> <leader>w :TagbarToggle<CR>
 let g:tagbar_type_cpp = {
     \ 'kinds' : [
          \ 'c:classes:0:1',
@@ -612,6 +612,8 @@ let g:tagbar_type_cpp = {
      \ }
  \ }
 let g:typescript_use_builtin_tagbar_defs = 0
+" EditorConfig
+let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 " }}}
 
 
@@ -682,13 +684,17 @@ augroup END
 
 
 " Markdown
-let g:vim_markdown_folding_level = 1
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_conceal = 0
-let g:vim_markdown_conceal_code_blocks = 0
+let g:vim_markdown_folding_level = 6
+let g:vim_markdown_conceal = 1
+let g:vim_markdown_conceal_code_blocks = 1
 let g:vim_markdown_autowrite = 1
 let g:vim_markdown_strikethrough = 1
 let g:vim_markdown_no_extensions_in_markdown = 1
+augroup md_config
+    autocmd!
+    autocmd VimEnter * let g:vim_markdown_folding_disabled = &diff
+augroup END
+
 let g:mkdp_port = '34910'
 let g:mkdp_refresh_slow = 1
 let g:mkdp_open_to_the_world = 1
@@ -703,7 +709,7 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 function! CocHook()
     !npm install --frozen-lockfile
     !npm run build
-    :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-cssmodules coc-clangd coc-rust-analyzer
+    :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-cssmodules coc-clangd coc-rust-analyzer coc-texlab
 endfunction
 " }}}
 

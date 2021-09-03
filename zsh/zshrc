@@ -114,6 +114,7 @@ alias zshconfig="vi ~/.zshrc"
 alias ohmyzsh="vi ~/.oh-my-zsh"
 alias v="nvim $*"
 alias vi="nvim $*"
+alias gj="gitmoji $*"
 
 
 if [[ -e "/proc/sys/kernel/osrelease" ]] && [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
@@ -229,10 +230,10 @@ tmp_lock=/tmp/zsh-host-lock.txt
 #
 # V $tmp_lock
 
-export http_proxy=$PROXY_URI
-export https_proxy=$PROXY_URI
-export HTTP_PROXY=$PROXY_URI
-export HTTPS_PROXY=$PROXY_URI
+# export http_proxy=$PROXY_URI
+# export https_proxy=$PROXY_URI
+# export HTTP_PROXY=$PROXY_URI
+# export HTTPS_PROXY=$PROXY_URI
 
 ################################################################################
 #                             PROXY SETTINGS END                               #
@@ -288,7 +289,7 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#989cb4"
 fpath=(/home/hugh/workspace/ninja-1.10.2/misc/zsh-completion $fpath)
 
 # Bat theme
-export BAT_THEME=OneHalfLight
+export BAT_THEME=gruvbox-dark
 
 # Pipx & pipenv
 export PATH="$PATH:/home/hugh/.local/bin"
@@ -302,3 +303,6 @@ else
 fi
 eval "$(pipenv --completion)"
 export PIPENV_VERBOSITY=-1
+
+# Vcpkg & cmake
+export VCPKG_CMAKE_SCRIPT_PATH=$HOME/workspace/github/vcpkg/scripts/buildsystems/vcpkg.cmake

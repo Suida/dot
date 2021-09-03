@@ -1,6 +1,6 @@
 Import-Module posh-git
 Import-Module oh-my-posh
-Set-Theme Paradox
+Set-PoshPrompt -Theme robbyrussel
 
 New-Alias ~ $HOME
 New-Alias ".." "cd .."
@@ -13,3 +13,7 @@ New-Alias nvim $HOME\app\Neovim\bin\nvim.exe
 New-Alias v $HOME\app\Neovim\bin\nvim.exe
 New-Alias vi $HOME\app\Neovim\bin\nvim.exe
 New-Alias vim $HOME\app\Neovim\bin\nvim.exe
+
+function u { wsl -u hugh }
+
+Set-PSReadLineOption -EditMode Emacs
