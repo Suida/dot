@@ -25,8 +25,8 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-unimpaired'
 " Code template
 Plug 'mattn/emmet-vim'
-" Plug 'SirVer/ultisnips'
-" Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 
 " Fuzzy finer
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() }}
@@ -44,21 +44,17 @@ Plug 'sonph/onehalf', { 'rtp': 'vim/' }
 Plug 'morhetz/gruvbox'
 Plug 'joshdick/onedark.vim'
 " Status / tabline
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
 " Indentation line
 Plug 'Yggdroot/indentLine'
 
 " Language supports
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': ['cpp', 'c'] }
 " Font-end tool chain
 Plug 'ap/vim-css-color', { 'for': [ 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', ] }
-" Plug 'posva/vim-vue', { 'for': 'vue' }
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty', { 'for': [ 'tsx', 'jsx', ] }
-" Go commands
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Html preview
 Plug 'turbio/bracey.vim', { 'for': [ 'html', ] }
 " Markdown syntax and preview
@@ -72,12 +68,30 @@ Plug 'jmcantrell/vim-virtualenv', { 'for': [ 'python', ] }
 " Asm
 Plug 'Shirk/vim-gas', { 'for': 'asm' }
 Plug 'cespare/vim-toml', { 'for': [ 'toml', ] }
+" Latex
+Plug 'lervag/vimtex'
+let g:vimtex_compiler_enabled = 0
+let g:vimtex_complete_enabled = 0
+let g:vimtex_view_enabled = 0
+let g:vimtex_syntax_conceal = {
+            \ 'accents': 1,
+            \ 'cites': 1,
+            \ 'fancy': 1,
+            \ 'greek': 1,
+            \ 'math_bounds': 1,
+            \ 'math_delimiters': 1,
+            \ 'math_fracs': 0,
+            \ 'math_super_sub': 0,
+            \ 'math_symbols': 1,
+            \ 'styles': 1,
+            \ }
 
 " Other utilities
 Plug 'mhinz/vim-rfc'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-scripts/Drawit'
 Plug 'voldikss/vim-translator'
+Plug 'suida/beacon.nvim'
 
 call plug#end()
 
@@ -240,6 +254,7 @@ set ttimeoutlen=100
 " Global key mappings -- {{{
 
 let mapleader = " "
+let maplocalleader = " "
 " Compatibility config for alacritty which dose not support control-space by
 " default, where control-space is mapped to "\xb" (<ESC>) by myself, and here,
 " <ESC> is remapped back to control-space to fit previous settings
@@ -363,27 +378,33 @@ function! CheckColorGroup()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
 
-" Airline
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-let g:airline#extensions#tabline#tab_nr_type = 1 " # of splits (default)
-let g:airline#extensions#tabline#show_splits = 0
-let g:airline#extensions#tabline#show_tab_count = 0
-let g:airline#extensions#tabline#show_close_button = 0
-let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_alt_sep = ''
-let g:airline#extensions#tabline#right_sep = ''
-let g:airline#extensions#tabline#right_alt_sep = ''
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#virtualenv#enabled = 1
-let g:airline#extensions#ycm#enabled = 1
+" Beacon
+let g:beacon_size = 40
+highlight Beacon guibg=#a0a1a7 ctermbg=15
+
+" Lightline
+set noshowmode
+let g:lightline = {
+      \ 'colorscheme': 'solarized',
+      \ 'background': 'light',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'EmojiedFugitiveHead'
+      \ },
+      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
+      \ 'tabline_separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+      \ 'tabline_subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
+      \ }
+
+function! EmojiedFugitiveHead()
+    return ' ' . FugitiveHead()
+endfunction
 
 " indentLine
-let g:indentLine_leadingSpaceChar = '·'
-let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_concealcursor = ''
 let g:indentLine_conceallevel = 2
 " }}}
@@ -413,6 +434,8 @@ if has('nvim-0.5.0') || has('patch-8.1.1564')
 else
   set signcolumn=yes
 endif
+
+let g:coc_node_path = '/home/hugh/.nvm/versions/node/v14.15.4/bin/node'
 
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
@@ -633,12 +656,6 @@ let g:cpp_posix_standard = 1
 let g:cpp_experimental_simple_template_highlight = 1
 let g:cpp_concepts_highlight = 1
 
-
-" Go
-let g:go_code_completion_enabled = 0
-let g:go_test_show_name = 1
-
-
 " Python
 au FileType python let b:coc_root_patterns = [
     \ '.git',
@@ -653,7 +670,6 @@ au FileType python let b:coc_root_patterns = [
 let g:python_highlight_all = 1
 
 " Front Development
-
 let g:front_end_filetypes = {
             \ "javascript": 1,
             \ "typescript": 1,
@@ -681,7 +697,6 @@ augroup html_indent
     autocmd!
     autocmd FileType javascript,css,less,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
 augroup END
-
 
 " Markdown
 let g:vim_markdown_folding_level = 6
