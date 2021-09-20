@@ -62,7 +62,7 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': [ 'markdown', 'vim-plug', ] }
 " Python utils // The indent really saved my life
-" Plug 'Vimjas/vim-python-pep8-indent', { 'for': [ 'python', ] }
+Plug 'Vimjas/vim-python-pep8-indent', { 'for': [ 'python', ] }
 Plug 'jmcantrell/vim-virtualenv', { 'for': [ 'python', ] }
 " Plug 'vim-python/python-syntax', { 'for': [ 'python', ] }
 " Asm
@@ -70,21 +70,6 @@ Plug 'Shirk/vim-gas', { 'for': 'asm' }
 Plug 'cespare/vim-toml', { 'for': [ 'toml', ] }
 " Latex
 Plug 'lervag/vimtex'
-let g:vimtex_compiler_enabled = 0
-let g:vimtex_complete_enabled = 0
-let g:vimtex_view_enabled = 0
-let g:vimtex_syntax_conceal = {
-            \ 'accents': 1,
-            \ 'cites': 1,
-            \ 'fancy': 1,
-            \ 'greek': 1,
-            \ 'math_bounds': 1,
-            \ 'math_delimiters': 1,
-            \ 'math_fracs': 0,
-            \ 'math_super_sub': 0,
-            \ 'math_symbols': 1,
-            \ 'styles': 1,
-            \ }
 
 " Other utilities
 Plug 'mhinz/vim-rfc'
@@ -285,6 +270,7 @@ nnoremap <silent> _ :m .-2<CR>
 
 " Navigation
 noremap <expr>0 col('.') == 1 ? '^': '0'
+noremap <expr>g0 col('.') == 1 ? '^': 'g0'
 nnoremap <C-j> 15j
 nnoremap <C-k> 15k
 nnoremap <C-e> 3<C-e>
@@ -407,6 +393,9 @@ endfunction
 " indentLine
 let g:indentLine_concealcursor = ''
 let g:indentLine_conceallevel = 2
+" Latex conceal compatibility
+let g:indentLine_setColors = 0
+let g:indentLine_fileTypeExclude = ['tex']
 " }}}
 
 
@@ -716,6 +705,38 @@ let g:mkdp_open_to_the_world = 1
 let g:mkdp_echo_preview_url = 1
 noremap <leader>mp :MarkdownPreview<CR>
 noremap <leader>ms :MarkdownPreviewStop<CR>
+
+" LaTeX
+let g:vimtex_complete_enabled = 0
+let g:vimtex_syntax_conceal = {
+            \ 'accents': 1,
+            \ 'cites': 1,
+            \ 'fancy': 1,
+            \ 'greek': 1,
+            \ 'math_bounds': 1,
+            \ 'math_delimiters': 1,
+            \ 'math_fracs': 0,
+            \ 'math_super_sub': 0,
+            \ 'math_symbols': 1,
+            \ 'styles': 1,
+            \ }
+let g:vimtex_compiler_method = 'tectonic'
+let g:vimtex_compiler_tectonic = {
+            \ 'build_dir': 'dist',
+            \ 'options': [
+            \ '--keep-logs',
+            \ '--synctex',
+            \ ],
+            \}
+let g:vimtex_view_method = 'general'
+let g:vimtex_view_general_viewer = 'SumatraPDF'
+let g:vimtex_view_general_options
+  \ = '-reuse-instance -forward-search @tex @line @pdf'
+nnoremap <silent> <leader>lb :VimtexCompile<CR>
+augroup vimtex_common
+    autocmd!
+    autocmd FileType tex call SetServerName()
+augroup END
 " }}}
 
 
@@ -724,7 +745,14 @@ noremap <leader>ms :MarkdownPreviewStop<CR>
 function! CocHook()
     !npm install --frozen-lockfile
     !npm run build
-    :CocInstall coc-go coc-pyright coc-rls coc-json coc-vetur coc-html coc-tsserver coc-cmake coc-sh coc-css coc-cssmodules coc-clangd coc-rust-analyzer coc-texlab
+    :CocInstall coc-pyright coc-json coc-volar coc-html coc-tsserver coc-cmake coc-sh coc-css coc-cssmodules coc-clangd coc-rust-analyzer coc-texlab
+endfunction
+
+function! SetServerName()
+  let nvim_server_file = has('win32')
+        \ ? $TEMP . "/curnvimserver.txt"
+        \ : $HOME . "/tmp/curnvimserver.txt"
+  call system(printf("echo %s > %s", v:servername, nvim_server_file))
 endfunction
 " }}}
 
