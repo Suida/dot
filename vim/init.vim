@@ -150,6 +150,10 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 " Provider
 if has('unix') || has('macunix')
     let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
+    let g:coc_node_path = '/home/hugh/.nvm/versions/node/v14.15.4/bin/node'
+elseif has('win32')
+    let g:python3_host_prog="C:\\Users\\hugh\\.pyenv\\pyenv-win\\versions\\nvim\\Scripts\\python.exe"
+    let g:coc_node_path = 'C:\Program Files\nodejs\node.exe'
 endif
 " }}}
 
@@ -349,6 +353,7 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
+set guifont=CaskaydiaCove\ NF
 " If it is gruvbox, set signs column's color the same as bg
 let g:gruvbox_sign_column = 'bg0'
 colorscheme onehalflight
@@ -424,8 +429,6 @@ if has('nvim-0.5.0') || has('patch-8.1.1564')
 else
   set signcolumn=yes
 endif
-
-let g:coc_node_path = '/home/hugh/.nvm/versions/node/v14.15.4/bin/node'
 
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
@@ -744,8 +747,8 @@ augroup END
 " Functions -- {{{
 
 function! CocHook()
-    !npm install --frozen-lockfile
-    !npm run build
+    !yarn
+    !yarn build
     :CocInstall coc-pyright coc-json @yaegassy/coc-volar coc-html coc-tsserver coc-cmake coc-sh coc-css coc-cssmodules coc-clangd coc-rust-analyzer coc-texlab
 endfunction
 
