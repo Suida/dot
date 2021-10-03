@@ -55,6 +55,7 @@ Plug 'octol/vim-cpp-enhanced-highlight', { 'for': ['cpp', 'c'] }
 Plug 'ap/vim-css-color', { 'for': [ 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', ] }
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty', { 'for': [ 'tsx', 'jsx', ] }
+Plug 'posva/vim-vue'
 " Html preview
 Plug 'turbio/bracey.vim', { 'for': [ 'html', ] }
 " Markdown syntax and preview
@@ -239,7 +240,7 @@ set ttimeoutlen=100
 " Global key mappings -- {{{
 
 let mapleader = " "
-let maplocalleader = " "
+let maplocalleader = "  "
 " Compatibility config for alacritty which dose not support control-space by
 " default, where control-space is mapped to "\xb" (<ESC>) by myself, and here,
 " <ESC> is remapped back to control-space to fit previous settings
@@ -732,7 +733,7 @@ let g:vimtex_view_method = 'general'
 let g:vimtex_view_general_viewer = 'SumatraPDF'
 let g:vimtex_view_general_options
   \ = '-reuse-instance -forward-search @tex @line @pdf'
-nnoremap <silent> <leader>lb :VimtexCompile<CR>
+nnoremap <silent> <localleader>lb :VimtexCompile<CR>
 augroup vimtex_common
     autocmd!
     autocmd FileType tex call SetServerName()
@@ -745,7 +746,7 @@ augroup END
 function! CocHook()
     !npm install --frozen-lockfile
     !npm run build
-    :CocInstall coc-pyright coc-json coc-volar coc-html coc-tsserver coc-cmake coc-sh coc-css coc-cssmodules coc-clangd coc-rust-analyzer coc-texlab
+    :CocInstall coc-pyright coc-json @yaegassy/coc-volar coc-html coc-tsserver coc-cmake coc-sh coc-css coc-cssmodules coc-clangd coc-rust-analyzer coc-texlab
 endfunction
 
 function! SetServerName()
