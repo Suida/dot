@@ -130,6 +130,14 @@ then
         absp=$(echo -E '\\wsl$\'$distro_name$(pwd)/$1 | sed 's|\/|\\|g')
         cmd.exe /C start $absp
     }
+
+    if [[ -e "$HOME/.winhome" ]]
+    then
+        export WIN_HOME=$(cat $HOME/.winhome)
+    else
+        export WIN_HOME=$(pwsh.exe -nop -c '-join ("/mnt/c", ($Env:HOMEPATH -split "\\" -join "/"))' | sed 's/\r//')
+        echo $WIN_HOME > $HOME/.winhome
+    fi
 fi
 
 

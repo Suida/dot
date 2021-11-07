@@ -205,7 +205,7 @@ font:
 # # One half light
 colors:
   primary:
-    background: '#fafafa'
+    background: '#cacaca'
     foreground: '#383a42'
 
   normal:

@@ -168,6 +168,7 @@ set secure
 " Basics -- {{{
 
 syntax on
+autocmd! bufreadpost *.svg set syntax=off
 filetype plugin indent on
 set wrap
 set ruler
@@ -314,8 +315,8 @@ nnoremap <silent> <leader>9 :normal 9gt<CR>
 " Use <space>sl to clear the highlighting of :set hlsearch.
 nnoremap <silent> <leader>sl :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 " Adaption for easymotion
-nmap <silent> F <Plug>(easymotion-f)
-nmap <silent> T <Plug>(easymotion-t)
+" nmap <silent> F <Plug>(easymotion-f)
+" nmap <silent> T <Plug>(easymotion-t)
 nmap <silent> <leader>W <Plug>(easymotion-w)
 nmap <silent> <leader>B <Plug>(easymotion-b)
 nmap <silent> <leader>J <Plug>(easymotion-j)
@@ -736,6 +737,10 @@ let g:vimtex_view_method = 'general'
 let g:vimtex_view_general_viewer = 'SumatraPDF'
 let g:vimtex_view_general_options
   \ = '-reuse-instance -forward-search @tex @line @pdf'
+" Inhibit unnecessary font warnings
+let g:vimtex_quickfix_ignore_filters = [
+            \ ".*Script \"CJK\".*",
+            \ ]
 nnoremap <silent> <localleader>lb :VimtexCompile<CR>
 augroup vimtex_common
     autocmd!

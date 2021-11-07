@@ -1,7 +1,7 @@
 # For gruvbox dark
 # set -g status-style bg=#282828
 # For onehalflight:
-set -g status-style bg=#eaeaea
+set -g status-style bg=default
 
 # right side of status bar holds "[host name] (date time)"
 set -g status-right-length 100
