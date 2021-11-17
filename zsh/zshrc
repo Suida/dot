@@ -127,7 +127,7 @@ then
             exit 1
         fi
         distro_name=$(awk 'BEGIN{FS="="} $1=="DISTRIB_ID" {print $2}' /etc/lsb-release)-$(awk 'BEGIN{FS="="} $1=="DISTRIB_RELEASE" {print $2}' /etc/lsb-release)
-        absp=$(echo -E '\\wsl$\'$distro_name$(pwd)/$1 | sed 's|\/|\\|g')
+        absp=$(echo -E '\\wsl$\'Ubuntu$(pwd)/$1 | sed 's|\/|\\|g')
         cmd.exe /C start $absp
     }
 
@@ -138,6 +138,7 @@ then
         export WIN_HOME=$(pwsh.exe -nop -c '-join ("/mnt/c", ($Env:HOMEPATH -split "\\" -join "/"))' | sed 's/\r//')
         echo $WIN_HOME > $HOME/.winhome
     fi
+    export wh=$WIN_HOME
 fi
 
 
@@ -260,6 +261,10 @@ export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node
 export npm_config_registry=https://registry.npm.taobao.org
 
 # Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+
 if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init -)"
 fi

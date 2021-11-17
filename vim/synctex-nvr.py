@@ -1,20 +1,17 @@
+import time
 import subprocess
 from sys import argv
 from pathlib import Path
 
-# wsl -u hugh -- python /usr/local/bin/synctex-nvr --remote +"%l" "%f"
-
-# Usage:
-# python <path_to_this_file> +"%l" "%f"
+# wsl -u <username> -d <distro_name> -e <abspath_to_python> <abspath_to_this_file> --remote +"%l" "%f"
 
 SERVER_FILE = Path.home() / 'tmp/curnvimserver.txt'
 
 class ForwardArgs:
     def __init__(self) -> None:
         self.forward_args = [
-            'pyenv',
-            'exec',
-            'nvr',
+            # Path to nvr executable (in neovim-remote package)
+            str(Path.home() / '.pyenv/versions/nvim/bin/nvr'),
             '--servername',
             '<placeholder>',
             '-c',
@@ -24,7 +21,7 @@ class ForwardArgs:
         ]
 
     def set_server(self, s: str) -> 'ForwardArgs':
-        self.forward_args[4] = s.strip()
+        self.forward_args[-5] = s.strip()
         return self
 
     def set_line(self, l: str) -> 'ForwardArgs':
@@ -45,17 +42,23 @@ def win_to_unix(p: str) -> str:
     return str(path)
 
 def main():
-    assert len(argv) == 4, 'Invalid options'
+    assert len(argv) == 4 or len(argv) == 3, 'Invalid options'
 
     forward_args = ForwardArgs()
     with open(SERVER_FILE) as f:
         forward_args    \
             .set_server(f.readline())   \
-            .set_line(argv[2])  \
-            .set_file(win_to_unix(argv[3]))
+            .set_line(argv[-2])  \
+            .set_file(win_to_unix(argv[-1]))
 
+    # print(forward_args.to_commands())
+    # time.sleep(5)
     subprocess.run(forward_args.to_commands())
         
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(e)
+        time.sleep(5)

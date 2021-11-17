@@ -151,9 +151,11 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 if has('unix') || has('macunix')
     let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
     let g:coc_node_path = '/home/hugh/.nvm/versions/node/v14.15.4/bin/node'
+    nnoremap <silent> <leader>tt :tabnew term://zsh<CR>
 elseif has('win32')
     let g:python3_host_prog="C:\\Users\\hugh\\.pyenv\\pyenv-win\\versions\\nvim\\Scripts\\python.exe"
     let g:coc_node_path = 'C:\Program Files\nodejs\node.exe'
+    nnoremap <silent> <leader>tt :tabnew term://pwsh.exe<CR>
 endif
 " }}}
 
