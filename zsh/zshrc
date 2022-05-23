@@ -21,7 +21,7 @@ ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
@@ -45,7 +45,7 @@ ZSH_THEME="robbyrussell"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -79,10 +79,8 @@ plugins=(
     docker-compose
     kubectl
     golang
-    cargo
     yarn
-    cargo
-    rustup
+    rust
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -115,6 +113,7 @@ alias ohmyzsh="vi ~/.oh-my-zsh"
 alias v="nvim $*"
 alias vi="nvim $*"
 alias gj="gitmoji $*"
+alias bat="batcat $*"
 
 
 if [[ -e "/proc/sys/kernel/osrelease" ]] && [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
@@ -300,20 +299,23 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#989cb4"
 fpath=(/home/hugh/workspace/ninja-1.10.2/misc/zsh-completion $fpath)
 
 # Bat theme
-export BAT_THEME=gruvbox-dark
+export BAT_THEME=GitHub
 
 # Pipx & pipenv
-export PATH="$PATH:/home/hugh/.local/bin"
-autoload -U bashcompinit
-bashcompinit
-if [[ -e $PYENV_ROOT ]]
-then
-    eval "$(PATH=$PYENV_ROOT/versions/$(pyenv global)/bin:$PATH register-python-argcomplete pipx)"
-else
-    eval "$(register-python-argcomplete pipx)"
-fi
-eval "$(pipenv --completion)"
-export PIPENV_VERBOSITY=-1
+# export PATH="$PATH:/home/hugh/.local/bin"
+# autoload -U bashcompinit
+# bashcompinit
+# if [[ -e $PYENV_ROOT ]]
+# then
+#     eval "$(PATH=$PYENV_ROOT/versions/$(pyenv global)/bin:$PATH register-python-argcomplete pipx)"
+# else
+#     eval "$(register-python-argcomplete pipx)"
+# fi
+# eval "$(pipenv --completion)"
+# export PIPENV_VERBOSITY=-1
 
 # Vcpkg & cmake
 export VCPKG_CMAKE_SCRIPT_PATH=$HOME/workspace/github/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+# Qemu
+export PATH=$PATH:$HOME/tools/qemu-bin

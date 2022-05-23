@@ -9,9 +9,10 @@ Plug 'neoclide/coc.nvim', {
             \ }
 
 " Navigation & developing support
-" File & sign navigator
+" File, sign navigator & float terminal
 Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdtree'
+Plug 'voldikss/vim-floaterm'
 " Commenter & git utils
 Plug 'tomtom/tcomment_vim'
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
@@ -150,12 +151,13 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 " Provider
 if has('unix') || has('macunix')
     let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
-    let g:coc_node_path = '/home/hugh/.nvm/versions/node/v14.15.4/bin/node'
-    nnoremap <silent> <leader>tt :tabnew term://zsh<CR>
+    let node_ver=readfile($HOME . '/.nvm/alias/default')
+    let g:coc_node_path = '~/.nvm/versions/node/' . node_ver[0] . '/bin/node'
+    nnoremap <silent> <leader>tot :tabnew term://zsh<CR>
 elseif has('win32')
     let g:python3_host_prog="C:\\Users\\hugh\\.pyenv\\pyenv-win\\versions\\nvim\\Scripts\\python.exe"
     let g:coc_node_path = 'C:\Program Files\nodejs\node.exe'
-    nnoremap <silent> <leader>tt :tabnew term://pwsh.exe<CR>
+    nnoremap <silent> <leader>tot :tabnew term://pwsh.exe<CR>
 endif
 " }}}
 
@@ -541,6 +543,17 @@ autocmd BufAdd *.vue let b:coc_enabled=0
 
 " Plugin Settings -- {{{
 
+" Floatterm
+nnoremap <silent> <C-t>t :FloatermToggle<CR>
+nnoremap <silent> <C-t>c :FloatermNew<CR>
+nnoremap <silent> <C-t>k :FloatermKill<CR>
+nnoremap <silent> <C-t>n :FloatermNext<CR>
+nnoremap <silent> <C-t>p :FloatermPrev<CR>
+tmap <silent> <C-t>t jk:FloatermToggle<CR>
+tmap <silent> <C-t>c jk:FloatermNew<CR>
+tmap <silent> <C-t>k jk:FloatermKill<CR>
+tmap <silent> <C-t>n jk:FloatermNext<CR>
+tmap <silent> <C-t>p jk:FloatermPrev<CR>
 
 " Snippet
 let g:UltiSnipsExpandTrigger = '<C-l>'
