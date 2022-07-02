@@ -1,0 +1,30 @@
+[user]
+    email = suidar@foxmail.com
+    name = harass
+[core]
+    editor = gvim
+	autocrlf = true
+[alias]
+    a = add
+    st = status
+    cm = commit
+    br = branch
+    sm = submodule
+    last = log -l
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    chk = checkout
+    d = difftool
+    m = mergetool
+[diff]
+    tool = gvimdiff
+[difftool]
+    prompt = false
+    trustExitCode = true
+[difftool "gvimdiff"]
+    cmd = "gvim -d -R \"$LOCAL\" \"$REMOTE\""
+[merge]
+    tool = gvimdiff
+[mergetool]
+    keepBackup = false
+[mergetool "gvimdiff"]
+    cmd = gvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'

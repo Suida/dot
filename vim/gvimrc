@@ -1,5 +1,4 @@
 " Plug Settings -- {{{
-"call plug#begin(stdpath('data').'/plugged')
 call plug#begin('~/.local/share/nvim/data/plugged')
 
 Plug 'junegunn/vim-plug'
@@ -29,7 +28,7 @@ Plug 'mattn/emmet-vim'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
-" Fuzzy finer
+" Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
 " Global finder
@@ -78,65 +77,20 @@ Plug 'mhinz/vim-rfc'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-scripts/Drawit'
 Plug 'voldikss/vim-translator'
-Plug 'suida/beacon.nvim'
+let g:vimspector_enable_mappings = 'HUMAN'
+Plug 'puremourning/vimspector'
+" Plug 'suida/beacon.nvim'
 
 call plug#end()
-
-autocmd VimEnter *
-  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \|   PlugInstall --sync | q
-  \| endif
-
-" function! s:plug_gx()
-"   let line = getline('.')
-"   echo 'line: ' . line
-"   let sha  = matchstr(line, '^  \X*\zs\x\{7,9}\ze ')
-"   echo 'sha: ' . sha
-"   let name = empty(sha) ? matchstr(line, '^[-x+] \zs[^:]\+\ze:')
-"                       \ : getline(search('^- .*:$', 'bn'))[2:-2]
-"   let uri  = get(get(g:plugs, name, {}), 'uri', '')
-"   echo 'uri: ' . uri
-"   if uri !~ 'github.com'
-"     return
-"   endif
-"   let repo = matchstr(uri, '[^:/]*/'.name)
-"   echo 'repo: ' . repo
-"   let url  = empty(sha) ? 'https://github.com/'.repo
-"                       \ : printf('https://github.com/%s/commit/%s', repo, sha)
-"   echo 'url: ' . url
-"   call netrw#BrowseX(url, 0)
-" endfunction
-let g:netrw_browsex_viewer = "cmd.exe /C start"
-function! Lite_gx()
-    let line = getline('.')
-    let url = ''
-    if stridx(line, 'Plug') != 0
-        let url = matchstr(line, '\S*://\(\S\|\.\)*')
-    else
-        let url = 'https://github.com/' . matchlist(getline('.'), 'Plug\s\s*''\(.*\)''')[1]
-    endif
-    if strlen(url) != 0
-        call netrw#BrowseX(url, 0)
-    endif
-endfunction
-
-" augroup PlugGx
-"   autocmd!
-"   autocmd FileType vim-plug nnoremap <buffer> <silent> gx :call <sid>plug_gx()<cr>
-" augroup END
-
-" nnoremap <buffer> <silent> gx :call <sid>plug_gx()<cr>
-nnoremap <silent> gx :call Lite_gx()<cr>
-
 " }}}
 
 
-" Origin init.vim -- {{{
-set runtimepath^=~/.vim runtimepath+=~/.vim/after
-set runtimepath+=~/.local/share/nvim
-set runtimepath+=~/.local/share/nvim
-let &packpath = &runtimepath
+" Machine Specific -- {{{
+" set pythonthreedll=C:\Users\HP\.pyenv\pyenv-win\versions\3.10.5\python310.dll
+" set pythonthreehome=C:\Users\HP\.pyenv\pyenv-win\versions\3.10.5\
+" }}}
 
+" Origin init.vim -- {{{
 " Terminal settings
 
 " Exit tmode
@@ -156,7 +110,7 @@ if has('unix') || has('macunix')
   nnoremap <silent> <leader>tot :tabnew term://zsh<CR>
 elseif has('win32')
   let g:python3_host_prog='~\.pyenv\pyenv-win\versions\nvim\Scripts\python.exe'
-  let g:coc_node_path = 'C:\Program Files\nodejs\node.exe'
+  let g:coc_node_path = '~\AppData\Roaming\fnm\aliases\default\node.exe'
   nnoremap <silent> <leader>tot :tabnew term://pwsh.exe<CR>
 endif
 " }}}
@@ -175,8 +129,10 @@ syntax on
 autocmd! bufreadpost *.svg set syntax=off
 filetype plugin indent on
 set wrap
+set title 
 set ruler
 set hidden
+set belloff=all
 if (has('termguicolors'))
     set termguicolors
 endif
@@ -219,15 +175,15 @@ set nofoldenable
 set autoindent
 set backspace=indent,eol,start
 set autoread
-set guicursor+=n:blinkon300-nCursor,i:hor50-blinkon300
 set formatoptions+=jn
 if has('autocmd')
     " Jump to the line viewed at last time
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
     " Reload file every time the cursor get into a buffer
-    autocmd FocusGained,BufEnter * :silent! !
+    " autocmd FocusGained,BufEnter * :checktime
     " Disable line breaking in markdown file
     autocmd BufNewFile,BufRead,BufEnter *.md set textwidth=0
+    autocmd GUIEnter * simalt ~x
 endif
 
 " Persistent undo
@@ -345,6 +301,11 @@ nnoremap <silent> <leader>cg :echom string(CheckColorGroup())<CR>
 nnoremap <silent> <leader>ch :so $VIMRUNTIME/syntax/hitest.vim<CR>
 " Translate
 nnoremap <silent> <leader>tr :Translate<CR>
+" GUI Operations
+noremap <M-Space>x :simalt ~x<CR>
+noremap <M-Space>r :simalt ~r<CR>
+inoremap <C-V> <C-R>+
+cnoremap <C-V> <C-R>+
 " }}}
 
 
@@ -358,16 +319,9 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-set guifont=CaskaydiaCove\ NF
-" If it is gruvbox, set signs column's color the same as bg
-let g:gruvbox_sign_column = 'bg0'
+set guifont=CaskaydiaCove\ NF:h10
+set guioptions=gt!a
 colorscheme onehalflight
-let g:_color = get(g:, 'colors_name', 'default') 
-if g:_color == 'gruvbox'
-    " These 2 colors of nord theme are quite suitable to gruvbox
-    " highlight Identifier guifg=#8FBCBB
-    " highlight Constant guifg=#8FBCBB
-endif
 " Hide (~) at the end of buffer
 highlight NonText guifg=bg
 highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
@@ -543,7 +497,7 @@ autocmd BufAdd *.vue let b:coc_enabled=0
 
 " Plugin Settings -- {{{
 
-" Floatterm
+" Floaterm
 if has('unix') || has('macunix')
   let g:floaterm_shell='/usr/bin/zsh'
 elseif has('win32')
@@ -551,14 +505,15 @@ elseif has('win32')
 endif
 nnoremap <silent> <C-t>t :FloatermToggle<CR>
 nnoremap <silent> <C-t>c :FloatermNew<CR>
-nnoremap <silent> <C-t>k :FloatermKill<CR>
+nnoremap <silent> <C-t>x :FloatermKill<CR>
 nnoremap <silent> <C-t>n :FloatermNext<CR>
 nnoremap <silent> <C-t>p :FloatermPrev<CR>
 tmap <silent> <C-t>t jk:FloatermToggle<CR>
 tmap <silent> <C-t>c jk:FloatermNew<CR>
-tmap <silent> <C-t>k jk:FloatermKill<CR>
+tmap <silent> <C-t>x jk:FloatermKill<CR>
 tmap <silent> <C-t>n jk:FloatermNext<CR>
 tmap <silent> <C-t>p jk:FloatermPrev<CR>
+tmap <silent> <C-c> <C-c>
 
 " Snippet
 let g:UltiSnipsExpandTrigger = '<C-l>'
@@ -603,12 +558,15 @@ let g:startify_session_before_save = [
             \ 'execute g:startify_tmp_winnr . "wincmd w"'
             \ ]
 let g:startify_session_persistence = 1
-autocmd VimEnter *
-            \   if !argc()
-            \ |   Startify
-            \ |   NERDTree
-            \ |   wincmd w
-            \ | endif
+augroup startify_stuff
+    autocmd VimEnter *
+                \   if !argc()
+                \ |   Startify
+                \ |   NERDTree
+                \ |   wincmd w
+                \ | endif
+    autocmd BufEnter * let &titlestring=fnamemodify(v:this_session, ':t')
+augroup END
 " Tagbar
 let tagbar_left = 1
 let tagbar_width = 32
@@ -779,6 +737,8 @@ endfunction
 
 function! SetServerName()
   let nvim_server_file = has('win32')
+
+ let nvim_server_file = has('win32')
         \ ? $TEMP . "/curnvimserver.txt"
         \ : $HOME . "/tmp/curnvimserver.txt"
   call system(printf("echo %s > %s", v:servername, nvim_server_file))
