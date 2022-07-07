@@ -3,7 +3,7 @@
     name = harass
 [core]
     editor = gvim
-	autocrlf = true
+    autocrlf = input
 [alias]
     a = add
     st = status

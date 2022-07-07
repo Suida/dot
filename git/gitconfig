@@ -1,6 +1,9 @@
 [user]
     email = suidar@foxmail.com
     name = harass
+[core]
+    editor = nvim
+    autocrlf = input
 [alias]
     a = add
     st = status
@@ -25,5 +28,3 @@
     keepBackup = false
 [mergetool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
-[core]
-    editor = nvim

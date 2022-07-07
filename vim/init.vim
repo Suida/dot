@@ -1,5 +1,4 @@
 " Plug Settings -- {{{
-"call plug#begin(stdpath('data').'/plugged')
 call plug#begin('~/.local/share/nvim/data/plugged')
 
 Plug 'junegunn/vim-plug'
@@ -11,7 +10,6 @@ Plug 'neoclide/coc.nvim', {
 " Navigation & developing support
 " File, sign navigator & float terminal
 Plug 'majutsushi/tagbar'
-Plug 'preservim/nerdtree'
 Plug 'voldikss/vim-floaterm'
 " Commenter & git utils
 Plug 'tomtom/tcomment_vim'
@@ -28,8 +26,10 @@ Plug 'tpope/vim-unimpaired'
 Plug 'mattn/emmet-vim'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+" Marker
+Plug 'kshenoy/vim-signature'
 
-" Fuzzy finer
+" Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
 " Global finder
@@ -78,65 +78,25 @@ Plug 'mhinz/vim-rfc'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-scripts/Drawit'
 Plug 'voldikss/vim-translator'
-Plug 'suida/beacon.nvim'
+let g:vimspector_enable_mappings = 'HUMAN'
+Plug 'puremourning/vimspector'
+
+" Neovim only
+if has('nvim')
+    " Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
+    Plug 'kyazdani42/nvim-web-devicons' " optional, for file icons
+    Plug 'kyazdani42/nvim-tree.lua'
+else
+    Plug 'preservim/nerdtree'
+endif
+" Plug 'suida/beacon.nvim'
 
 call plug#end()
-
-autocmd VimEnter *
-  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \|   PlugInstall --sync | q
-  \| endif
-
-" function! s:plug_gx()
-"   let line = getline('.')
-"   echo 'line: ' . line
-"   let sha  = matchstr(line, '^  \X*\zs\x\{7,9}\ze ')
-"   echo 'sha: ' . sha
-"   let name = empty(sha) ? matchstr(line, '^[-x+] \zs[^:]\+\ze:')
-"                       \ : getline(search('^- .*:$', 'bn'))[2:-2]
-"   let uri  = get(get(g:plugs, name, {}), 'uri', '')
-"   echo 'uri: ' . uri
-"   if uri !~ 'github.com'
-"     return
-"   endif
-"   let repo = matchstr(uri, '[^:/]*/'.name)
-"   echo 'repo: ' . repo
-"   let url  = empty(sha) ? 'https://github.com/'.repo
-"                       \ : printf('https://github.com/%s/commit/%s', repo, sha)
-"   echo 'url: ' . url
-"   call netrw#BrowseX(url, 0)
-" endfunction
-let g:netrw_browsex_viewer = "cmd.exe /C start"
-function! Lite_gx()
-    let line = getline('.')
-    let url = ''
-    if stridx(line, 'Plug') != 0
-        let url = matchstr(line, '\S*://\(\S\|\.\)*')
-    else
-        let url = 'https://github.com/' . matchlist(getline('.'), 'Plug\s\s*''\(.*\)''')[1]
-    endif
-    if strlen(url) != 0
-        call netrw#BrowseX(url, 0)
-    endif
-endfunction
-
-" augroup PlugGx
-"   autocmd!
-"   autocmd FileType vim-plug nnoremap <buffer> <silent> gx :call <sid>plug_gx()<cr>
-" augroup END
-
-" nnoremap <buffer> <silent> gx :call <sid>plug_gx()<cr>
-nnoremap <silent> gx :call Lite_gx()<cr>
-
 " }}}
 
 
-" Origin init.vim -- {{{
-set runtimepath^=~/.vim runtimepath+=~/.vim/after
-set runtimepath+=~/.local/share/nvim
-set runtimepath+=~/.local/share/nvim
-let &packpath = &runtimepath
 
+" Origin init.vim -- {{{
 " Terminal settings
 
 " Exit tmode
@@ -155,8 +115,8 @@ if has('unix') || has('macunix')
   let g:coc_node_path = '~/.nvm/versions/node/' . node_ver[0] . '/bin/node'
   nnoremap <silent> <leader>tot :tabnew term://zsh<CR>
 elseif has('win32')
-  let g:python3_host_prog='~\.pyenv\pyenv-win\versions\nvim\Scripts\python.exe'
-  let g:coc_node_path = 'C:\Program Files\nodejs\node.exe'
+  let g:python3_host_prog=expand('$PYENV_ROOT') . 'versions\nvim\Scripts\python.exe'
+  let g:coc_node_path = '~\AppData\Roaming\fnm\aliases\default\node.exe'
   nnoremap <silent> <leader>tot :tabnew term://pwsh.exe<CR>
 endif
 " }}}
@@ -175,8 +135,10 @@ syntax on
 autocmd! bufreadpost *.svg set syntax=off
 filetype plugin indent on
 set wrap
+set title 
 set ruler
 set hidden
+set belloff=all
 if (has('termguicolors'))
     set termguicolors
 endif
@@ -219,15 +181,15 @@ set nofoldenable
 set autoindent
 set backspace=indent,eol,start
 set autoread
-set guicursor+=n:blinkon300-nCursor,i:hor50-blinkon300
 set formatoptions+=jn
 if has('autocmd')
     " Jump to the line viewed at last time
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
     " Reload file every time the cursor get into a buffer
-    autocmd FocusGained,BufEnter * :silent! !
+    " autocmd FocusGained,BufEnter * :checktime
     " Disable line breaking in markdown file
     autocmd BufNewFile,BufRead,BufEnter *.md set textwidth=0
+    autocmd GUIEnter * simalt ~x
 endif
 
 " Persistent undo
@@ -319,8 +281,7 @@ nnoremap <silent> <leader>9 :normal 9gt<CR>
 " Use <space>sl to clear the highlighting of :set hlsearch.
 nnoremap <silent> <leader>sl :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 " Adaption for easymotion
-" nmap <silent> F <Plug>(easymotion-f)
-" nmap <silent> T <Plug>(easymotion-t)
+nmap <silent> <leader>S <Plug>(easymotion-s)
 nmap <silent> <leader>W <Plug>(easymotion-w)
 nmap <silent> <leader>B <Plug>(easymotion-b)
 nmap <silent> <leader>J <Plug>(easymotion-j)
@@ -345,6 +306,12 @@ nnoremap <silent> <leader>cg :echom string(CheckColorGroup())<CR>
 nnoremap <silent> <leader>ch :so $VIMRUNTIME/syntax/hitest.vim<CR>
 " Translate
 nnoremap <silent> <leader>tr :Translate<CR>
+" GUI Operations
+noremap <M-Space>n :simalt ~n<CR>
+noremap <M-Space>r :simalt ~r<CR>
+noremap <M-Space>x :simalt ~x<CR>
+inoremap <C-V> <C-R>+
+cnoremap <C-V> <C-R>+
 " }}}
 
 
@@ -358,23 +325,33 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-set guifont=CaskaydiaCove\ NF
-" If it is gruvbox, set signs column's color the same as bg
-let g:gruvbox_sign_column = 'bg0'
+set guifont=CaskaydiaCove\ NF:h10
+set guioptions=gt!a
 colorscheme onehalflight
-let g:_color = get(g:, 'colors_name', 'default') 
-if g:_color == 'gruvbox'
-    " These 2 colors of nord theme are quite suitable to gruvbox
-    " highlight Identifier guifg=#8FBCBB
-    " highlight Constant guifg=#8FBCBB
-endif
 " Hide (~) at the end of buffer
 highlight NonText guifg=bg
 highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
 function! CheckColorGroup()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
-
+let g:terminal_ansi_colors=[
+      \ '#FFFFFF',
+      \ '#DF6C75',
+      \ '#98C379',
+      \ '#F3AE35',
+      \ '#0997B3',
+      \ '#383A42',
+      \ '#C577DD',
+      \ '#56B5C1',
+      \ '#383A42',
+      \ '#DF6C75',
+      \ '#50A14F',
+      \ '#98C379',
+      \ '#E45649', 
+      \ '#A626A4',
+      \ '#777777',
+      \ '#FAFAFA',
+      \ ]
 " Beacon
 let g:beacon_size = 40
 highlight Beacon guibg=#a0a1a7 ctermbg=15
@@ -404,6 +381,7 @@ endfunction
 " indentLine
 let g:indentLine_concealcursor = ''
 let g:indentLine_conceallevel = 2
+let g:indentLine_char_list = ['│']
 " Latex conceal compatibility
 let g:indentLine_setColors = 0
 let g:indentLine_fileTypeExclude = ['tex']
@@ -510,11 +488,11 @@ nnoremap <silent><nowait> <leader>cl  :<C-u>CocList commands<cr>
 " Find symbol of current document.
 nnoremap <silent><nowait> <leader>co  :<C-u>CocList outline<cr>
 " Search workspace symbols.
-noremap <silent><nowait> <leader>cs  :<C-u>CocList -I symbols<cr>
+nnoremap <silent><nowait> <leader>cs  :<C-u>CocList -I symbols<cr>
 " Resume latest coc list.
 nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
 " Restart coc service
-nnoremap <silent><nowait> <leader>sr  :<C-u>CocRestart<CR>
+nnoremap <silent><nowait> <leader>cr  :<C-u>CocRestart<CR>
 
 augroup CocGroup
   autocmd!
@@ -543,34 +521,67 @@ autocmd BufAdd *.vue let b:coc_enabled=0
 
 " Plugin Settings -- {{{
 
-" Floatterm
+" Floaterm
 if has('unix') || has('macunix')
   let g:floaterm_shell='/usr/bin/zsh'
 elseif has('win32')
   let g:floaterm_shell='"C:\Program Files\PowerShell\7\pwsh.exe"'
 endif
-nnoremap <silent> <C-t>t :FloatermToggle<CR>
-nnoremap <silent> <C-t>c :FloatermNew<CR>
-nnoremap <silent> <C-t>k :FloatermKill<CR>
-nnoremap <silent> <C-t>n :FloatermNext<CR>
-nnoremap <silent> <C-t>p :FloatermPrev<CR>
-tmap <silent> <C-t>t jk:FloatermToggle<CR>
-tmap <silent> <C-t>c jk:FloatermNew<CR>
-tmap <silent> <C-t>k jk:FloatermKill<CR>
-tmap <silent> <C-t>n jk:FloatermNext<CR>
-tmap <silent> <C-t>p jk:FloatermPrev<CR>
+let g:floaterm_width=0.8
+let g:floaterm_height=0.8
+nnoremap <silent> <leader>tt :FloatermToggle<CR>
+nnoremap <silent> <leader>tn :FloatermNew<CR>
+nnoremap <silent> <leader>tk :FloatermKill<CR>
+nnoremap <silent> <leader>t] :FloatermNext<CR>
+nnoremap <silent> <leader>t[ :FloatermPrev<CR>
+tmap <silent> <leader>tt jk:FloatermToggle<CR>
+tmap <silent> <leader>tn jk:FloatermNew<CR>
+tmap <silent> <leader>tk jk:FloatermKill<CR>
+tmap <silent> <leader>t] jk:FloatermNext<CR>
+tmap <silent> <leader>t[ jk:FloatermPrev<CR>
 
 " Snippet
 let g:UltiSnipsExpandTrigger = '<C-l>'
 
-" NERDTree, Git, ctrlsf, startify & Tagbar
-" NERDTree
-let NERDTreeWinPos = 'right'
-let NERDTreeIgnore = ['.*\.swp']
-let NERDTreeShowHidden = 1
-nnoremap <silent> <leader>e :NERDTreeToggle<CR>
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+" NvimTree, Git, ctrlsf, startify & Tagbar
+" NvimTree
+lua <<EOF
+local mappings = {
+    list = {
+        { key = "K",            action = "toggle_file_info" },
+        { key = "<C-k>",        action = "" },
+        { key = "<C-e>",        action = "" },
+    },
+}
+require("nvim-tree").setup({
+    hijack_netrw = false,
+    open_on_setup = false,
+    open_on_setup_file = false,
+    view = {
+        side = "right",
+        mappings = mappings,
+        number = ture,
+        relativenumber = ture,
+        signcolumn = "yes",
+        preserve_window_proportions = true,
+    },
+    respect_buf_cwd = true,
+})
+EOF
+nnoremap <silent> <leader>e :NvimTreeToggle<CR>
+augroup explorer
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * call s:handle_open_directory()
+augroup END
+function s:handle_open_directory()
+    if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") 
+        ene
+        NvimTreeOpen
+        sleep 100m
+        wincmd w
+    endif
+endfunction
+
 " Git
 set updatetime=100
 let g:gitgutter_enabled = 0
@@ -581,6 +592,8 @@ let g:gitgutter_map_keys = 0
 nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 nnoremap <silent> ]c :GitGutterNextHunk<CR>
 nnoremap <silent> [c :GitGutterPrevHunk<CR>
+"Fzf
+nnoremap <silent> F :FZF<CR>
 " CtrlSF
 let g:ctrlsf_backend = 'rg'
 let g:ctrlsf_ignore_dir = [
@@ -593,22 +606,29 @@ let g:ctrlsf_ignore_dir = [
             \ ]
 nnoremap <leader>sf :CtrlSF 
 " Startify
+let g:startify_session_persistence = 1
+let g:startify_session_delete_buffers = 1
 let g:startify_session_before_save = [
-            \ 'execute bufname() =~ "^NERD_tree_." ? ":NERDTreeClose" : ""',
+            \ 'silent! NvimTreeClose',
             \ 'let g:startify_tmp_tabpagenr = tabpagenr()',
             \ 'let g:startify_tmp_winnr = winnr()',
             \ 'echo "Cleaning up before saving.."',
-            \ 'silent! tabdo NERDTreeClose',
+            \ 'silent! tabdo NvimTreeClose',
             \ 'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
             \ 'execute g:startify_tmp_winnr . "wincmd w"'
             \ ]
-let g:startify_session_persistence = 1
-autocmd VimEnter *
-            \   if !argc()
-            \ |   Startify
-            \ |   NERDTree
-            \ |   wincmd w
-            \ | endif
+augroup startify_stuff
+    autocmd VimEnter * call s:init_startify()
+    autocmd BufEnter * let &titlestring=fnamemodify(v:this_session, ':t')
+augroup END
+function! s:init_startify()
+    if !argc()
+        Startify
+        NvimTreeOpen
+        sleep 100m
+        wincmd w
+    endif
+endfunction
 " Tagbar
 let tagbar_left = 1
 let tagbar_width = 32
@@ -778,10 +798,12 @@ function! CocHook()
 endfunction
 
 function! SetServerName()
-  let nvim_server_file = has('win32')
-        \ ? $TEMP . "/curnvimserver.txt"
-        \ : $HOME . "/tmp/curnvimserver.txt"
-  call system(printf("echo %s > %s", v:servername, nvim_server_file))
+    let nvim_server_file = has('win32')
+
+    let nvim_server_file = has('win32')
+                \ ? $TEMP . "/curnvimserver.txt"
+                \ : $HOME . "/tmp/curnvimserver.txt"
+    call system(printf("echo %s > %s", v:servername, nvim_server_file))
 endfunction
 " }}}
 
