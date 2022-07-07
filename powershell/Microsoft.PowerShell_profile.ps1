@@ -1,7 +1,7 @@
 Import-Module posh-git
-Import-Module oh-my-posh
-Import-Module -Name C:\Users\HP\workspace\PSColor\src\PSColor.psm1
-Set-PoshPrompt -Theme tonybaloney
+Import-Module -Name C:\Users\hugh\workspace\PSColor\src\PSColor.psm1
+Import-Module -Name C:\Users\hugh\Documents\PowerShell\rustup-completions.ps1
+oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\default.omp.json" | Invoke-Expression
 
 New-Alias ~ $HOME
 function .. { Set-Location .. }

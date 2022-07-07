@@ -27,13 +27,6 @@
             {
                 "action": "newTab"
             },
-            "keys": "ctrl+t"
-        },
-        {
-            "command": 
-            {
-                "action": "newTab"
-            },
             "keys": "alt+t"
         },
         {
@@ -198,9 +191,7 @@
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
                 "name": "Windows PowerShell",
-                "opacity": 80,
-                "padding": "4",
-                "useAcrylic": true
+                "padding": "4"
             },
             {
                 "colorScheme": "One Half Dark",
