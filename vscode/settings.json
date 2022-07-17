@@ -2,13 +2,13 @@
     "window.zoomLevel": -0.5,
 
     "editor.fontSize": 14,
-    "editor.fontFamily": "Cascadia Code",
+    "editor.fontFamily": "CaskaydiaCove NF",
     "editor.fontLigatures": true,
     "editor.minimap.enabled": false,
     "editor.acceptSuggestionOnCommitCharacter": true,
     "editor.lineNumbers": "relative",
-	"editor.renderLineHighlight": "all",
-	"editor.stablePeek": true,
+    "editor.renderLineHighlight": "all",
+    "editor.stablePeek": true,
     "editor.suggestSelection": "first",
     "editor.peekWidgetDefaultFocus": "editor",
     "editor.renderWhitespace": "all",
@@ -19,17 +19,14 @@
         "strings": true,
     },
 
-    "terminal.integrated.shell.linux": "/bin/zsh",
-    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\cmd.exe",
-    "terminal.integrated.env.windows": {"CMDER_ROOT": "G:\\python\\cmder\\"},
-    "terminal.integrated.shellArgs.windows": [
-        "/K G:\\python\\cmder\\vendor\\init.bat",
-    ],
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.scrollback": 5000,
 
     "breadcrumbs.enabled": true,
     "breadcrumbs.icons": false,
 
+    "workbench.colorTheme": "Default Light+",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
         "statusBar.background": "#007ACC",
@@ -42,7 +39,7 @@
     "workbench.activityBar.visible": false,
 
     "explorer.confirmDelete": false,
-    // "files.autoSave": "afterDelay",
+    "files.autoSave": "afterDelay",
     "files.watcherExclude": {
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
@@ -224,5 +221,4 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.python"
     },
-    "workbench.colorTheme": "Sunset Theme",
 }

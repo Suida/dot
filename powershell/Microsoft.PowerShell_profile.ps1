@@ -29,7 +29,8 @@ function du {
 New-Alias g git
 function gst { git status }
 
-function u { wsl -u hugh }
+function v { nvim-qt.exe $args }
+function Get-GUID { curl https://guid.it/string }
 
 $PSReadLineOptions = @{
     EditMode = "Emacs"
@@ -44,7 +45,7 @@ $PSReadLineOptions = @{
 }
 Set-PSReadLineOption @PSReadLineOptions
  
-Set-PSReadlineKeyHandler -Key Tab -Function Complete # 设置 Tab 键补全
+Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete # 设置 Tab 键补全
 Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo # 设置 Ctrl+z 为撤销
 Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward # 设置向上键为后向搜索历史记录
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward # 设置向下键为前向搜索历史纪录
@@ -119,3 +120,7 @@ function showColors {
         Write-Host " on $bgcolor"
     }
 }
+
+$env:http_proxy="http://127.0.0.1:7890"
+$env:https_proxy="http://127.0.0.1:7890"
+$env:CMAKE_TOOLCHAIN_FILE="C:/Users/hugh/app/vcpkg/scripts/buildsystems/vcpkg.cmake"

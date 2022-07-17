@@ -3,22 +3,22 @@
     // Terminal related
     {
         "key": "ctrl+tab",
-        "command": "workbench.action.terminal.focusNext", // 切换到下一个终端 
+        "command": "workbench.action.terminal.focusNext",
         "when": "terminalFocus"
     },
     {
         "key": "ctrl+w",
-        "command": "workbench.action.terminal.kill", // 关闭当前终端
+        "command": "workbench.action.terminal.kill",
         "when": "terminalFocus"
     },
     {
         "key": "ctrl+t",
-        "command": "workbench.action.terminal.new", // 打开新的终端
+        "command": "workbench.action.terminal.new",
         "when": "terminalFocus"
     },
     {
         "key": "ctrl+1",
-        "command": "workbench.action.terminal.focusAtIndex1", // 打开终端1
+        "command": "workbench.action.terminal.focusAtIndex1",
         "when": "terminalFocus"
     },
     {

@@ -6,10 +6,9 @@
         {
             "command": 
             {
-                "action": "splitPane",
-                "split": "right"
+                "action": "prevTab"
             },
-            "keys": "ctrl+shift+\\"
+            "keys": "ctrl+shift+["
         },
         {
             "command": 
@@ -17,6 +16,14 @@
                 "action": "copy"
             },
             "keys": "alt+c"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "right"
+            },
+            "keys": "ctrl+shift+\\"
         },
         {
             "command": "paste",
@@ -42,15 +49,19 @@
                 "action": "splitPane",
                 "split": "down"
             },
-            "keys": "ctrl+shift+plus"
+            "keys": "ctrl+shift+minus"
+        },
+        {
+            "command": "closePane",
+            "keys": "ctrl+shift+w"
         },
         {
             "command": 
             {
-                "action": "switchToTab",
-                "index": 3
+                "action": "moveFocus",
+                "direction": "left"
             },
-            "keys": "alt+4"
+            "keys": "ctrl+shift+h"
         },
         {
             "command": 
@@ -71,14 +82,10 @@
         {
             "command": 
             {
-                "action": "moveFocus",
-                "direction": "right"
+                "action": "resizePane",
+                "direction": "left"
             },
-            "keys": "ctrl+shift+l"
-        },
-        {
-            "command": "closePane",
-            "keys": "ctrl+shift+minus"
+            "keys": "ctrl+shift+y"
         },
         {
             "command": 
@@ -91,10 +98,10 @@
         {
             "command": 
             {
-                "action": "resizePane",
-                "direction": "left"
+                "action": "moveFocus",
+                "direction": "right"
             },
-            "keys": "ctrl+shift+y"
+            "keys": "ctrl+shift+l"
         },
         {
             "command": 
@@ -103,14 +110,6 @@
                 "direction": "down"
             },
             "keys": "ctrl+shift+u"
-        },
-        {
-            "command": 
-            {
-                "action": "moveFocus",
-                "direction": "left"
-            },
-            "keys": "ctrl+shift+h"
         },
         {
             "command": 
@@ -153,32 +152,64 @@
             "keys": "alt+3"
         },
         {
+            "command": "unbound",
+            "keys": "ctrl+t"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 3
+            },
+            "keys": "alt+4"
+        },
+        {
             "command": 
             {
                 "action": "switchToTab",
                 "index": 4
             },
             "keys": "alt+5"
+        },
+        {
+            "command": 
+            {
+                "action": "nextTab"
+            },
+            "keys": "ctrl+shift+]"
+        },
+        {
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "\u001b"
+            },
+            "keys": "ctrl+space"
         }
     ],
     "alwaysShowTabs": true,
+    "copyOnSelect": true,
     "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
     "initialCols": 100,
+    "launchMode": "maximized",
     "profiles": 
     {
         "defaults": 
         {
+            "bellStyle": "none",
             "colorScheme": "One Half Light",
             "cursorShape": "filledBox",
             "font": 
             {
-                "face": "CaskaydiaCove NF"
+                "face": "CaskaydiaCove NF",
+                "size": 10
             }
         },
         "list": 
         [
             {
                 "backgroundImage": null,
+                "bellStyle": "taskbar",
                 "colorScheme": "One Half Light",
                 "commandline": "pwsh.exe",
                 "cursorColor": "#0184BC",
@@ -194,20 +225,25 @@
                 "padding": "4"
             },
             {
-                "colorScheme": "One Half Dark",
-                "commandline": "C:\\cygwin64\\Cygwin.bat",
-                "font": 
-                {
-                    "face": "CaskaydiaCove NF",
-                    "size": 11
-                },
-                "guid": "{9c80a9b8-0784-4b93-b7c0-f034e7d817e6}",
-                "hidden": false,
-                "icon": "C:\\Users\\U\\Downloads\\Cygwin.png",
-                "name": "Cygwin",
-                "opacity": 80,
-                "tabTitle": "Cygwin",
-                "useAcrylic": true
+                "guid": "{17da3cac-b318-431e-8a3e-7fcdefe6d114}",
+                "name": "MINGW64 / MSYS2",
+                "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -shell zsh",
+                "startingDirectory": "C:/msys64/home/%USERNAME%",
+                "icon": "C:/msys64/mingw64.ico"
+            },
+            {
+                "guid": "{2d51fdc4-a03b-4efe-81bc-722b7f6f3820}",
+                "name": "MINGW32 / MSYS2",
+                "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw32 -shell zsh",
+                "startingDirectory": "C:/msys64/home/%USERNAME%",
+                "icon": "C:/msys64/mingw32.ico"
+            },
+            {
+                "guid": "{71160544-14d8-4194-af25-d05feeac7233}",
+                "name": "MSYS / MSYS2",
+                "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -msys -shell zsh",
+                "startingDirectory": "C:/msys64/home/%USERNAME%",
+                "icon": "C:/msys64/msys2.ico"
             },
             {
                 "font": 
@@ -229,6 +265,18 @@
                 "hidden": false,
                 "name": "PowerShell",
                 "source": "Windows.Terminal.PowershellCore"
+            },
+            {
+                "guid": "{c2f7ac4b-4a27-5d78-8247-624778dc7879}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 2022 (2)",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{fe7dc3f7-2ccd-580f-8747-45ed9e549f00}",
+                "hidden": false,
+                "name": "Developer PowerShell for VS 2022 (2)",
+                "source": "Windows.Terminal.VisualStudio"
             }
         ]
     },
@@ -442,6 +490,7 @@
             "yellow": "#808000"
         }
     ],
+    "showTabsInTitlebar": true,
     "showTerminalTitleInTitlebar": false,
     "tabWidthMode": "equal",
     "theme": "light"
