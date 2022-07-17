@@ -90,6 +90,7 @@ call plug#end()
 " set pythonthreehome=C:\Users\HP\.pyenv\pyenv-win\versions\3.10.5\
 " }}}
 
+
 " Origin init.vim -- {{{
 " Terminal settings
 
@@ -180,7 +181,7 @@ if has('autocmd')
     " Jump to the line viewed at last time
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
     " Reload file every time the cursor get into a buffer
-    " autocmd FocusGained,BufEnter * :checktime
+    autocmd FocusGained,BufEnter * :checktime
     " Disable line breaking in markdown file
     autocmd BufNewFile,BufRead,BufEnter *.md set textwidth=0
     autocmd GUIEnter * simalt ~x
@@ -358,8 +359,8 @@ endfunction
 " indentLine
 let g:indentLine_concealcursor = ''
 let g:indentLine_conceallevel = 2
+let g:indentLine_defaultGroup = 'LineNr'
 " Latex conceal compatibility
-let g:indentLine_setColors = 0
 let g:indentLine_fileTypeExclude = ['tex']
 " }}}
 

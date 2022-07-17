@@ -1,5 +1,5 @@
 " Plug Settings -- {{{
-call plug#begin('~/.local/share/nvim/data/plugged')
+call plug#begin('C:/Users/hugh/.local/share/nvim/data/plugged')
 
 Plug 'junegunn/vim-plug'
 Plug 'neoclide/coc.nvim', {
@@ -48,6 +48,7 @@ Plug 'joshdick/onedark.vim'
 Plug 'itchyny/lightline.vim'
 " Indentation line
 Plug 'Yggdroot/indentLine'
+Plug 'tpope/vim-sleuth'
 
 " Language supports
 " Plug 'sheerun/vim-polyglot'
@@ -100,7 +101,6 @@ call plug#end()
 " Terminal settings
 
 " Exit tmode
-tnoremap <Esc> <C-\><C-n>
 tnoremap jk <C-\><C-n>
 tnoremap Jk <C-\><C-n>
 tnoremap JK <C-\><C-n>
@@ -110,14 +110,14 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 
 " Provider
 if has('unix') || has('macunix')
-  let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
-  let node_ver=readfile($HOME . '/.nvm/alias/default')
-  let g:coc_node_path = '~/.nvm/versions/node/' . node_ver[0] . '/bin/node'
-  nnoremap <silent> <leader>tot :tabnew term://zsh<CR>
+    let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
+    let node_ver=readfile($HOME . '/.nvm/alias/default')
+    let g:coc_node_path = '~/.nvm/versions/node/' . node_ver[0] . '/bin/node'
+    nnoremap <silent> <leader>tot :tabnew term://zsh<CR>
 elseif has('win32')
-  let g:python3_host_prog=expand('$PYENV_ROOT') . 'versions\nvim\Scripts\python.exe'
-  let g:coc_node_path = '~\AppData\Roaming\fnm\aliases\default\node.exe'
-  nnoremap <silent> <leader>tot :tabnew term://pwsh.exe<CR>
+    let g:python3_host_prog=expand('$PYENV_ROOT') . 'versions\nvim\Scripts\python.exe'
+    let g:coc_node_path = '~\AppData\Roaming\fnm\aliases\default\node.exe'
+    nnoremap <silent> <leader>tot :tabnew term://pwsh.exe<CR>
 endif
 " }}}
 
@@ -156,6 +156,17 @@ set spelllang=en_us,cjk
 set conceallevel=2
 set clipboard+=unnamed
 set noswapfile
+set guicursor=n-v-c-sm:block-blinkwait300-blinkon500-blinkoff500-Cursor,i:hor20-blinkwait300-blinkon500-blinkoff500-Cursor
+augroup guidetect
+    autocmd VimEnter * call s:guisettings()
+augroup END
+function! s:guisettings()
+    if has('nvim') && exists('g:GuiLoaded')
+        GuiFont! CaskaydiaCove\ NF:h10
+        GuiTabline 0
+        GuiPopupmenu 0
+    endif
+endfunction
 " Under Wsl environment
 if has('windows') && has('unix')
     let g:clipboard = {
@@ -174,7 +185,6 @@ endif
 " Indentation rules and folding
 set tabstop=4
 set softtabstop=4
-set shiftwidth=4
 set expandtab
 set foldmethod=marker
 set nofoldenable
@@ -182,15 +192,15 @@ set autoindent
 set backspace=indent,eol,start
 set autoread
 set formatoptions+=jn
-if has('autocmd')
+augroup basic_prelaunch_settings
     " Jump to the line viewed at last time
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
     " Reload file every time the cursor get into a buffer
-    " autocmd FocusGained,BufEnter * :checktime
+    autocmd FocusGained,BufLeave * if bufname()!='[Command Line]' | checktime | endif
     " Disable line breaking in markdown file
     autocmd BufNewFile,BufRead,BufEnter *.md set textwidth=0
     autocmd GUIEnter * simalt ~x
-endif
+augroup END
 
 " Persistent undo
 let g:undo_path = fnamemodify(expand($MYVIMRC), ':h') . '/undo'
@@ -247,21 +257,17 @@ nnoremap <C-j> 15j
 nnoremap <C-k> 15k
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
-nnoremap <C-c>h :tabp <CR>
-nnoremap <C-c>l :tabn <CR>
 nnoremap <left> :tabp <CR>
 nnoremap <right> :tabn <CR>
 inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
 nnoremap <silent> <C-l> :tabn<CR>
 nnoremap <silent> <C-h> :tabp<CR>
-tnoremap <C-l> <C-\><C-n>:tabn<CR>
-tnoremap <C-h> <C-\><C-n>:tabp<CR>
 nnoremap <silent> <leader>tl :tabs<CR>
-nnoremap <leader>h <C-w>h
-nnoremap <leader>j <C-w>j
-nnoremap <leader>k <C-w>k
-nnoremap <leader>l <C-w>l
+nnoremap <space>h <C-w>h
+nnoremap <space>j <C-w>j
+nnoremap <space>k <C-w>k
+nnoremap <space>l <C-w>l
 tnoremap <silent> <C-w> <C-\><C-n><C-w>
 
 nnoremap <leader>bt :b 
@@ -325,8 +331,6 @@ set cursorline
 set t_Co=256
 set background=dark
 set laststatus=2
-set guifont=CaskaydiaCove\ NF:h10
-set guioptions=gt!a
 colorscheme onehalflight
 " Hide (~) at the end of buffer
 highlight NonText guifg=bg
@@ -334,24 +338,6 @@ highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
 function! CheckColorGroup()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
-let g:terminal_ansi_colors=[
-      \ '#FFFFFF',
-      \ '#DF6C75',
-      \ '#98C379',
-      \ '#F3AE35',
-      \ '#0997B3',
-      \ '#383A42',
-      \ '#C577DD',
-      \ '#56B5C1',
-      \ '#383A42',
-      \ '#DF6C75',
-      \ '#50A14F',
-      \ '#98C379',
-      \ '#E45649', 
-      \ '#A626A4',
-      \ '#777777',
-      \ '#FAFAFA',
-      \ ]
 " Beacon
 let g:beacon_size = 40
 highlight Beacon guibg=#a0a1a7 ctermbg=15
@@ -379,11 +365,11 @@ function! EmojiedFugitiveHead()
 endfunction
 
 " indentLine
-let g:indentLine_concealcursor = ''
-let g:indentLine_conceallevel = 2
-let g:indentLine_char_list = ['│']
+set list listchars=tab:¦\ 
+let g:indentLine_setColors = 1
+let g:indentLine_defaultGroup = "LineNr"
+let g:indentLine_char_list = ['¦']
 " Latex conceal compatibility
-let g:indentLine_setColors = 0
 let g:indentLine_fileTypeExclude = ['tex']
 " }}}
 
@@ -399,7 +385,7 @@ set nobackup
 set nowritebackup
 
 " Give more space for displaying messages.
-set cmdheight=2
+" set cmdheight=2
 
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
@@ -407,10 +393,10 @@ set shortmess+=c
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 if has('nvim-0.5.0') || has('patch-8.1.1564')
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
+    " Recently vim can merge signcolumn and number column into one
+    set signcolumn=number
 else
-  set signcolumn=yes
+    set signcolumn=yes
 endif
 
 " Add `:Format` command to format current buffer.
@@ -425,9 +411,9 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Use <c-space> to trigger completion.
 if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
+    inoremap <silent><expr> <c-space> coc#refresh()
 else
-  inoremap <silent><expr> <c-@> coc#refresh()
+    inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
 " Use `[g` and `]g` to navigate diagnostics
@@ -435,17 +421,17 @@ endif
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 " Code edit
-nmap <silent> <leader>gd <Plug>(coc-definition)
-nmap <silent> <leader>gt <Plug>(coc-type-definition)
-nmap <silent> <leader>gi <Plug>(coc-implementation)
-nmap <silent> <leader>gr <Plug>(coc-references)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gT <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 xmap <leader>gf  <Plug>(coc-format-selected)
 nmap <leader>gf  <Plug>(coc-format-selected)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <leader>aa  <Plug>(coc-codeaction-selected)
+nmap <leader>aa  <Plug>(coc-codeaction-selected)
 nmap <leader>ac  <Plug>(coc-codeaction)
 " Quick fix
 nmap <leader>qf  <Plug>(coc-fix-current)
@@ -465,12 +451,12 @@ omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
 if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+    nnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
+    nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
+    inoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<C-d>"
+    inoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<C-u>"
+    vnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
+    vnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
 endif
 
 " Use CTRL-S for selections ranges.
@@ -494,22 +480,30 @@ nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
 " Restart coc service
 nnoremap <silent><nowait> <leader>cr  :<C-u>CocRestart<CR>
 
+" Confirm selection by <C-f>
+inoremap <silent><nowait><expr> <C-f> pumvisible() ? "\<C-r>=coc#_select_confirm()\<CR>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-b> "\<Left>"
+
 augroup CocGroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    autocmd!
+    " Setup formatexpr specified filetype(s).
+    autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+    " Update signature help on jump placeholder.
+    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    autocmd FileType css let b:coc_additional_keywords = ["-"]
+	autocmd BufAdd * if getfsize(expand('<afile>')) > 1024*1024 |
+				\ let b:coc_enabled=0 |
+				\ endif
 augroup end
 
 function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
+    if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+    elseif (coc#rpc#ready())
+        call CocActionAsync('doHover')
+    else
+        execute '!' . &keywordprg . " " . expand('<cword>')
+    endif
 endfunction
 " Cure linter madness caused by vim-easymotion
 autocmd User EasyMotionPromptBegin silent! CocDisable
@@ -529,16 +523,16 @@ elseif has('win32')
 endif
 let g:floaterm_width=0.8
 let g:floaterm_height=0.8
-nnoremap <silent> <leader>tt :FloatermToggle<CR>
-nnoremap <silent> <leader>tn :FloatermNew<CR>
-nnoremap <silent> <leader>tk :FloatermKill<CR>
-nnoremap <silent> <leader>t] :FloatermNext<CR>
-nnoremap <silent> <leader>t[ :FloatermPrev<CR>
-tmap <silent> <leader>tt jk:FloatermToggle<CR>
-tmap <silent> <leader>tn jk:FloatermNew<CR>
-tmap <silent> <leader>tk jk:FloatermKill<CR>
-tmap <silent> <leader>t] jk:FloatermNext<CR>
-tmap <silent> <leader>t[ jk:FloatermPrev<CR>
+nnoremap <silent> <C-t>t :FloatermToggle<CR>
+nnoremap <silent> <C-t>n :FloatermNew<CR>
+nnoremap <silent> <C-t>k :FloatermKill<CR>
+nnoremap <silent> <C-t>] :FloatermNext<CR>
+nnoremap <silent> <C-t>[ :FloatermPrev<CR>
+tnoremap <silent> <C-t>t <C-\><C-n>:exe "sleep 100m \| FloatermToggle"<CR>
+tnoremap <silent> <C-t>n <C-\><C-n>:exe "sleep 100m \| FloatermNew"<CR>
+tnoremap <silent> <C-t>k <C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>
+tnoremap <silent> <C-t>] <C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>
+tnoremap <silent> <C-t>[ <C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>
 
 " Snippet
 let g:UltiSnipsExpandTrigger = '<C-l>'
@@ -549,6 +543,7 @@ lua <<EOF
 local mappings = {
     list = {
         { key = "K",            action = "toggle_file_info" },
+        { key = "t",            action = "tabnew" },
         { key = "<C-k>",        action = "" },
         { key = "<C-e>",        action = "" },
     },
@@ -566,6 +561,11 @@ require("nvim-tree").setup({
         preserve_window_proportions = true,
     },
     respect_buf_cwd = true,
+    actions = {
+        open_file = {
+            resize_window = false,
+        },
+    },
 })
 EOF
 nnoremap <silent> <leader>e :NvimTreeToggle<CR>
@@ -575,6 +575,7 @@ augroup explorer
 augroup END
 function s:handle_open_directory()
     if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") 
+        exe "cd" fnameescape(argv()[0])
         ene
         NvimTreeOpen
         sleep 100m
@@ -671,6 +672,7 @@ let g:tagbar_type_cpp = {
 let g:typescript_use_builtin_tagbar_defs = 0
 " EditorConfig
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+au FileType gitcommit let b:EditorConfig_disable = 1
 " }}}
 
 
