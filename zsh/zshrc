@@ -123,11 +123,11 @@ then
         if [[ $1 && ! -e $1 ]]
         then
             echo "File not found: $1" 1>&2
-            exit 1
+            return 1
         fi
         distro_name=$(awk 'BEGIN{FS="="} $1=="DISTRIB_ID" {print $2}' /etc/lsb-release)-$(awk 'BEGIN{FS="="} $1=="DISTRIB_RELEASE" {print $2}' /etc/lsb-release)
         absp=$(echo -E '\\wsl$\'Ubuntu$(pwd)/$1 | sed 's|\/|\\|g')
-        cmd.exe /C start $absp
+        cmd.exe /C start $absp 2> /dev/null
     }
 
     if [[ -e "$HOME/.winhome" ]]
@@ -238,10 +238,10 @@ tmp_lock=/tmp/zsh-host-lock.txt
 #
 # V $tmp_lock
 
-# export http_proxy=$PROXY_URI
-# export https_proxy=$PROXY_URI
-# export HTTP_PROXY=$PROXY_URI
-# export HTTPS_PROXY=$PROXY_URI
+export http_proxy=$PROXY_URI
+export https_proxy=$PROXY_URI
+export HTTP_PROXY=$PROXY_URI
+export HTTPS_PROXY=$PROXY_URI
 
 ################################################################################
 #                             PROXY SETTINGS END                               #
@@ -252,12 +252,15 @@ export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export PATH="/usr/local/opt/llvm/bin:$PATH"
 export CPPFLAGS="-I/usr/local/opt/llvm/include"
 
-# Nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node
+# fnm
+export PATH=/home/hugh/.fnm:$PATH
+eval "`fnm env`"
 export npm_config_registry=https://registry.npm.taobao.org
+
+# pnpm
+export PNPM_HOME="/home/hugh/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+# pnpm end
 
 # Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
