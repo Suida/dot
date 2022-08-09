@@ -1,4 +1,4 @@
-#/bin/env python
+#! /bin/env python
 from pathlib import Path
 from subprocess import getstatusoutput
 
