@@ -1,6 +1,19 @@
 " Plug Settings -- {{{
-call plug#begin('C:/Users/hugh/.local/share/nvim/data/plugged')
 
+" Install vim-plug if not found
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+  \| call plug#helptags()
+\| endif
+
+call plug#begin(stdpath('data') . '/plugged')
 Plug 'junegunn/vim-plug'
 Plug 'neoclide/coc.nvim', {
             \ 'branck': 'master',
@@ -96,7 +109,6 @@ call plug#end()
 " }}}
 
 
-
 " Origin init.vim -- {{{
 " Terminal settings
 
@@ -111,12 +123,11 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 " Provider
 if has('unix') || has('macunix')
     let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
-    let node_ver=readfile($HOME . '/.nvm/alias/default')
-    let g:coc_node_path = '~/.nvm/versions/node/' . node_ver[0] . '/bin/node'
+    let g:coc_node_path = $FNM_MULTISHELL_PATH . '/bin/node'
     nnoremap <silent> <leader>tot :tabnew term://zsh<CR>
 elseif has('win32')
     let g:python3_host_prog=expand('$PYENV_ROOT') . 'versions\nvim\Scripts\python.exe'
-    let g:coc_node_path = '~\AppData\Roaming\fnm\aliases\default\node.exe'
+    let g:coc_node_path = $FNM_MULTISHELL_PATH . '/node.exe'
     nnoremap <silent> <leader>tot :tabnew term://pwsh.exe<CR>
 endif
 " }}}
