@@ -165,6 +165,7 @@ set textwidth=80
 set encoding=utf-8
 set spelllang=en_us,cjk
 set conceallevel=2
+set concealcursor=
 set clipboard+=unnamed
 set noswapfile
 set guicursor=n-v-c-sm:block-blinkwait300-blinkon500-blinkoff500-Cursor,i:hor20-blinkwait300-blinkon500-blinkoff500-Cursor
@@ -349,6 +350,8 @@ highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
 function! CheckColorGroup()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
+" Fix coc popup menu color
+highlight default link CocMenuSel PmenuSel
 " Beacon
 let g:beacon_size = 40
 highlight Beacon guibg=#a0a1a7 ctermbg=15
@@ -492,7 +495,7 @@ nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
 nnoremap <silent><nowait> <leader>cr  :<C-u>CocRestart<CR>
 
 " Confirm selection by <C-f>
-inoremap <silent><nowait><expr> <C-f> pumvisible() ? "\<C-r>=coc#_select_confirm()\<CR>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-f> coc#pum#visible() ? "\<C-r>=coc#_select_confirm()\<CR>" : "\<Right>"
 inoremap <silent><nowait><expr> <C-b> "\<Left>"
 
 augroup CocGroup
@@ -502,9 +505,11 @@ augroup CocGroup
     " Update signature help on jump placeholder.
     autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
     autocmd FileType css let b:coc_additional_keywords = ["-"]
-	autocmd BufAdd * if getfsize(expand('<afile>')) > 1024*1024 |
-				\ let b:coc_enabled=0 |
-				\ endif
+    autocmd BufAdd * if getfsize(expand('<afile>')) > 1024*1024 |
+                            \ let b:coc_enabled=0 |
+                            \ endif
+    " Highlight the symbol and its references when holding the cursor.
+    autocmd CursorHold * silent call CocActionAsync('highlight')
 augroup end
 
 function! s:show_documentation()
@@ -797,8 +802,6 @@ function! CocHook()
 endfunction
 
 function! SetServerName()
-    let nvim_server_file = has('win32')
-
     let nvim_server_file = has('win32')
                 \ ? $TEMP . "/curnvimserver.txt"
                 \ : $HOME . "/tmp/curnvimserver.txt"
