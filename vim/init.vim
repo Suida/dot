@@ -13,6 +13,10 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   \| call plug#helptags()
 \| endif
 
+function! LoadLuaConf(name)
+    exe 'luafile ' . stdpath('config') . '/' . a:name . '.lua'
+endfunction
+
 call plug#begin(stdpath('data') . '/plugged')
 Plug 'junegunn/vim-plug'
 Plug 'neoclide/coc.nvim', {
@@ -555,7 +559,7 @@ let g:UltiSnipsExpandTrigger = '<C-l>'
 
 " NvimTree, Git, ctrlsf, startify & Tagbar
 " NvimTree
-exe 'luafile ' . stdpath('config') . '/nvim_tree_conf.lua'
+call LoadLuaConf('nvim_tree_conf')
 nnoremap <silent> <leader>e :NvimTreeToggle<CR>
 augroup explorer
     autocmd StdinReadPre * let s:std_in=1
