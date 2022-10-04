@@ -253,7 +253,7 @@ export PATH="/usr/local/opt/llvm/bin:$PATH"
 export CPPFLAGS="-I/usr/local/opt/llvm/include"
 
 # fnm
-export PATH=/home/hugh/.fnm:$PATH
+export PATH=$HOME/.fnm:$PATH
 eval "`fnm env`"
 export npm_config_registry=https://registry.npm.taobao.org
 

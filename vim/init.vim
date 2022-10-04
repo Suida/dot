@@ -550,35 +550,7 @@ let g:UltiSnipsExpandTrigger = '<C-l>'
 
 " NvimTree, Git, ctrlsf, startify & Tagbar
 " NvimTree
-lua <<EOF
-local mappings = {
-    list = {
-        { key = "K",            action = "toggle_file_info" },
-        { key = "t",            action = "tabnew" },
-        { key = "<C-k>",        action = "" },
-        { key = "<C-e>",        action = "" },
-    },
-}
-require("nvim-tree").setup({
-    hijack_netrw = false,
-    open_on_setup = false,
-    open_on_setup_file = false,
-    view = {
-        side = "right",
-        mappings = mappings,
-        number = ture,
-        relativenumber = ture,
-        signcolumn = "yes",
-        preserve_window_proportions = true,
-    },
-    respect_buf_cwd = true,
-    actions = {
-        open_file = {
-            resize_window = false,
-        },
-    },
-})
-EOF
+exe 'luafile ' . stdpath('config') . '/nvim_tree_conf.lua'
 nnoremap <silent> <leader>e :NvimTreeToggle<CR>
 augroup explorer
     autocmd StdinReadPre * let s:std_in=1
@@ -604,8 +576,22 @@ let g:gitgutter_map_keys = 0
 nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 nnoremap <silent> ]c :GitGutterNextHunk<CR>
 nnoremap <silent> [c :GitGutterPrevHunk<CR>
-"Fzf
+" Fzf
 nnoremap <silent> F :FZF<CR>
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'Cursor', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'Cursor', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Cursor'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 " CtrlSF
 let g:ctrlsf_backend = 'rg'
 let g:ctrlsf_ignore_dir = [
