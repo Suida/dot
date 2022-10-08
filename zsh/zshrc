@@ -128,7 +128,6 @@ then
     export wh=$WIN_HOME
 fi
 
-
 # Get proxy uri
 if [[ -e "$HOME/.PROXY" ]]
 then
