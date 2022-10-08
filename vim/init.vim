@@ -254,6 +254,7 @@ inoremap JK <C-\><C-n>
 inoremap jjk jk
 nnoremap <leader>i vit<Esc>i
 
+inoremap <C-a> <Esc>I
 inoremap <C-e> <Esc>A
 inoremap <C-j> <Esc>A<Enter>
 inoremap <C-k> <Esc>O
@@ -467,7 +468,7 @@ omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
-" Remap <C-f> and <C-b> for scroll float windows/popups.
+" Remap <C-d> and <C-u> for scroll float windows/popups.
 if has('nvim-0.4.0') || has('patch-8.2.0750')
     nnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
     nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
