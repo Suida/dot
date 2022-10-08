@@ -499,7 +499,7 @@ nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
 nnoremap <silent><nowait> <leader>cr  :<C-u>CocRestart<CR>
 
 " Confirm selection by <C-f>
-inoremap <silent><nowait><expr> <C-f> coc#pum#visible() ? "\<C-r>=coc#_select_confirm()\<CR>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-f> coc#pum#visible() ? coc#pum#confirm() : "\<Right>"
 inoremap <silent><nowait><expr> <C-b> "\<Left>"
 
 augroup CocGroup
