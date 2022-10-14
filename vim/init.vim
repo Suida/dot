@@ -10,9 +10,14 @@ endif
 " Run PlugInstall if there are missing plugins
 autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   \| PlugInstall --sync | source $MYVIMRC
+  \| call plug#helptags()
 \| endif
 
-call plug#begin()
+function! LoadLuaConf(name)
+    exe 'luafile ' . stdpath('config') . '/' . a:name . '.lua'
+endfunction
+
+call plug#begin(stdpath('data') . '/plugged')
 Plug 'junegunn/vim-plug'
 Plug 'neoclide/coc.nvim', {
             \ 'branck': 'master',
@@ -168,6 +173,7 @@ set textwidth=80
 set encoding=utf-8
 set spelllang=en_us,cjk
 set conceallevel=2
+set concealcursor=
 set clipboard+=unnamed
 set noswapfile
 set guicursor=n-v-c-sm:block-blinkwait300-blinkon500-blinkoff500-Cursor,i:hor20-blinkwait300-blinkon500-blinkoff500-Cursor
@@ -252,6 +258,7 @@ inoremap JK <C-\><C-n>
 inoremap jjk jk
 nnoremap <leader>i vit<Esc>i
 
+inoremap <C-a> <Esc>I
 inoremap <C-e> <Esc>A
 inoremap <C-j> <Esc>A<Enter>
 inoremap <C-k> <Esc>O
@@ -465,7 +472,7 @@ omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
-" Remap <C-f> and <C-b> for scroll float windows/popups.
+" Remap <C-d> and <C-u> for scroll float windows/popups.
 if has('nvim-0.4.0') || has('patch-8.2.0750')
     nnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
     nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
@@ -507,9 +514,11 @@ augroup CocGroup
     " Update signature help on jump placeholder.
     autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
     autocmd FileType css let b:coc_additional_keywords = ["-"]
-	autocmd BufAdd * if getfsize(expand('<afile>')) > 1024*1024 |
-				\ let b:coc_enabled=0 |
-				\ endif
+    autocmd BufAdd * if getfsize(expand('<afile>')) > 1024*1024 |
+                            \ let b:coc_enabled=0 |
+                            \ endif
+    " Highlight the symbol and its references when holding the cursor.
+    autocmd CursorHold * silent call CocActionAsync('highlight')
 augroup end
 
 function! s:show_documentation()
@@ -555,35 +564,7 @@ let g:UltiSnipsExpandTrigger = '<C-l>'
 
 " NvimTree, Git, ctrlsf, startify & Tagbar
 " NvimTree
-lua <<EOF
-local mappings = {
-    list = {
-        { key = "K",            action = "toggle_file_info" },
-        { key = "t",            action = "tabnew" },
-        { key = "<C-k>",        action = "" },
-        { key = "<C-e>",        action = "" },
-    },
-}
-require("nvim-tree").setup({
-    hijack_netrw = false,
-    open_on_setup = false,
-    open_on_setup_file = false,
-    view = {
-        side = "right",
-        mappings = mappings,
-        number = ture,
-        relativenumber = ture,
-        signcolumn = "yes",
-        preserve_window_proportions = true,
-    },
-    respect_buf_cwd = true,
-    actions = {
-        open_file = {
-            resize_window = false,
-        },
-    },
-})
-EOF
+call LoadLuaConf('nvim_tree_conf')
 nnoremap <silent> <leader>e :NvimTreeToggle<CR>
 augroup explorer
     autocmd StdinReadPre * let s:std_in=1
@@ -609,8 +590,22 @@ let g:gitgutter_map_keys = 0
 nnoremap <silent> <leader>gg :GitGutterToggle<CR>
 nnoremap <silent> ]c :GitGutterNextHunk<CR>
 nnoremap <silent> [c :GitGutterPrevHunk<CR>
-"Fzf
+" Fzf
 nnoremap <silent> F :FZF<CR>
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'Cursor', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'Cursor', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Cursor'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 " CtrlSF
 let g:ctrlsf_backend = 'rg'
 let g:ctrlsf_ignore_dir = [
@@ -817,8 +812,6 @@ function! CocHook()
 endfunction
 
 function! SetServerName()
-    let nvim_server_file = has('win32')
-
     let nvim_server_file = has('win32')
                 \ ? $TEMP . "/curnvimserver.txt"
                 \ : $HOME . "/tmp/curnvimserver.txt"
