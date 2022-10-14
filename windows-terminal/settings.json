@@ -4,11 +4,16 @@
     "actions": 
     [
         {
+            "command": "paste",
+            "keys": "alt+v"
+        },
+        {
             "command": 
             {
-                "action": "prevTab"
+                "action": "splitPane",
+                "split": "right"
             },
-            "keys": "ctrl+shift+["
+            "keys": "ctrl+shift+\\"
         },
         {
             "command": 
@@ -20,14 +25,9 @@
         {
             "command": 
             {
-                "action": "splitPane",
-                "split": "right"
+                "action": "prevTab"
             },
-            "keys": "ctrl+shift+\\"
-        },
-        {
-            "command": "paste",
-            "keys": "alt+v"
+            "keys": "ctrl+shift+["
         },
         {
             "command": 
@@ -46,10 +46,26 @@
         {
             "command": 
             {
+                "action": "switchToTab",
+                "index": 3
+            },
+            "keys": "alt+4"
+        },
+        {
+            "command": 
+            {
                 "action": "splitPane",
                 "split": "down"
             },
             "keys": "ctrl+shift+minus"
+        },
+        {
+            "command": 
+            {
+                "action": "moveFocus",
+                "direction": "right"
+            },
+            "keys": "ctrl+shift+l"
         },
         {
             "command": "closePane",
@@ -58,10 +74,26 @@
         {
             "command": 
             {
+                "action": "resizePane",
+                "direction": "down"
+            },
+            "keys": "ctrl+shift+u"
+        },
+        {
+            "command": 
+            {
                 "action": "moveFocus",
                 "direction": "left"
             },
             "keys": "ctrl+shift+h"
+        },
+        {
+            "command": 
+            {
+                "action": "moveFocus",
+                "direction": "up"
+            },
+            "keys": "ctrl+shift+k"
         },
         {
             "command": 
@@ -75,9 +107,9 @@
             "command": 
             {
                 "action": "moveFocus",
-                "direction": "up"
+                "direction": "down"
             },
-            "keys": "ctrl+shift+k"
+            "keys": "ctrl+shift+j"
         },
         {
             "command": 
@@ -90,34 +122,22 @@
         {
             "command": 
             {
-                "action": "moveFocus",
-                "direction": "down"
-            },
-            "keys": "ctrl+shift+j"
-        },
-        {
-            "command": 
-            {
-                "action": "moveFocus",
-                "direction": "right"
-            },
-            "keys": "ctrl+shift+l"
-        },
-        {
-            "command": 
-            {
-                "action": "resizePane",
-                "direction": "down"
-            },
-            "keys": "ctrl+shift+u"
-        },
-        {
-            "command": 
-            {
                 "action": "resizePane",
                 "direction": "up"
             },
             "keys": "ctrl+shift+i"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 2
+            },
+            "keys": "alt+3"
+        },
+        {
+            "command": "unbound",
+            "keys": "ctrl+t"
         },
         {
             "command": 
@@ -142,26 +162,6 @@
                 "index": 1
             },
             "keys": "alt+2"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 2
-            },
-            "keys": "alt+3"
-        },
-        {
-            "command": "unbound",
-            "keys": "ctrl+t"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 3
-            },
-            "keys": "alt+4"
         },
         {
             "command": 
@@ -225,25 +225,25 @@
                 "padding": "4"
             },
             {
-                "guid": "{17da3cac-b318-431e-8a3e-7fcdefe6d114}",
-                "name": "MINGW64 / MSYS2",
                 "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -shell zsh",
-                "startingDirectory": "C:/msys64/home/%USERNAME%",
-                "icon": "C:/msys64/mingw64.ico"
+                "guid": "{17da3cac-b318-431e-8a3e-7fcdefe6d114}",
+                "icon": "C:/msys64/mingw64.ico",
+                "name": "MINGW64 / MSYS2",
+                "startingDirectory": "C:/msys64/home/%USERNAME%"
             },
             {
-                "guid": "{2d51fdc4-a03b-4efe-81bc-722b7f6f3820}",
-                "name": "MINGW32 / MSYS2",
                 "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw32 -shell zsh",
-                "startingDirectory": "C:/msys64/home/%USERNAME%",
-                "icon": "C:/msys64/mingw32.ico"
+                "guid": "{2d51fdc4-a03b-4efe-81bc-722b7f6f3820}",
+                "icon": "C:/msys64/mingw32.ico",
+                "name": "MINGW32 / MSYS2",
+                "startingDirectory": "C:/msys64/home/%USERNAME%"
             },
             {
-                "guid": "{71160544-14d8-4194-af25-d05feeac7233}",
-                "name": "MSYS / MSYS2",
                 "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -msys -shell zsh",
-                "startingDirectory": "C:/msys64/home/%USERNAME%",
-                "icon": "C:/msys64/msys2.ico"
+                "guid": "{71160544-14d8-4194-af25-d05feeac7233}",
+                "icon": "C:/msys64/msys2.ico",
+                "name": "MSYS / MSYS2",
+                "startingDirectory": "C:/msys64/home/%USERNAME%"
             },
             {
                 "font": 
@@ -267,16 +267,22 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "guid": "{c2f7ac4b-4a27-5d78-8247-624778dc7879}",
+                "guid": "{8d2d6240-a393-5612-9a03-feae35213dbe}",
                 "hidden": false,
-                "name": "Developer Command Prompt for VS 2022 (2)",
+                "name": "Developer Command Prompt for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
             },
             {
-                "guid": "{fe7dc3f7-2ccd-580f-8747-45ed9e549f00}",
+                "guid": "{c563fc7e-b127-523c-8564-7eaa09764657}",
                 "hidden": false,
-                "name": "Developer PowerShell for VS 2022 (2)",
+                "name": "Developer PowerShell for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{ed0c814a-affe-55b7-9074-47835262fe4c}",
+                "hidden": false,
+                "name": "vivado",
+                "source": "Windows.Terminal.Wsl"
             }
         ]
     },
