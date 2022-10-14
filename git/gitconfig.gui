@@ -2,7 +2,7 @@
     email = suidar@foxmail.com
     name = harass
 [core]
-    editor = gvim
+    editor = nvim-qt
     autocrlf = input
 [alias]
     a = add
@@ -16,15 +16,15 @@
     d = difftool
     m = mergetool
 [diff]
-    tool = gvimdiff
+    tool = nvimqtdiff
 [difftool]
     prompt = false
     trustExitCode = true
-[difftool "gvimdiff"]
-    cmd = "gvim -d -R \"$LOCAL\" \"$REMOTE\""
+[difftool "nvimqtdiff"]
+    cmd = "nvim-qt -- -d -R \"$LOCAL\" \"$REMOTE\""
 [merge]
-    tool = gvimdiff
+    tool = nvimqtdiff
 [mergetool]
     keepBackup = false
-[mergetool "gvimdiff"]
-    cmd = gvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[mergetool "nvimqtdiff"]
+    cmd = nvim-qt -- -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
