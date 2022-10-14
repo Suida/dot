@@ -1,6 +1,18 @@
 " Plug Settings -- {{{
-call plug#begin('C:/Users/hugh/.local/share/nvim/data/plugged')
 
+" Install vim-plug if not found
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
+
+call plug#begin()
 Plug 'junegunn/vim-plug'
 Plug 'neoclide/coc.nvim', {
             \ 'branck': 'master',
@@ -96,7 +108,6 @@ call plug#end()
 " }}}
 
 
-
 " Origin init.vim -- {{{
 " Terminal settings
 
@@ -111,12 +122,15 @@ tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 " Provider
 if has('unix') || has('macunix')
     let g:python3_host_prog="~/.pyenv/versions/nvim/bin/python"
-    let node_ver=readfile($HOME . '/.nvm/alias/default')
-    let g:coc_node_path = '~/.nvm/versions/node/' . node_ver[0] . '/bin/node'
+    let g:coc_node_path = $FNM_MULTISHELL_PATH . '/bin/node'
     nnoremap <silent> <leader>tot :tabnew term://zsh<CR>
 elseif has('win32')
     let g:python3_host_prog=expand('$PYENV_ROOT') . 'versions\nvim\Scripts\python.exe'
-    let g:coc_node_path = '~\AppData\Roaming\fnm\aliases\default\node.exe'
+    if filereadable($NODE_PATH)
+        let g:coc_node_path = $NODE_PATH
+    else
+        let g:coc_node_path = $FNM_MULTISHELL_PATH . '/node.exe'
+    endif
     nnoremap <silent> <leader>tot :tabnew term://pwsh.exe<CR>
 endif
 " }}}
@@ -338,6 +352,8 @@ highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
 function! CheckColorGroup()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
+" Fix coc popup menu color
+highlight default link CocMenuSel PmenuSel
 " Beacon
 let g:beacon_size = 40
 highlight Beacon guibg=#a0a1a7 ctermbg=15
@@ -481,7 +497,7 @@ nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
 nnoremap <silent><nowait> <leader>cr  :<C-u>CocRestart<CR>
 
 " Confirm selection by <C-f>
-inoremap <silent><nowait><expr> <C-f> pumvisible() ? "\<C-r>=coc#_select_confirm()\<CR>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-f> coc#pum#visible() ? coc#pum#confirm() : "\<Right>"
 inoremap <silent><nowait><expr> <C-b> "\<Left>"
 
 augroup CocGroup
@@ -732,6 +748,7 @@ let g:bracey_auto_start_server = 1
 augroup html_indent
     autocmd!
     autocmd FileType javascript,css,less,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
+    autocmd FileType systemverilog,verilog set shiftwidth=4 tabstop=4
 augroup END
 
 " Markdown
