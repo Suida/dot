@@ -1,6 +1,5 @@
 Import-Module posh-git
-Import-Module -Name C:\Users\hugh\workspace\PSColor\src\PSColor.psm1
-Import-Module -Name C:\Users\hugh\Documents\PowerShell\rustup-completions.ps1
+Import-Module -Name ~\workspace\PSColor\src\PSColor.psm1
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\default.omp.json" | Invoke-Expression
 
 New-Alias ~ $HOME
@@ -26,6 +25,10 @@ function du {
     }
 }
 
+function arch {
+    wsl -d archlinux -u hugh --cd /home/hugh
+}
+
 New-Alias g git
 function gst { git status }
 
@@ -41,6 +44,7 @@ $PSReadLineOptions = @{
         Number  =   'DarkGreen'
         Member  =   'Magenta'
         InlinePrediction = 'Cyan'
+        Default = 'Black'
     }
 }
 Set-PSReadLineOption @PSReadLineOptions
@@ -123,4 +127,4 @@ function showColors {
 
 $env:http_proxy="http://127.0.0.1:7890"
 $env:https_proxy="http://127.0.0.1:7890"
-$env:CMAKE_TOOLCHAIN_FILE="C:/Users/hugh/app/vcpkg/scripts/buildsystems/vcpkg.cmake"
+New-Alias vcpkg ~\workspace\vcpkg\vcpkg.exe
