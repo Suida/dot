@@ -392,6 +392,7 @@ set list listchars=tab:¦\
 let g:indentLine_setColors = 1
 let g:indentLine_defaultGroup = "LineNr"
 let g:indentLine_char_list = ['¦']
+let g:indentLine_concealcursor = 'c'
 " Latex conceal compatibility
 let g:indentLine_fileTypeExclude = ['tex']
 " }}}
