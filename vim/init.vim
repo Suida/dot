@@ -131,7 +131,11 @@ if has('unix') || has('macunix')
     nnoremap <silent> <leader>tot :tabnew term://zsh<CR>
 elseif has('win32')
     let g:python3_host_prog=expand('$PYENV_ROOT') . 'versions\nvim\Scripts\python.exe'
-    let g:coc_node_path = $FNM_MULTISHELL_PATH . '/node.exe'
+    if filereadable($NODE_PATH)
+        let g:coc_node_path = $NODE_PATH
+    else
+        let g:coc_node_path = $FNM_MULTISHELL_PATH . '/node.exe'
+    endif
     nnoremap <silent> <leader>tot :tabnew term://pwsh.exe<CR>
 endif
 " }}}
@@ -740,6 +744,7 @@ let g:bracey_auto_start_server = 1
 augroup html_indent
     autocmd!
     autocmd FileType javascript,css,less,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
+    autocmd FileType systemverilog,verilog set shiftwidth=4 tabstop=4
 augroup END
 
 " Markdown
