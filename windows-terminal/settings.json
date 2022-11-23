@@ -4,10 +4,6 @@
     "actions": 
     [
         {
-            "command": "paste",
-            "keys": "alt+v"
-        },
-        {
             "command": 
             {
                 "action": "splitPane",
@@ -30,6 +26,10 @@
             "keys": "ctrl+shift+["
         },
         {
+            "command": "paste",
+            "keys": "alt+v"
+        },
+        {
             "command": 
             {
                 "action": "newTab"
@@ -46,18 +46,18 @@
         {
             "command": 
             {
-                "action": "switchToTab",
-                "index": 3
-            },
-            "keys": "alt+4"
-        },
-        {
-            "command": 
-            {
                 "action": "splitPane",
                 "split": "down"
             },
             "keys": "ctrl+shift+minus"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 3
+            },
+            "keys": "alt+4"
         },
         {
             "command": 
@@ -130,10 +130,10 @@
         {
             "command": 
             {
-                "action": "switchToTab",
-                "index": 2
+                "action": "resizePane",
+                "direction": "right"
             },
-            "keys": "alt+3"
+            "keys": "ctrl+shift+o"
         },
         {
             "command": "unbound",
@@ -142,10 +142,10 @@
         {
             "command": 
             {
-                "action": "resizePane",
-                "direction": "right"
+                "action": "switchToTab",
+                "index": 2
             },
-            "keys": "ctrl+shift+o"
+            "keys": "alt+3"
         },
         {
             "command": 
@@ -267,22 +267,16 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "guid": "{8d2d6240-a393-5612-9a03-feae35213dbe}",
+                "guid": "{9e56b959-4e09-5690-b6f1-bba92df80f63}",
                 "hidden": false,
                 "name": "Developer Command Prompt for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
             },
             {
-                "guid": "{c563fc7e-b127-523c-8564-7eaa09764657}",
+                "guid": "{3898ba89-ca79-54bb-88fd-d0594cd19f62}",
                 "hidden": false,
                 "name": "Developer PowerShell for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
-            },
-            {
-                "guid": "{ed0c814a-affe-55b7-9074-47835262fe4c}",
-                "hidden": false,
-                "name": "vivado",
-                "source": "Windows.Terminal.Wsl"
             }
         ]
     },
