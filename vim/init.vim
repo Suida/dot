@@ -176,7 +176,7 @@ set encoding=utf-8
 set spelllang=en_us,cjk
 set conceallevel=2
 set concealcursor=
-set clipboard+=unnamed
+set clipboard+=unnamedplus
 set noswapfile
 set guicursor=n-v-c-sm:block-blinkwait300-blinkon500-blinkoff500-Cursor,i:hor20-blinkwait300-blinkon500-blinkoff500-Cursor
 augroup guidetect
@@ -190,7 +190,7 @@ function! s:guisettings()
     endif
 endfunction
 " Under Wsl environment
-if has('windows') && has('unix')
+if has('win32') && has('unix')
     let g:clipboard = {
               \   'name': 'win32yank-wsl',
               \   'copy': {
