@@ -60,9 +60,13 @@ if (Test-Path($ChocolateyProfile)) {
   Import-Module "$ChocolateyProfile"
 }
 
+# Batcat
+$env:BAT_THEME="GitHub"
+
 # Fnm
 fnm env --use-on-cd | Out-String | Invoke-Expression
 $env:PNPM_HOME=$env:FNM_MULTISHELL_PATH
+$env:npm_config_registry="https://registry.npm.taobao.org"
 
 $global:OnehalflightColor = @{
     background= '#FAFAFA'
@@ -128,3 +132,5 @@ function showColors {
 $env:http_proxy="http://127.0.0.1:7890"
 $env:https_proxy="http://127.0.0.1:7890"
 New-Alias vcpkg ~\workspace\vcpkg\vcpkg.exe
+
+refreshenv
