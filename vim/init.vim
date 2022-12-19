@@ -100,6 +100,9 @@ let g:vimspector_enable_mappings = 'HUMAN'
 Plug 'puremourning/vimspector'
 Plug 'jceb/vim-orgmode'
 Plug 'itchyny/calendar.vim'
+Plug 'lilydjwg/fcitx.vim'
+let g:fcitx5_remote = '/usr/bin/fcitx5-remote'
+let g:fcitx5_rime = 1
 
 " Neovim only
 if has('nvim')
@@ -220,7 +223,7 @@ augroup basic_prelaunch_settings
     " Reload file every time the cursor get into a buffer
     autocmd FocusGained,BufLeave * if bufname()!='[Command Line]' | checktime | endif
     " Disable line breaking in markdown file
-    autocmd BufNewFile,BufRead,BufEnter *.md set textwidth=0
+    autocmd BufNewFile,BufRead,BufEnter *.md,*.tex set textwidth=0
     autocmd GUIEnter * simalt ~x
 augroup END
 
@@ -356,9 +359,9 @@ cnoremap <C-E>  <End>
 " forward one character
 cnoremap <C-F>  <Right>
 " recall newer command-line
-cnoremap <C-N>  <Down>
+" cnoremap <C-N>  <Down>
 " recall previous (older) command-line
-cnoremap <C-P>  <Up>
+" cnoremap <C-P>  <Up>
 " back one word
 cnoremap <Esc><C-B> <S-Left>
 " forward one word
