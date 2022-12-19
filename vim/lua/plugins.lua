@@ -23,30 +23,82 @@ local ret = require('packer').startup(function(use)
 
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
+  -- Code template
+  use 'mattn/emmet-vim'
 
   -- Git
   use 'tpope/vim-fugitive'
-  use {'airblade/vim-gitgutter', cond = 'GitGutterToggle' }
+  use {
+    'airblade/vim-gitgutter',
+    opt = true,
+    cmd = {
+      'GitGutterToggle',
+      'GitGutterNextHunk',
+      'GitGutterPrevHunk',
+    }
+  }
   -- Outlook
   use 'majutsushi/tagbar'
   use {
     'sonph/onehalf',
     rtp = 'vim/',
     config = function()
-      vim.cmd[[
-        colorscheme onehalflight
-        " Hide (~) at the end of buffer
-        highlight NonText guifg=bg
-        highlight EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
-      ]]
+      vim.cmd.colorscheme'onehalflight'
+      -- Hide (~) at the end of buffer
+      vim.cmd.highlight'NonText guifg=bg'
+      vim.cmd.highlight'EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg'
     end
   }
   use 'itchyny/lightline.vim'
   use 'voldikss/vim-floaterm'
   use 'tomtom/tcomment_vim'
 
+  -- Better move
+  use 'easymotion/vim-easymotion'
+  use 'andymass/vim-matchup'
+  use 'tpope/vim-surround'
+  -- Brackets
+  use 'jiangmiao/auto-pairs'
+  use 'tpope/vim-unimpaired'
+  -- Marker
+  use 'kshenoy/vim-signature'
+
+  -- Fuzzy finder
+  use { 'junegunn/fzf', run = function() vim.fn['fzf#install']() end, }
+  use 'junegunn/fzf.vim'
+  -- Global finder
+  use 'brooth/far.vim'
+  use 'dyng/ctrlsf.vim'
+
+  -- Session manager
+  use 'mhinz/vim-startify'
+
+  -- Indentation line
+  use 'Yggdroot/indentLine'
+  use 'tpope/vim-sleuth'
+
+
+  -- Language supports
+  -- C/C++
+  use {'octol/vim-cpp-enhanced-highlight', ft = {'cpp', 'c'}}
+  -- Font-end tool chain
+  use {'ap/vim-css-color',ft = { 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', }}
+  use {'maxmellon/vim-jsx-pretty', ft = { 'tsx', 'jsx', }}
+  use 'HerringtonDarkholme/yats.vim'
+  use 'posva/vim-vue'
+  -- Html preview
+  use {'turbio/bracey.vim', ft = { 'html', }}
+  -- Markdown syntax and preview
+  use 'godlygeek/tabular'
+  use 'plasticboy/vim-markdown'
+  use {
+    'iamcco/markdown-preview.nvim',
+    run = function() vim.fn['mkdp#util#install']() end,
+    ft = { 'markdown', 'vim-plug', }
+  }
+
   if ensure_packer then
-    -- require('packer').sync()
+    require('packer').install()
   end
 end)
 
@@ -166,7 +218,7 @@ end
 setup_tagbar()
 
 
--- Setup lightline
+-- Set up lightline
 function setup_lightline ()
   vim.g.lightline = {
     colorscheme = 'powerline',
@@ -193,6 +245,20 @@ end
 setup_lightline()
 
 
+-- Set up gitgutter
+function setup_gitgutter ()
+  vim.g.gitgutter_enabled = 0
+  -- <leader>h is used to switch split, while <leader>h* is used in gitgutter,
+  -- which leads to unacceptable delay when pressing <leader>h, thus gitggutter key
+  -- mappings are disabled and re-mapped.
+  vim.g.gitgutter_map_keys = 0
+  vim.keymap.set('n', '<leader>gg', ':GitGutterToggle<CR>', { noremap = true, silent = true })
+  vim.keymap.set('n', ']c', ':GitGutterNextHunk<CR>', { noremap = true, silent = true })
+  vim.keymap.set('n', '[c', ':GitGutterPrevHunk<CR>', { noremap = true, silent = true })
+end
+setup_gitgutter()
+
+
 -- Set up floaterm
 function setup_floaterm ()
   if vim.fn.has('unix') or vim.fn.has('macunix') then
@@ -202,18 +268,123 @@ function setup_floaterm ()
   end
   vim.g.floaterm_width = 0.8
   vim.g.floaterm_height = 0.8
-  vim.keymap.set('n', '<C-t>t', [[:FloatermToggle<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('n', '<C-t>n', [[:FloatermNew<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('n', '<C-t>k', [[:FloatermKill<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('n', '<C-t>]', [[:FloatermNext<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('n', '<C-t>[', [[:FloatermPrev<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('t', '<C-t>t', [[<C-\><C-n>:exe "sleep 100m \| FloatermToggle"<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('t', '<C-t>n', [[<C-\><C-n>:exe "sleep 100m \| FloatermNew"<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('t', '<C-t>k', [[<C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('t', '<C-t>]', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], { noremap = true, silent = true})
-  vim.keymap.set('t', '<C-t>[', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], { noremap = true, silent = true})
+  vim.keymap.set('n', '<C-t>t', [[:FloatermToggle<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>n', [[:FloatermNew<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>k', [[:FloatermKill<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>]', [[:FloatermNext<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>[', [[:FloatermPrev<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>t', [[<C-\><C-n>:exe "sleep 100m \| FloatermToggle"<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>n', [[<C-\><C-n>:exe "sleep 100m \| FloatermNew"<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>k', [[<C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>]', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>[', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], { noremap = true, silent = true })
 end
 setup_floaterm()
+
+
+-- Set up easymotion
+function setup_easymotion ()
+  vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
+  vim.keymap.set('n', '<leader>W', '<Plug>(easymotion-w)', { silent = true })
+  vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
+  vim.keymap.set('n', '<leader>J', '<Plug>(easymotion-j)', { silent = true })
+  vim.keymap.set('n', '<leader>K', '<Plug>(easymotion-k)', { silent = true })
+end
+setup_easymotion()
+
+
+-- Set up fzf
+function setup_fzf ()
+  vim.keymap.set('n', 'F', ':FZF<CR>', { noremap = true, silent = true })
+  vim.g.fzf_colors = {
+    fg =      {'fg', 'Normal'},
+    bg =      {'bg', 'Normal'},
+    hl =      {'fg', 'Comment'},
+    ['fg+'] =     {'fg', 'Cursor', 'CursorColumn', 'Normal'},
+    ['bg+'] =     {'bg', 'Cursor', 'CursorColumn'},
+    ['hl+'] =     {'fg', 'Statement'},
+    info =    {'fg', 'PreProc'},
+    border =  {'fg', 'Ignore'},
+    prompt =  {'fg', 'Conditional'},
+    pointer = {'fg', 'Cursor'},
+    marker =  {'fg', 'Keyword'},
+    spinner = {'fg', 'Label'},
+    header =  {'fg', 'Comment'},
+  }
+end
+setup_fzf()
+
+
+-- Set up ctrlsf
+function setup_ctrlsf ()
+  vim.g.ctrlsf_backend = 'rg'
+  vim.g.ctrlsf_ignore_dir = {
+    '*.log', 
+    'tsconfig.json',
+    'static', 
+    'dist',
+    '.vscode',
+    '.ycm_extra_conf.py',
+  }
+  vim.keymap.set('n', '<leader>sf', ':CtrlSF ', { noremap = true })
+end
+setup_ctrlsf()
+
+
+function setup_startify ()
+  vim.g.startify_session_persistence = 1
+  vim.g.startify_session_delete_buffers = 1
+  vim.g.startify_session_before_save = {
+    'silent! NvimTreeClose',
+    'let g:startify_tmp_tabpagenr = tabpagenr()',
+    'let g:startify_tmp_winnr = winnr()',
+    'echo "Cleaning up before saving.."',
+    'silent! tabdo NvimTreeClose',
+    'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
+    'execute g:startify_tmp_winnr . "wincmd w"'
+  }
+  vim.cmd[[
+    augroup startify_stuff
+        autocmd VimEnter * call init_startify()
+        autocmd BufEnter * let &titlestring=fnamemodify(v:this_session, ':t')
+    augroup END
+  ]]
+  vim.g.init_startify = function ()
+    if not vim.fn.argc() then
+      vim.cmd[[
+        Startify
+        NvimTreeOpen
+        sleep 100m
+        wincmd w
+      ]]
+    end
+  end
+end
+setup_startify()
+
+
+-- Set up indentline
+function setup_indentline ()
+  vim.g.indentLine_setColors = 1
+  vim.g.indentLine_defaultGroup = "LineNr"
+  vim.g.indentLine_char_list = {'¦'}
+  vim.g.indentLine_concealcursor = 'c'
+  -- Latex conceal compatibility
+  vim.g.indentLine_fileTypeExclude = {'tex'}
+end
+setup_indentline()
+
+
+-- Set up vim-cpp-enhanced-highlight
+function setup_cpp_enhanced_highlight ()
+  vim.g.cpp_class_scope_highlight = 1
+  vim.g.cpp_member_variable_highlight = 1
+  vim.g.cpp_class_decl_highlight = 1
+  vim.g.cpp_posix_standard = 1
+  vim.g.cpp_experimental_simple_template_highlight = 1
+  vim.g.cpp_concepts_highlight = 1
+end
+setup_cpp_enhanced_highlight()
 
 
 return ret

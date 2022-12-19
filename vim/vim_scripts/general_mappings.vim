@@ -65,12 +65,6 @@ nnoremap <silent> <leader>8 :normal 8gt<CR>
 nnoremap <silent> <leader>9 :normal 9gt<CR>
 " Use <space>sl to clear the highlighting of :set hlsearch.
 nnoremap <silent> <leader>sl :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
-" Adaption for easymotion
-nmap <silent> <leader>S <Plug>(easymotion-s)
-nmap <silent> <leader>W <Plug>(easymotion-w)
-nmap <silent> <leader>B <Plug>(easymotion-b)
-nmap <silent> <leader>J <Plug>(easymotion-j)
-nmap <silent> <leader>K <Plug>(easymotion-k)
 
 " Command
 nnoremap ! :!

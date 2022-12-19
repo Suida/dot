@@ -39,4 +39,6 @@ vim.cmd('source ' .. vim_config_src)
 vim.cmd('source ' .. vim_mapping_src)
 
 
+vim.cmd[[autocmd FileType scss setl iskeyword+=@-@]]
+
 
