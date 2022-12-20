@@ -101,6 +101,12 @@ endif
 
 
 " Functions -- {{{
+function! SetServerName()
+    let nvim_server_file = has('win32')
+                \ ? $TEMP . "/curnvimserver.txt"
+                \ : $HOME . "/tmp/curnvimserver.txt"
+    call system(printf("echo %s > %s", v:servername, nvim_server_file))
+endfunction
 
 function! s:guisettings()
     if has('nvim') && exists('g:GuiLoaded')

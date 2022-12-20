@@ -24,7 +24,10 @@ local ret = require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
   -- Code template
-  use 'mattn/emmet-vim'
+  use {
+    'mattn/emmet-vim',
+    setup = function() vim.g.user_emmet_leader_key = '<C-x>' end
+  }
 
   -- Git
   use 'tpope/vim-fugitive'
@@ -54,6 +57,8 @@ local ret = require('packer').startup(function(use)
   use 'tomtom/tcomment_vim'
 
   -- Better move
+  use 'kyazdani42/nvim-web-devicons'
+  use 'kyazdani42/nvim-tree.lua'
   use 'easymotion/vim-easymotion'
   use 'andymass/vim-matchup'
   use 'tpope/vim-surround'
@@ -81,6 +86,9 @@ local ret = require('packer').startup(function(use)
   -- Language supports
   -- C/C++
   use {'octol/vim-cpp-enhanced-highlight', ft = {'cpp', 'c'}}
+  -- Python utils // The indent really saved my life
+  use {'Vimjas/vim-python-pep8-indent', ft = { 'python', } }
+  use {'jmcantrell/vim-virtualenv', ft = { 'python', }}
   -- Font-end tool chain
   use {'ap/vim-css-color',ft = { 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', }}
   use {'maxmellon/vim-jsx-pretty', ft = { 'tsx', 'jsx', }}
@@ -96,6 +104,24 @@ local ret = require('packer').startup(function(use)
     run = function() vim.fn['mkdp#util#install']() end,
     ft = { 'markdown', 'vim-plug', }
   }
+  -- Asm
+  use {'Shirk/vim-gas', ft = 'asm'}
+  use {'cespare/vim-toml', ft = { 'toml', }}
+  -- Latex
+  use 'lervag/vimtex'
+
+-- Other utilities
+  use 'mhinz/vim-rfc'
+  use 'editorconfig/editorconfig-vim'
+  use 'vim-scripts/Drawit'
+  use 'voldikss/vim-translator'
+  use {
+    'puremourning/vimspector',
+    setup = function() vim.g.vimspector_enable_mappings = 'HUMAN' end
+  }
+  use 'jceb/vim-orgmode'
+  use 'itchyny/calendar.vim'
+  use 'lilydjwg/fcitx.vim'
 
   if ensure_packer then
     require('packer').install()
@@ -282,7 +308,58 @@ end
 setup_floaterm()
 
 
--- Set up easymotion
+-- Set up nvim-tree.lua
+function setup_nvim_tree ()
+  local mappings = {
+    list = {
+      { key = "K",            action = "toggle_file_info" },
+      { key = "t",            action = "tabnew" },
+      { key = "<C-k>",        action = "" },
+      { key = "<C-e>",        action = "" },
+    },
+  }
+  require("nvim-tree").setup({
+    hijack_netrw = false,
+    open_on_setup = false,
+    open_on_setup_file = false,
+    view = {
+      side = "right",
+      mappings = mappings,
+      number = ture,
+      relativenumber = ture,
+      signcolumn = "yes",
+      preserve_window_proportions = true,
+    },
+    respect_buf_cwd = true,
+    actions = {
+      open_file = {
+        resize_window = false,
+      },
+    },
+  })
+  vim.cmd [[nnoremap <silent> <leader>e :NvimTreeToggle<CR>]]
+  vim.cmd[[
+  augroup explorer
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * call handle_open_directory()
+  augroup END
+  ]]
+  vim.g.handle_open_directory = function ()
+    vim.cmd[[
+    if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") 
+      exe "cd" fnameescape(argv()[0])
+      ene
+      NvimTreeOpen
+      sleep 100m
+      wincmd w
+    endif
+    ]]
+  end
+end
+setup_nvim_tree()
+
+
+-- Set up vim-easymotion
 function setup_easymotion ()
   vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
   vim.keymap.set('n', '<leader>W', '<Plug>(easymotion-w)', { silent = true })
@@ -344,18 +421,18 @@ function setup_startify ()
     'execute g:startify_tmp_winnr . "wincmd w"'
   }
   vim.cmd[[
-    augroup startify_stuff
-        autocmd VimEnter * call init_startify()
-        autocmd BufEnter * let &titlestring=fnamemodify(v:this_session, ':t')
-    augroup END
+  augroup startify_stuff
+    autocmd VimEnter * call init_startify()
+    autocmd BufEnter * let &titlestring=fnamemodify(v:this_session, ':t')
+  augroup END
   ]]
   vim.g.init_startify = function ()
     if not vim.fn.argc() then
       vim.cmd[[
-        Startify
-        NvimTreeOpen
-        sleep 100m
-        wincmd w
+      Startify
+      NvimTreeOpen
+      sleep 100m
+      wincmd w
       ]]
     end
   end
@@ -385,6 +462,106 @@ function setup_cpp_enhanced_highlight ()
   vim.g.cpp_concepts_highlight = 1
 end
 setup_cpp_enhanced_highlight()
+
+
+-- Set up bracey
+function setup_bracey ()
+  vim.g.bracey_server_port = 34911
+  vim.g.bracey_server_allow_remote_connections = 1
+  vim.g.bracey_refresh_on_save = 1
+  vim.g.bracey_eval_on_save = 1
+  vim.g.bracey_auto_start_server = 1
+end
+setup_bracey()
+
+
+-- Set up vim-markdown
+function setup_vim_markdown ()
+  vim.g.vim_markdown_folding_level = 6
+  vim.g.vim_markdown_conceal = 1
+  vim.g.vim_markdown_conceal_code_blocks = 1
+  vim.g.vim_markdown_autowrite = 1
+  vim.g.vim_markdown_strikethrough = 1
+  vim.g.vim_markdown_no_extensions_in_markdown = 1
+  vim.cmd[[
+  augroup md_config
+    autocmd!
+    autocmd VimEnter * let g:vim_markdown_folding_disabled = &diff
+  augroup END
+  ]]
+end
+setup_vim_markdown()
+
+
+-- Set up markdown-preview.nvim
+function setup_markdown_prev ()
+  vim.g.mkdp_port = '34910'
+  vim.g.mkdp_refresh_slow = 1
+  vim.g.mkdp_open_to_the_world = 1
+  vim.g.mkdp_echo_preview_url = 1
+  vim.keymap.set('n', '<leader>mp', ':MarkdownPreview<CR>', { noremap = true })
+  vim.keymap.set('n', '<leader>ms', ':MarkdownPreviewStop<CR>', { noremap = true })
+end
+setup_markdown_prev()
+
+
+function setup_vimtex ()
+  vim.g.vimtex_complete_enabled = 0
+  vim.g.vimtex_syntax_conceal = {
+    accents = 1,
+    cites = 1,
+    fancy = 1,
+    greek = 1,
+    math_bounds = 1,
+    math_delimiters = 1,
+    math_fracs = 0,
+    math_super_sub = 0,
+    math_symbols = 1,
+    styles = 1,
+  }
+  vim.g.vimtex_compiler_method = 'tectonic'
+  vim.g.vimtex_compiler_tectonic = {
+    build_dir = 'dist',
+    options = { '--keep-logs', '--synctex', },
+  }
+  vim.g.vimtex_view_method = 'general'
+  vim.g.vimtex_view_general_viewer = 'SumatraPDF'
+  vim.g.vimtex_view_general_options = '-reuse-instance -forward-search @tex @line @pdf'
+  -- Inhibit unnecessary font warnings
+  vim.g.vimtex_quickfix_ignore_filters = {[[.*Script "CJK".*]], }
+  vim.keymap.set('n', '<localleader>lb',
+  ':VimtexCompile<CR>', { noremap = true, silent = true })
+  vim.cmd[[
+  augroup vimtex_common
+    autocmd!
+    autocmd FileType tex call SetServerName()
+  augroup END
+  ]]
+end
+setup_vimtex()
+
+
+-- Set up editorconfig
+function setup_editorconfig ()
+  vim.g.EditorConfig_exclude_patterns = {'fugitive://.*', 'scp://.*'}
+  vim.cmd 'au FileType gitcommit let b:EditorConfig_disable = 1'
+end
+setup_editorconfig()
+
+
+-- Set up vim-translator
+function setup_vim_translator ()
+  vim.keymap.set('n', '<leader>tr', ':Translate<CR>', { noremap = true, silent = true })
+end
+setup_vim_translator()
+
+
+-- Set up fcitx.vim
+function setup_fcitx ()
+  vim.g.fcitx5_remote = '/usr/bin/fcitx5-remote'
+  vim.g.fcitx5_rime = 1
+end
+setup_fcitx()
 
 
 return ret
