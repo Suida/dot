@@ -181,6 +181,19 @@ function setup_lspconfig ()
       capabilities = capabilities,
     }
   end
+
+  lspconfig.sumneko_lua.setup {
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+    settings = {
+      Lua = {
+        diagnostics = {
+          globals = { 'vim' }
+        }
+      }
+    },
+  }
 end
 setup_lspconfig ()
 
