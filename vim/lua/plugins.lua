@@ -1,3 +1,5 @@
+local plugins = {}
+
 local ensure_packer = function()
   local fn = vim.fn
   local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -11,7 +13,7 @@ end
 
 local packer_bootstrap = ensure_packer()
 
-local ret = require('packer').startup(function(use)
+require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   use 'neovim/nvim-lspconfig'
 
@@ -123,14 +125,14 @@ local ret = require('packer').startup(function(use)
   use 'itchyny/calendar.vim'
   use 'lilydjwg/fcitx.vim'
 
-  if ensure_packer then
+  if packer_bootstrap then
     require('packer').install()
   end
 end)
 
 
 -- Set up lspconfig.
-function setup_lspconfig ()
+plugins.setup_lspconfig = function ()
   local lspconfig = require'lspconfig'
 
   -- Mappings.
@@ -195,11 +197,11 @@ function setup_lspconfig ()
     },
   }
 end
-setup_lspconfig ()
+plugins.setup_lspconfig ()
 
 
 -- Set up nvim-cmp
-function setup_cmp ()
+plugins.setup_cmp = function ()
   local cmp = require'cmp'
 
   cmp.setup {
@@ -254,11 +256,11 @@ function setup_cmp ()
     })
   })
 end
-setup_cmp()
+plugins.setup_cmp()
 
 
 -- Set up tagbar
-function setup_tagbar ()
+plugins.setup_tagbar = function ()
   vim.g.tagbar_left = 1
   vim.g.tagbar_width = 32
   vim.g.tagbar_compact = 1
@@ -299,14 +301,14 @@ function setup_tagbar ()
   }
   vim.keymap.set('n', '<leader>w', ':TagbarToggle<CR>', { noremap = true })
 end
-setup_tagbar()
+plugins.setup_tagbar()
 
 
 -- Set up lightline
-function setup_lightline ()
+plugins.setup_lightline = function ()
   vim.g.lightline = {
-    colorscheme = 'powerline',
-    background = 'light',
+    colorscheme = 'solarized',
+    background = 'dark',
     active = {
       left = {
         { 'mode', 'paste' },
@@ -326,11 +328,11 @@ function setup_lightline ()
     return ' ' .. vim.fn.FugitiveHead()
   end
 end
-setup_lightline()
+plugins.setup_lightline()
 
 
 -- Set up gitgutter
-function setup_gitgutter ()
+plugins.setup_gitgutter = function ()
   vim.g.gitgutter_enabled = 0
   -- <leader>h is used to switch split, while <leader>h* is used in gitgutter,
   -- which leads to unacceptable delay when pressing <leader>h, thus gitggutter key
@@ -340,14 +342,14 @@ function setup_gitgutter ()
   vim.keymap.set('n', ']c', ':GitGutterNextHunk<CR>', { noremap = true, silent = true })
   vim.keymap.set('n', '[c', ':GitGutterPrevHunk<CR>', { noremap = true, silent = true })
 end
-setup_gitgutter()
+plugins.setup_gitgutter()
 
 
 -- Set up floaterm
-function setup_floaterm ()
+plugins.setup_floaterm = function ()
   if vim.fn.has('unix') or vim.fn.has('macunix') then
     vim.g.floaterm_shell='/usr/bin/zsh'
-  elseif has('win32') then
+  elseif vim.fn.has('win32') then
     vim.g.floaterm_shell=[[C:\Program Files\PowerShell\7\pwsh.exe]]
   end
   vim.g.floaterm_width = 0.8
@@ -363,11 +365,11 @@ function setup_floaterm ()
   vim.keymap.set('t', '<C-t>]', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], { noremap = true, silent = true })
   vim.keymap.set('t', '<C-t>[', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], { noremap = true, silent = true })
 end
-setup_floaterm()
+plugins.setup_floaterm()
 
 
 -- Set up nvim-tree.lua
-function setup_nvim_tree ()
+plugins.setup_nvim_tree = function ()
   local mappings = {
     list = {
       { key = "K",            action = "toggle_file_info" },
@@ -383,8 +385,8 @@ function setup_nvim_tree ()
     view = {
       side = "right",
       mappings = mappings,
-      number = ture,
-      relativenumber = ture,
+      number = true,
+      relativenumber = true,
       signcolumn = "yes",
       preserve_window_proportions = true,
     },
@@ -414,22 +416,22 @@ function setup_nvim_tree ()
     ]]
   end
 end
-setup_nvim_tree()
+plugins.setup_nvim_tree()
 
 
 -- Set up vim-easymotion
-function setup_easymotion ()
+plugins.setup_easymotion = function ()
   vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
   vim.keymap.set('n', '<leader>W', '<Plug>(easymotion-w)', { silent = true })
   vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
   vim.keymap.set('n', '<leader>J', '<Plug>(easymotion-j)', { silent = true })
   vim.keymap.set('n', '<leader>K', '<Plug>(easymotion-k)', { silent = true })
 end
-setup_easymotion()
+plugins.setup_easymotion()
 
 
 -- Set up fzf
-function setup_fzf ()
+plugins.setup_fzf = function ()
   vim.keymap.set('n', 'F', ':FZF<CR>', { noremap = true, silent = true })
   vim.g.fzf_colors = {
     fg =      {'fg', 'Normal'},
@@ -447,26 +449,26 @@ function setup_fzf ()
     header =  {'fg', 'Comment'},
   }
 end
-setup_fzf()
+plugins.setup_fzf()
 
 
 -- Set up ctrlsf
-function setup_ctrlsf ()
+plugins.setup_ctrlsf = function ()
   vim.g.ctrlsf_backend = 'rg'
   vim.g.ctrlsf_ignore_dir = {
-    '*.log', 
+    '*.log',
     'tsconfig.json',
-    'static', 
+    'static',
     'dist',
     '.vscode',
     '.ycm_extra_conf.py',
   }
   vim.keymap.set('n', '<leader>sf', ':CtrlSF ', { noremap = true })
 end
-setup_ctrlsf()
+plugins.setup_ctrlsf()
 
 
-function setup_startify ()
+plugins.setup_startify = function ()
   vim.g.startify_session_persistence = 1
   vim.g.startify_session_delete_buffers = 1
   vim.g.startify_session_before_save = {
@@ -495,11 +497,11 @@ function setup_startify ()
     end
   end
 end
-setup_startify()
+plugins.setup_startify()
 
 
 -- Set up indentline
-function setup_indentline ()
+plugins.setup_indentline = function ()
   vim.g.indentLine_setColors = 1
   vim.g.indentLine_defaultGroup = "LineNr"
   vim.g.indentLine_char_list = {'¦'}
@@ -507,11 +509,11 @@ function setup_indentline ()
   -- Latex conceal compatibility
   vim.g.indentLine_fileTypeExclude = {'tex'}
 end
-setup_indentline()
+plugins.setup_indentline()
 
 
 -- Set up vim-cpp-enhanced-highlight
-function setup_cpp_enhanced_highlight ()
+plugins.setup_cpp_enhanced_highlight = function ()
   vim.g.cpp_class_scope_highlight = 1
   vim.g.cpp_member_variable_highlight = 1
   vim.g.cpp_class_decl_highlight = 1
@@ -519,22 +521,22 @@ function setup_cpp_enhanced_highlight ()
   vim.g.cpp_experimental_simple_template_highlight = 1
   vim.g.cpp_concepts_highlight = 1
 end
-setup_cpp_enhanced_highlight()
+plugins.setup_cpp_enhanced_highlight()
 
 
 -- Set up bracey
-function setup_bracey ()
+plugins.setup_bracey = function ()
   vim.g.bracey_server_port = 34911
   vim.g.bracey_server_allow_remote_connections = 1
   vim.g.bracey_refresh_on_save = 1
   vim.g.bracey_eval_on_save = 1
   vim.g.bracey_auto_start_server = 1
 end
-setup_bracey()
+plugins.setup_bracey()
 
 
 -- Set up vim-markdown
-function setup_vim_markdown ()
+plugins.setup_vim_markdown = function ()
   vim.g.vim_markdown_folding_level = 6
   vim.g.vim_markdown_conceal = 1
   vim.g.vim_markdown_conceal_code_blocks = 1
@@ -548,11 +550,11 @@ function setup_vim_markdown ()
   augroup END
   ]]
 end
-setup_vim_markdown()
+plugins.setup_vim_markdown()
 
 
 -- Set up markdown-preview.nvim
-function setup_markdown_prev ()
+plugins.setup_markdown_prev = function ()
   vim.g.mkdp_port = '34910'
   vim.g.mkdp_refresh_slow = 1
   vim.g.mkdp_open_to_the_world = 1
@@ -560,11 +562,11 @@ function setup_markdown_prev ()
   vim.keymap.set('n', '<leader>mp', ':MarkdownPreview<CR>', { noremap = true })
   vim.keymap.set('n', '<leader>ms', ':MarkdownPreviewStop<CR>', { noremap = true })
 end
-setup_markdown_prev()
+plugins.setup_markdown_prev()
 
 
 -- Set up vimtex
-function setup_vimtex ()
+plugins.setup_vimtex = function ()
   vim.g.vimtex_complete_enabled = 0
   vim.g.vimtex_syntax_conceal = {
     accents = 1,
@@ -589,7 +591,7 @@ function setup_vimtex ()
   -- Inhibit unnecessary font warnings
   vim.g.vimtex_quickfix_ignore_filters = {[[.*Script "CJK".*]], }
   vim.keymap.set('n', '<localleader>lb',
-  ':VimtexCompile<CR>', { noremap = true, silent = true })
+                 ':VimtexCompile<CR>', { noremap = true, silent = true })
   vim.cmd[[
   augroup vimtex_common
     autocmd!
@@ -597,30 +599,30 @@ function setup_vimtex ()
   augroup END
   ]]
 end
-setup_vimtex()
+plugins.setup_vimtex()
 
 
 -- Set up editorconfig
-function setup_editorconfig ()
+plugins.setup_editorconfig = function ()
   vim.g.EditorConfig_exclude_patterns = {'fugitive://.*', 'scp://.*'}
   vim.cmd 'au FileType gitcommit let b:EditorConfig_disable = 1'
 end
-setup_editorconfig()
+plugins.setup_editorconfig()
 
 
 -- Set up vim-translator
-function setup_vim_translator ()
+plugins.setup_vim_translator = function ()
   vim.keymap.set('n', '<leader>tr', ':Translate<CR>', { noremap = true, silent = true })
 end
-setup_vim_translator()
+plugins.setup_vim_translator()
 
 
 -- Set up fcitx.vim
-function setup_fcitx ()
+plugins.setup_fcitx = function ()
   vim.g.fcitx5_remote = '/usr/bin/fcitx5-remote'
   vim.g.fcitx5_rime = 1
 end
-setup_fcitx()
+plugins.setup_fcitx()
 
 
-return ret
+return plugins

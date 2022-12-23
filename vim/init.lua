@@ -6,7 +6,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "  "
 
 
-require'plugins'
+vim.g.plugins = require'plugins'
 
 
 -- Set python and node providers

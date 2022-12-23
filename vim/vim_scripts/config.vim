@@ -30,7 +30,7 @@ set concealcursor=
 set clipboard+=unnamedplus
 set noswapfile
 set noshowmode
-set list listchars=tab:¦\\ 
+set list listchars=tab:¦\ 
 set nobackup
 set nowritebackup
 set shortmess+=c
