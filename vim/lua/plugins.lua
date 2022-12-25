@@ -2,9 +2,9 @@ local plugins = {}
 
 local ensure_packer = function()
   local fn = vim.fn
-  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
   if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+    fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
     vim.cmd [[packadd packer.nvim]]
     return true
   end
@@ -48,10 +48,10 @@ require('packer').startup(function(use)
     'sonph/onehalf',
     rtp = 'vim/',
     config = function()
-      vim.cmd.colorscheme'onehalflight'
+      vim.cmd.colorscheme 'onehalflight'
       -- Hide (~) at the end of buffer
-      vim.cmd.highlight'NonText guifg=bg'
-      vim.cmd.highlight'EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg'
+      vim.cmd.highlight 'NonText guifg=bg'
+      vim.cmd.highlight 'EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg'
     end
   }
   use 'itchyny/lightline.vim'
@@ -87,17 +87,17 @@ require('packer').startup(function(use)
 
   -- Language supports
   -- C/C++
-  use {'octol/vim-cpp-enhanced-highlight', ft = {'cpp', 'c'}}
+  use { 'octol/vim-cpp-enhanced-highlight', ft = { 'cpp', 'c' } }
   -- Python utils // The indent really saved my life
-  use {'Vimjas/vim-python-pep8-indent', ft = { 'python', } }
-  use {'jmcantrell/vim-virtualenv', ft = { 'python', }}
+  use { 'Vimjas/vim-python-pep8-indent', ft = { 'python', } }
+  use { 'jmcantrell/vim-virtualenv', ft = { 'python', } }
   -- Font-end tool chain
-  use {'ap/vim-css-color',ft = { 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', }}
-  use {'maxmellon/vim-jsx-pretty', ft = { 'tsx', 'jsx', }}
+  use { 'ap/vim-css-color', ft = { 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', } }
+  use { 'maxmellon/vim-jsx-pretty', ft = { 'tsx', 'jsx', } }
   use 'HerringtonDarkholme/yats.vim'
   use 'posva/vim-vue'
   -- Html preview
-  use {'turbio/bracey.vim', ft = { 'html', }}
+  use { 'turbio/bracey.vim', ft = { 'html', } }
   -- Markdown syntax and preview
   use 'godlygeek/tabular'
   use 'plasticboy/vim-markdown'
@@ -107,12 +107,12 @@ require('packer').startup(function(use)
     ft = { 'markdown', 'vim-plug', }
   }
   -- Asm
-  use {'Shirk/vim-gas', ft = 'asm'}
-  use {'cespare/vim-toml', ft = { 'toml', }}
+  use { 'Shirk/vim-gas', ft = 'asm' }
+  use { 'cespare/vim-toml', ft = { 'toml', } }
   -- Latex
   use 'lervag/vimtex'
 
--- Other utilities
+  -- Other utilities
   use 'mhinz/vim-rfc'
   use 'editorconfig/editorconfig-vim'
   use 'vim-scripts/Drawit'
@@ -132,12 +132,12 @@ end)
 
 
 -- Set up lspconfig.
-plugins.setup_lspconfig = function ()
-  local lspconfig = require'lspconfig'
+plugins.setup_lspconfig = function()
+  local lspconfig = require 'lspconfig'
 
   -- Mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-  local opts = { noremap=true, silent=true }
+  local opts = { noremap = true, silent = true }
   vim.keymap.set('n', '<leader>o', vim.diagnostic.open_float, opts)
   vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
   vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
@@ -148,7 +148,7 @@ plugins.setup_lspconfig = function ()
   local on_attach = function(client, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local bufopts = { noremap=true, silent=true, buffer=bufnr }
+    local bufopts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
@@ -172,8 +172,8 @@ plugins.setup_lspconfig = function ()
   }
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   local language_servers = {
-    'pyright', 'svlangserver', 'clangd', 'tsserver', 'rust_analyzer', 'jsonls',
-    'sumneko_lua',
+    'pyright', 'svls', 'clangd', 'tsserver', 'rust_analyzer', 'jsonls',
+    'sumneko_lua', 'vimls',
   }
 
   for _, server in ipairs(language_servers) do
@@ -197,12 +197,12 @@ plugins.setup_lspconfig = function ()
     },
   }
 end
-plugins.setup_lspconfig ()
+plugins.setup_lspconfig()
 
 
 -- Set up nvim-cmp
-plugins.setup_cmp = function ()
-  local cmp = require'cmp'
+plugins.setup_cmp = function()
+  local cmp = require 'cmp'
 
   cmp.setup {
     snippet = {
@@ -260,14 +260,14 @@ plugins.setup_cmp()
 
 
 -- Set up tagbar
-plugins.setup_tagbar = function ()
+plugins.setup_tagbar = function()
   vim.g.tagbar_left = 1
   vim.g.tagbar_width = 32
   vim.g.tagbar_compact = 1
   vim.g.tagbar_sort = 0
   vim.g.typescript_use_builtin_tagbar_defs = 0
   vim.g.tagbar_type_cpp = {
-    kinds = {
+    kinds      = {
       'c:classes:0:1',
       'd:macros:0:1',
       'e:enumerators:0:0',
@@ -305,7 +305,7 @@ plugins.setup_tagbar()
 
 
 -- Set up lightline
-plugins.setup_lightline = function ()
+plugins.setup_lightline = function()
   vim.g.lightline = {
     colorscheme = 'solarized',
     background = 'dark',
@@ -324,7 +324,7 @@ plugins.setup_lightline = function ()
     tabline_subseparator = { left = "", right = "" },
   }
 
-  vim.g.EmojiedFugitiveHead = function ()
+  vim.g.EmojiedFugitiveHead = function()
     return ' ' .. vim.fn.FugitiveHead()
   end
 end
@@ -332,7 +332,7 @@ plugins.setup_lightline()
 
 
 -- Set up gitgutter
-plugins.setup_gitgutter = function ()
+plugins.setup_gitgutter = function()
   vim.g.gitgutter_enabled = 0
   -- <leader>h is used to switch split, while <leader>h* is used in gitgutter,
   -- which leads to unacceptable delay when pressing <leader>h, thus gitggutter key
@@ -346,11 +346,11 @@ plugins.setup_gitgutter()
 
 
 -- Set up floaterm
-plugins.setup_floaterm = function ()
+plugins.setup_floaterm = function()
   if vim.fn.has('unix') or vim.fn.has('macunix') then
-    vim.g.floaterm_shell='/usr/bin/zsh'
+    vim.g.floaterm_shell = '/usr/bin/zsh'
   elseif vim.fn.has('win32') then
-    vim.g.floaterm_shell=[[C:\Program Files\PowerShell\7\pwsh.exe]]
+    vim.g.floaterm_shell = [[C:\Program Files\PowerShell\7\pwsh.exe]]
   end
   vim.g.floaterm_width = 0.8
   vim.g.floaterm_height = 0.8
@@ -369,13 +369,13 @@ plugins.setup_floaterm()
 
 
 -- Set up nvim-tree.lua
-plugins.setup_nvim_tree = function ()
+plugins.setup_nvim_tree = function()
   local mappings = {
     list = {
-      { key = "K",            action = "toggle_file_info" },
-      { key = "t",            action = "tabnew" },
-      { key = "<C-k>",        action = "" },
-      { key = "<C-e>",        action = "" },
+      { key = "K", action = "toggle_file_info" },
+      { key = "t", action = "tabnew" },
+      { key = "<C-k>", action = "" },
+      { key = "<C-e>", action = "" },
     },
   }
   require("nvim-tree").setup({
@@ -398,14 +398,14 @@ plugins.setup_nvim_tree = function ()
     },
   })
   vim.cmd [[nnoremap <silent> <leader>e :NvimTreeToggle<CR>]]
-  vim.cmd[[
+  vim.cmd [[
   augroup explorer
     autocmd StdinReadPre * let s:std_in=1
     autocmd VimEnter * call handle_open_directory()
   augroup END
   ]]
-  vim.g.handle_open_directory = function ()
-    vim.cmd[[
+  vim.g.handle_open_directory = function()
+    vim.cmd [[
     if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") 
       exe "cd" fnameescape(argv()[0])
       ene
@@ -420,7 +420,7 @@ plugins.setup_nvim_tree()
 
 
 -- Set up vim-easymotion
-plugins.setup_easymotion = function ()
+plugins.setup_easymotion = function()
   vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
   vim.keymap.set('n', '<leader>W', '<Plug>(easymotion-w)', { silent = true })
   vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
@@ -431,29 +431,29 @@ plugins.setup_easymotion()
 
 
 -- Set up fzf
-plugins.setup_fzf = function ()
+plugins.setup_fzf = function()
   vim.keymap.set('n', 'F', ':FZF<CR>', { noremap = true, silent = true })
   vim.g.fzf_colors = {
-    fg =      {'fg', 'Normal'},
-    bg =      {'bg', 'Normal'},
-    hl =      {'fg', 'Comment'},
-    ['fg+'] =     {'fg', 'Cursor', 'CursorColumn', 'Normal'},
-    ['bg+'] =     {'bg', 'Cursor', 'CursorColumn'},
-    ['hl+'] =     {'fg', 'Statement'},
-    info =    {'fg', 'PreProc'},
-    border =  {'fg', 'Ignore'},
-    prompt =  {'fg', 'Conditional'},
-    pointer = {'fg', 'Cursor'},
-    marker =  {'fg', 'Keyword'},
-    spinner = {'fg', 'Label'},
-    header =  {'fg', 'Comment'},
+    fg = { 'fg', 'Normal' },
+    bg = { 'bg', 'Normal' },
+    hl = { 'fg', 'Comment' },
+    ['fg+'] = { 'fg', 'Cursor', 'CursorColumn', 'Normal' },
+    ['bg+'] = { 'bg', 'Cursor', 'CursorColumn' },
+    ['hl+'] = { 'fg', 'Statement' },
+    info = { 'fg', 'PreProc' },
+    border = { 'fg', 'Ignore' },
+    prompt = { 'fg', 'Conditional' },
+    pointer = { 'fg', 'Cursor' },
+    marker = { 'fg', 'Keyword' },
+    spinner = { 'fg', 'Label' },
+    header = { 'fg', 'Comment' },
   }
 end
 plugins.setup_fzf()
 
 
 -- Set up ctrlsf
-plugins.setup_ctrlsf = function ()
+plugins.setup_ctrlsf = function()
   vim.g.ctrlsf_backend = 'rg'
   vim.g.ctrlsf_ignore_dir = {
     '*.log',
@@ -468,7 +468,7 @@ end
 plugins.setup_ctrlsf()
 
 
-plugins.setup_startify = function ()
+plugins.setup_startify = function()
   vim.g.startify_session_persistence = 1
   vim.g.startify_session_delete_buffers = 1
   vim.g.startify_session_before_save = {
@@ -480,15 +480,15 @@ plugins.setup_startify = function ()
     'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
     'execute g:startify_tmp_winnr . "wincmd w"'
   }
-  vim.cmd[[
+  vim.cmd [[
   augroup startify_stuff
     autocmd VimEnter * call init_startify()
     autocmd BufEnter * let &titlestring=fnamemodify(v:this_session, ':t')
   augroup END
   ]]
-  vim.g.init_startify = function ()
+  vim.g.init_startify = function()
     if not vim.fn.argc() then
-      vim.cmd[[
+      vim.cmd [[
       Startify
       NvimTreeOpen
       sleep 100m
@@ -501,19 +501,19 @@ plugins.setup_startify()
 
 
 -- Set up indentline
-plugins.setup_indentline = function ()
+plugins.setup_indentline = function()
   vim.g.indentLine_setColors = 1
   vim.g.indentLine_defaultGroup = "LineNr"
-  vim.g.indentLine_char_list = {'¦'}
+  vim.g.indentLine_char_list = { '¦' }
   vim.g.indentLine_concealcursor = 'c'
   -- Latex conceal compatibility
-  vim.g.indentLine_fileTypeExclude = {'tex'}
+  vim.g.indentLine_fileTypeExclude = { 'tex' }
 end
 plugins.setup_indentline()
 
 
 -- Set up vim-cpp-enhanced-highlight
-plugins.setup_cpp_enhanced_highlight = function ()
+plugins.setup_cpp_enhanced_highlight = function()
   vim.g.cpp_class_scope_highlight = 1
   vim.g.cpp_member_variable_highlight = 1
   vim.g.cpp_class_decl_highlight = 1
@@ -525,7 +525,7 @@ plugins.setup_cpp_enhanced_highlight()
 
 
 -- Set up bracey
-plugins.setup_bracey = function ()
+plugins.setup_bracey = function()
   vim.g.bracey_server_port = 34911
   vim.g.bracey_server_allow_remote_connections = 1
   vim.g.bracey_refresh_on_save = 1
@@ -536,14 +536,14 @@ plugins.setup_bracey()
 
 
 -- Set up vim-markdown
-plugins.setup_vim_markdown = function ()
+plugins.setup_vim_markdown = function()
   vim.g.vim_markdown_folding_level = 6
   vim.g.vim_markdown_conceal = 1
   vim.g.vim_markdown_conceal_code_blocks = 1
   vim.g.vim_markdown_autowrite = 1
   vim.g.vim_markdown_strikethrough = 1
   vim.g.vim_markdown_no_extensions_in_markdown = 1
-  vim.cmd[[
+  vim.cmd [[
   augroup md_config
     autocmd!
     autocmd VimEnter * let g:vim_markdown_folding_disabled = &diff
@@ -554,7 +554,7 @@ plugins.setup_vim_markdown()
 
 
 -- Set up markdown-preview.nvim
-plugins.setup_markdown_prev = function ()
+plugins.setup_markdown_prev = function()
   vim.g.mkdp_port = '34910'
   vim.g.mkdp_refresh_slow = 1
   vim.g.mkdp_open_to_the_world = 1
@@ -566,7 +566,7 @@ plugins.setup_markdown_prev()
 
 
 -- Set up vimtex
-plugins.setup_vimtex = function ()
+plugins.setup_vimtex = function()
   vim.g.vimtex_complete_enabled = 0
   vim.g.vimtex_syntax_conceal = {
     accents = 1,
@@ -589,10 +589,10 @@ plugins.setup_vimtex = function ()
   vim.g.vimtex_view_general_viewer = 'SumatraPDF'
   vim.g.vimtex_view_general_options = '-reuse-instance -forward-search @tex @line @pdf'
   -- Inhibit unnecessary font warnings
-  vim.g.vimtex_quickfix_ignore_filters = {[[.*Script "CJK".*]], }
+  vim.g.vimtex_quickfix_ignore_filters = { [[.*Script "CJK".*]], }
   vim.keymap.set('n', '<localleader>lb',
-                 ':VimtexCompile<CR>', { noremap = true, silent = true })
-  vim.cmd[[
+    ':VimtexCompile<CR>', { noremap = true, silent = true })
+  vim.cmd [[
   augroup vimtex_common
     autocmd!
     autocmd FileType tex call SetServerName()
@@ -603,22 +603,22 @@ plugins.setup_vimtex()
 
 
 -- Set up editorconfig
-plugins.setup_editorconfig = function ()
-  vim.g.EditorConfig_exclude_patterns = {'fugitive://.*', 'scp://.*'}
+plugins.setup_editorconfig = function()
+  vim.g.EditorConfig_exclude_patterns = { 'fugitive://.*', 'scp://.*' }
   vim.cmd 'au FileType gitcommit let b:EditorConfig_disable = 1'
 end
 plugins.setup_editorconfig()
 
 
 -- Set up vim-translator
-plugins.setup_vim_translator = function ()
+plugins.setup_vim_translator = function()
   vim.keymap.set('n', '<leader>tr', ':Translate<CR>', { noremap = true, silent = true })
 end
 plugins.setup_vim_translator()
 
 
 -- Set up fcitx.vim
-plugins.setup_fcitx = function ()
+plugins.setup_fcitx = function()
   vim.g.fcitx5_remote = '/usr/bin/fcitx5-remote'
   vim.g.fcitx5_rime = 1
 end
