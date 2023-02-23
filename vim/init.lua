@@ -1,12 +1,9 @@
-local utils = require'utils'
+local utils = require 'utils'
 
 
 -- Set leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = "  "
-
-
-require'plugins'
 
 
 -- Set python and node providers
@@ -24,10 +21,10 @@ end
 
 
 -- Exit terminal mode
-vim.keymap.set({'t', 'i'}, 'jk', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set({'t', 'i'}, 'Jk', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set({'t', 'i'}, 'JK', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set({'t', 'i'}, 'jjk', [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set({ 't', 'i' }, 'jk', [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set({ 't', 'i' }, 'Jk', [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set({ 't', 'i' }, 'JK', [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set({ 't', 'i' }, 'jjk', [[<C-\><C-n>]], { noremap = true })
 
 
 -- Load vim config files
@@ -38,11 +35,14 @@ vim.cmd('source ' .. vim_config_src)
 vim.cmd('source ' .. vim_mapping_src)
 
 
-vim.cmd[[autocmd FileType scss setl iskeyword+=@-@]]
+vim.g.plugins = require 'plugins'
+
+
+vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]
 
 
 -- Indentation
-vim.cmd[[
+vim.cmd [[
 augroup indent
   autocmd FileType javascript,css,less,vue,html,typescript,javascriptreact,typescriptreact set shiftwidth=2
   autocmd FileType systemverilog,verilog set shiftwidth=4 tabstop=4
@@ -51,7 +51,7 @@ augroup END
 
 
 -- Folding behaviour of viml files
-vim.cmd[[
+vim.cmd [[
 augroup filtype_vim
   autocmd!
   autocmd FileType vim setlocal foldenable
