@@ -34,8 +34,6 @@ inoremap <C-f> <Right>
 inoremap <C-b> <Left>
 noremap <expr>0 col('.') == 1 ? '^': '0'
 noremap <expr>g0 col('.') == 1 ? '^': 'g0'
-nmap h 0
-nmap l $
 nnoremap <C-j> 15j
 nnoremap <C-k> 15k
 nnoremap <C-e> 3<C-e>

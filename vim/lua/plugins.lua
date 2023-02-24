@@ -31,6 +31,9 @@ require('packer').startup(function(use)
     setup = function() vim.g.user_emmet_leader_key = '<C-x>' end
   }
 
+  -- Zettelkasten
+  use 'mickael-menu/zk-nvim'
+
   -- Git
   use 'tpope/vim-fugitive'
   use {
@@ -42,6 +45,7 @@ require('packer').startup(function(use)
       'GitGutterPrevHunk',
     }
   }
+
   -- Outlook
   use 'majutsushi/tagbar'
   use {
@@ -173,7 +177,7 @@ plugins.setup_lspconfig = function()
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   local language_servers = {
     'pyright', 'svls', 'clangd', 'tsserver', 'rust_analyzer', 'jsonls',
-    'sumneko_lua', 'vimls',
+    'lua_ls', 'vimls',
   }
 
   for _, server in ipairs(language_servers) do
@@ -184,7 +188,7 @@ plugins.setup_lspconfig = function()
     }
   end
 
-  lspconfig.sumneko_lua.setup {
+  lspconfig.lua_ls.setup {
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
@@ -257,6 +261,14 @@ plugins.setup_cmp = function()
   })
 end
 plugins.setup_cmp()
+
+
+-- Set up zk-nvim
+plugins.setup_zk_nvim = function ()
+  local zk_nvim = require 'zk'
+  zk_nvim.setup()
+end
+plugins.setup_zk_nvim()
 
 
 -- Set up tagbar
