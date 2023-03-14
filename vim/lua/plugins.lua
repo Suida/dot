@@ -197,7 +197,7 @@ plugins.setup_lspconfig = function()
     settings = {
       Lua = {
         diagnostics = {
-          globals = { 'vim' }
+          globals = { 'vim', 'require', 'ipairs', 'print', }
         }
       }
     },
@@ -304,22 +304,20 @@ plugins.setup_cmp()
 
 
 -- Set up zk-nvim
-plugins.setup_zk_nvim = function ()
+plugins.setup_zk_nvim = function()
   local zk_nvim = require 'zk'
   zk_nvim.setup()
 
-  local opts = { noremap=true, silent=false }
-
+  local opts = { noremap = true, silent = false }
   -- Create a new note after asking for its title.
   vim.api.nvim_set_keymap("n", "<leader>zn", "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", opts)
-
   -- Open notes.
   vim.api.nvim_set_keymap("n", "<leader>zo", "<Cmd>ZkNotes { sort = { 'modified' } }<CR>", opts)
   -- Open notes associated with the selected tags.
   vim.api.nvim_set_keymap("n", "<leader>zt", "<Cmd>ZkTags<CR>", opts)
-
   -- Search for the notes matching a given query.
-  vim.api.nvim_set_keymap("n", "<leader>zf", "<Cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>", opts)
+  vim.api.nvim_set_keymap("n", "<leader>zf",
+    "<Cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>", opts)
   -- Search for the notes matching the current visual selection.
   vim.api.nvim_set_keymap("v", "<leader>zf", ":'<,'>ZkMatch<CR>", opts)
 end
@@ -414,10 +412,10 @@ plugins.setup_gitgutter()
 
 -- Set up floaterm
 plugins.setup_floaterm = function()
-  if vim.fn.has('unix') or vim.fn.has('macunix') then
+  if vim.fn.has('win32') then
+    vim.g.floaterm_shell = [[pwsh.exe]]
+  elseif vim.fn.has('unix') or vim.fn.has('macunix') then
     vim.g.floaterm_shell = '/usr/bin/zsh'
-  elseif vim.fn.has('win32') then
-    vim.g.floaterm_shell = [[C:\Program Files\PowerShell\7\pwsh.exe]]
   end
   vim.g.floaterm_width = 0.8
   vim.g.floaterm_height = 0.8
@@ -456,6 +454,30 @@ plugins.setup_nvim_tree = function()
       relativenumber = true,
       signcolumn = "yes",
       preserve_window_proportions = true,
+
+      float = {
+        enable = true,
+        open_win_config = function()
+          return {
+            relative = "editor",
+            anchor = 'NE',
+            width = 50,
+            height = utils.get_tab_height() - 4,
+            row = 1,
+            col = utils.get_tab_width() - 5,
+            border = {
+              { "╔", "CursorLineNr" },
+              { "═", "CursorLineNr" },
+              { "╗", "CursorLineNr" },
+              { "║", "CursorLineNr" },
+              { "╝", "CursorLineNr" },
+              { "═", "CursorLineNr" },
+              { "╚", "CursorLineNr" },
+              { "║", "CursorLineNr" },
+            }
+          }
+        end,
+      }
     },
     respect_buf_cwd = true,
     actions = {
