@@ -116,7 +116,7 @@ cnoremap <C-F>  <Right>
 " recall previous (older) command-line
 " cnoremap <C-P>  <Up>
 " back one word
-cnoremap <Esc><C-B> <S-Left>
+cnoremap <A-b> <S-Left>
 " forward one word
-cnoremap <Esc><C-F> <S-Right>
+cnoremap <A-f> <S-Right>
 " }}}

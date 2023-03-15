@@ -81,7 +81,7 @@ require('packer').startup(function(use)
   use 'junegunn/fzf.vim'
   -- Global finder
   use 'brooth/far.vim'
-  use 'dyng/ctrlsf.vim'
+  use { 'dyng/ctrlsf.vim', disable = true }
 
   -- Session manager
   use 'mhinz/vim-startify'
@@ -270,7 +270,10 @@ plugins.setup_cmp = function()
       { name = 'luasnip' }, -- For luasnip users.
     }, {
       { name = 'buffer' },
-    })
+    }),
+    completion = {
+      keyword_length = 3,
+    },
   }
 
   -- Set configuration for specific filetype.
@@ -286,8 +289,11 @@ plugins.setup_cmp = function()
   cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
-      { name = 'buffer' }
-    }
+      { name = 'buffer' },
+    },
+    completion = {
+      autocomplete = false,
+    },
   })
 
   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
@@ -297,7 +303,10 @@ plugins.setup_cmp = function()
       { name = 'path' }
     }, {
       { name = 'cmdline' }
-    })
+    }),
+    completion = {
+      autocomplete = false,
+    },
   })
 end
 plugins.setup_cmp()
@@ -557,7 +566,7 @@ plugins.setup_nvim_tree = function()
     }
     vim.keymap.set('n', '<leader>sf', ':CtrlSF ', { noremap = true })
   end
-  plugins.setup_ctrlsf()
+  -- plugins.setup_ctrlsf()
 
 
   plugins.setup_startify = function()
