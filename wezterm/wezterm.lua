@@ -26,6 +26,11 @@ local key_bindings = {-- {{{
     mods = 'ALT',
     action = act.PasteFrom 'Clipboard',
   },
+  {
+    key = 'Space',
+    mods = 'CTRL',
+    action = act.SendKey { key = 'Escape', },
+  },
 }-- }}}
 
 -- Key Bindings Pane Operations

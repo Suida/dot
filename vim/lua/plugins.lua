@@ -81,7 +81,7 @@ require('packer').startup(function(use)
   use 'junegunn/fzf.vim'
   -- Global finder
   use 'brooth/far.vim'
-  use 'dyng/ctrlsf.vim'
+  use { 'dyng/ctrlsf.vim', disable = true }
 
   -- Session manager
   use 'mhinz/vim-startify'
@@ -197,7 +197,7 @@ plugins.setup_lspconfig = function()
     settings = {
       Lua = {
         diagnostics = {
-          globals = { 'vim', 'require', 'ipairs', 'print', }
+          globals = { 'vim', 'require', 'ipairs', 'print', 'package', }
         }
       }
     },
@@ -270,7 +270,10 @@ plugins.setup_cmp = function()
       { name = 'luasnip' }, -- For luasnip users.
     }, {
       { name = 'buffer' },
-    })
+    }),
+    completion = {
+      keyword_length = 3,
+    },
   }
 
   -- Set configuration for specific filetype.
@@ -286,8 +289,11 @@ plugins.setup_cmp = function()
   cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
-      { name = 'buffer' }
-    }
+      { name = 'buffer' },
+    },
+    completion = {
+      autocomplete = false,
+    },
   })
 
   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
@@ -297,7 +303,10 @@ plugins.setup_cmp = function()
       { name = 'path' }
     }, {
       { name = 'cmdline' }
-    })
+    }),
+    completion = {
+      autocomplete = false,
+    },
   })
 end
 plugins.setup_cmp()
@@ -412,10 +421,10 @@ plugins.setup_gitgutter()
 
 -- Set up floaterm
 plugins.setup_floaterm = function()
-  if vim.fn.has('win32') then
-    vim.g.floaterm_shell = [[pwsh.exe]]
-  elseif vim.fn.has('unix') or vim.fn.has('macunix') then
+  if utils.get_os_type() == 'unix' then
     vim.g.floaterm_shell = '/usr/bin/zsh'
+  else
+    vim.g.floaterm_shell = [[pwsh.exe]]
   end
   vim.g.floaterm_width = 0.8
   vim.g.floaterm_height = 0.8
@@ -457,14 +466,15 @@ plugins.setup_nvim_tree = function()
 
       float = {
         enable = true,
+        quit_on_focus_loss = true,
         open_win_config = function()
           return {
             relative = "editor",
-            anchor = 'NE',
+            anchor = 'SE',
             width = 50,
-            height = utils.get_tab_height() - 4,
-            row = 1,
-            col = utils.get_tab_width() - 5,
+            height = utils.get_tab_height() - 30,
+            row = utils.get_tab_height(),
+            col = utils.get_tab_width() - 1,
             border = {
               { "╔", "CursorLineNr" },
               { "═", "CursorLineNr" },
@@ -556,7 +566,7 @@ plugins.setup_nvim_tree = function()
     }
     vim.keymap.set('n', '<leader>sf', ':CtrlSF ', { noremap = true })
   end
-  plugins.setup_ctrlsf()
+  -- plugins.setup_ctrlsf()
 
 
   plugins.setup_startify = function()
