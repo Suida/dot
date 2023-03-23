@@ -56,7 +56,7 @@ augroup basic_prelaunch_settings
     " Reload file every time the cursor get into a buffer
     autocmd FocusGained,BufLeave * if bufname()!='[Command Line]' | checktime | endif
     " Disable line breaking in markdown file
-    autocmd BufNewFile,BufRead,BufEnter *.md,*.tex set textwidth=0
+    " autocmd BufNewFile,BufRead,BufEnter *.md,*.tex set textwidth=0
     autocmd GUIEnter * simalt ~x
 augroup END
 

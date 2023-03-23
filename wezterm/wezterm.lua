@@ -227,4 +227,5 @@ return {
   -- timeout_milliseconds defaults to 3000 and can be omitted
   leader = { key = 's', mods = 'CTRL', timeout_milliseconds = 3000 },
   keys = key_bindings,
+  harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
 }

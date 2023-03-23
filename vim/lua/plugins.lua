@@ -23,7 +23,12 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-cmdline'
-  use 'hrsh7th/nvim-cmp'
+  use({
+    "hrsh7th/nvim-cmp",
+    requires = {
+      { "jc-doyle/cmp-pandoc-references" }
+    }
+  })
 
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
@@ -62,6 +67,7 @@ require('packer').startup(function(use)
   }
   use 'itchyny/lightline.vim'
   use 'voldikss/vim-floaterm'
+  use 'willothy/flatten.nvim'
   use 'tomtom/tcomment_vim'
 
   -- Better move
@@ -102,11 +108,13 @@ require('packer').startup(function(use)
   use { 'maxmellon/vim-jsx-pretty', ft = { 'tsx', 'jsx', } }
   use 'HerringtonDarkholme/yats.vim'
   use 'posva/vim-vue'
+  -- Pandoc
+  use 'vim-pandoc/vim-pandoc'
+  use 'vim-pandoc/vim-pandoc-syntax'
   -- Html preview
   use { 'turbio/bracey.vim', ft = { 'html', } }
   -- Markdown syntax and preview
   use 'godlygeek/tabular'
-  use 'plasticboy/vim-markdown'
   use {
     'iamcco/markdown-preview.nvim',
     run = function() vim.fn['mkdp#util#install']() end,
@@ -178,7 +186,7 @@ plugins.setup_lspconfig = function()
   }
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   local language_servers = {
-    'pyright', 'svls', 'clangd', 'tsserver', 'rust_analyzer', 'jsonls',
+    'pyright', 'verible', 'clangd', 'tsserver', 'rust_analyzer', 'jsonls',
     'lua_ls', 'vimls', 'texlab', 'cmake',
   }
 
@@ -201,6 +209,19 @@ plugins.setup_lspconfig = function()
         }
       }
     },
+  }
+
+  lspconfig.verible.setup {
+    cmd = {
+      'verible-verilog-ls',
+      '--wrap_spaces',
+      '2',
+      '--rules',
+      '',
+    },
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
   }
 
   lspconfig.texlab.setup {
@@ -229,6 +250,7 @@ plugins.setup_lspconfig()
 -- Set up nvim-cmp
 plugins.setup_cmp = function()
   local cmp = require 'cmp'
+  local compare = require 'cmp.config.compare'
   local luasnip = require 'luasnip'
 
   require 'my_snippets'
@@ -265,9 +287,33 @@ plugins.setup_cmp = function()
         end
       end, { "i", "s" }),
     }),
+    matching = {
+      disallow_fuzzy_matching = false,
+      disallow_fullfuzzy_matching = false,
+      disallow_partial_fuzzy_matching = false,
+      disallow_partial_matching = false,
+      disallow_prefix_unmatching = false,
+    },
+    sorting = {
+      priority_weight = 5,
+      comparators = {
+        compare.recently_used,
+        compare.locality,
+        compare.offset,
+        compare.exact,
+        -- compare.scopes,
+        compare.score,
+        compare.kind,
+        -- compare.sort_text,
+        compare.length,
+        compare.order,
+      },
+    },
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
       { name = 'luasnip' }, -- For luasnip users.
+      { name = 'path' },
+      { name = 'pandoc_references' },
     }, {
       { name = 'buffer' },
     }),
@@ -300,9 +346,9 @@ plugins.setup_cmp = function()
   cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
-      { name = 'path' }
+      { name = 'path' },
     }, {
-      { name = 'cmdline' }
+      { name = 'cmdline' },
     }),
     completion = {
       autocomplete = false,
@@ -426,18 +472,19 @@ plugins.setup_floaterm = function()
   else
     vim.g.floaterm_shell = [[pwsh.exe]]
   end
-  vim.g.floaterm_width = 0.8
-  vim.g.floaterm_height = 0.8
+  vim.g.floaterm_width = 0.99999
+  vim.g.floaterm_height = 0.4
+  vim.g.floaterm_position = 'bottom'
   vim.keymap.set('n', '<C-t>t', [[:FloatermToggle<CR>]], { noremap = true, silent = true })
-  vim.keymap.set('n', '<C-t>n', [[:FloatermNew<CR>]], { noremap = true, silent = true })
-  vim.keymap.set('n', '<C-t>k', [[:FloatermKill<CR>]], { noremap = true, silent = true })
-  vim.keymap.set('n', '<C-t>]', [[:FloatermNext<CR>]], { noremap = true, silent = true })
-  vim.keymap.set('n', '<C-t>[', [[:FloatermPrev<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>c', [[:FloatermNew<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>x', [[:FloatermKill<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>n', [[:FloatermNext<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('n', '<C-t>p', [[:FloatermPrev<CR>]], { noremap = true, silent = true })
   vim.keymap.set('t', '<C-t>t', [[<C-\><C-n>:exe "sleep 100m \| FloatermToggle"<CR>]], { noremap = true, silent = true })
-  vim.keymap.set('t', '<C-t>n', [[<C-\><C-n>:exe "sleep 100m \| FloatermNew"<CR>]], { noremap = true, silent = true })
-  vim.keymap.set('t', '<C-t>k', [[<C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>]], { noremap = true, silent = true })
-  vim.keymap.set('t', '<C-t>]', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], { noremap = true, silent = true })
-  vim.keymap.set('t', '<C-t>[', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>c', [[<C-\><C-n>:exe "sleep 100m \| FloatermNew"<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>x', [[<C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>n', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], { noremap = true, silent = true })
+  vim.keymap.set('t', '<C-t>p', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], { noremap = true, silent = true })
 end
 plugins.setup_floaterm()
 
@@ -470,10 +517,10 @@ plugins.setup_nvim_tree = function()
         open_win_config = function()
           return {
             relative = "editor",
-            anchor = 'SE',
+            anchor = 'NE',
             width = 50,
-            height = utils.get_tab_height() - 30,
-            row = utils.get_tab_height(),
+            height = utils.get_tab_height() - 3,
+            row = 1,
             col = utils.get_tab_width() - 1,
             border = {
               { "╔", "CursorLineNr" },
@@ -625,6 +672,19 @@ plugins.setup_nvim_tree = function()
   plugins.setup_cpp_enhanced_highlight()
 
 
+  -- Set up vim-pandoc and vim-pandoc-syntax
+  plugins.setup_vim_pandoc = function()
+    -- Overwrite the highlight of Conceal group
+    vim.cmd [[
+    augroup conceal_color
+    autocmd!
+    autocmd BufEnter *.md,*.tex hi! link Conceal Constant
+    augroup END
+    ]]
+  end
+  plugins.setup_vim_pandoc()
+
+
   -- Set up bracey
   plugins.setup_bracey = function()
     vim.g.bracey_server_port = 34911
@@ -634,24 +694,6 @@ plugins.setup_nvim_tree = function()
     vim.g.bracey_auto_start_server = 1
   end
   plugins.setup_bracey()
-
-
-  -- Set up vim-markdown
-  plugins.setup_vim_markdown = function()
-    vim.g.vim_markdown_folding_level = 6
-    vim.g.vim_markdown_conceal = 1
-    vim.g.vim_markdown_conceal_code_blocks = 1
-    vim.g.vim_markdown_autowrite = 1
-    vim.g.vim_markdown_strikethrough = 1
-    vim.g.vim_markdown_no_extensions_in_markdown = 1
-    vim.cmd [[
-    augroup md_config
-    autocmd!
-    autocmd VimEnter * let g:vim_markdown_folding_disabled = &diff
-    augroup END
-    ]]
-  end
-  plugins.setup_vim_markdown()
 
 
   -- Set up markdown-preview.nvim
