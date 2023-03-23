@@ -266,7 +266,7 @@ plugins.setup_cmp = function()
       documentation = cmp.config.window.bordered(),
     },
     mapping = cmp.mapping.preset.insert({
-      ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-u>'] = cmp.mapping.scroll_docs( -4),
       ['<C-d>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-f>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
@@ -280,8 +280,8 @@ plugins.setup_cmp = function()
         end
       end, { "i", "s" }),
       ['<S-Tab>'] = cmp.mapping(function(fallback)
-        if luasnip.jumpable(-1) then
-          luasnip.jump(-1)
+        if luasnip.jumpable( -1) then
+          luasnip.jump( -1)
         else
           fallback()
         end
@@ -431,7 +431,7 @@ plugins.setup_lightline = function()
     background = 'dark',
     active = {
       left = {
-        { 'mode', 'paste' },
+        { 'mode',      'paste' },
         { 'gitbranch', 'readonly', 'filename', 'modified' }
       }
     },
@@ -475,6 +475,7 @@ plugins.setup_floaterm = function()
   vim.g.floaterm_width = 0.99999
   vim.g.floaterm_height = 0.4
   vim.g.floaterm_position = 'bottom'
+  vim.g.floaterm_borderchars = '─ ─ ┌┐┘└'
   vim.keymap.set('n', '<C-t>t', [[:FloatermToggle<CR>]], { noremap = true, silent = true })
   vim.keymap.set('n', '<C-t>c', [[:FloatermNew<CR>]], { noremap = true, silent = true })
   vim.keymap.set('n', '<C-t>x', [[:FloatermKill<CR>]], { noremap = true, silent = true })
@@ -485,6 +486,12 @@ plugins.setup_floaterm = function()
   vim.keymap.set('t', '<C-t>x', [[<C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>]], { noremap = true, silent = true })
   vim.keymap.set('t', '<C-t>n', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], { noremap = true, silent = true })
   vim.keymap.set('t', '<C-t>p', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], { noremap = true, silent = true })
+  vim.cmd [[
+    augroup floater_color
+    autocmd!
+    autocmd BufEnter * hi! link FloatermBorder CursorLineNr
+    augroup END
+  ]]
 end
 plugins.setup_floaterm()
 
@@ -493,8 +500,8 @@ plugins.setup_floaterm()
 plugins.setup_nvim_tree = function()
   local mappings = {
     list = {
-      { key = "K", action = "toggle_file_info" },
-      { key = "t", action = "tabnew" },
+      { key = "K",     action = "toggle_file_info" },
+      { key = "t",     action = "tabnew" },
       { key = "<C-k>", action = "" },
       { key = "<C-e>", action = "" },
     },
@@ -545,227 +552,227 @@ plugins.setup_nvim_tree = function()
   })
   vim.cmd [[nnoremap <silent> <leader>e :NvimTreeToggle<CR>]]
   vim.cmd [[
-  augroup explorer
-  autocmd StdinReadPre * let s:std_in=1
-  autocmd VimEnter * call handle_open_directory()
-  augroup END
+    augroup explorer
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * call handle_open_directory()
+    augroup END
   ]]
   vim.g.handle_open_directory = function()
     vim.cmd [[
-    if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") 
+      if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in")
       exe "cd" fnameescape(argv()[0])
       ene
       NvimTreeOpen
       sleep 100m
       wincmd w
       endif
-      ]]
-    end
+    ]]
   end
-  plugins.setup_nvim_tree()
+end
+plugins.setup_nvim_tree()
 
 
-  -- Set up vim-easymotion
-  plugins.setup_easymotion = function()
-    vim.keymap.set('n', '<leader>F', '<Plug>(easymotion-f)', { silent = true })
-    vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
-    vim.keymap.set('n', '<leader>W', '<Plug>(easymotion-w)', { silent = true })
-    vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
-    vim.keymap.set('n', '<leader>J', '<Plug>(easymotion-j)', { silent = true })
-    vim.keymap.set('n', '<leader>K', '<Plug>(easymotion-k)', { silent = true })
-  end
-  plugins.setup_easymotion()
+-- Set up vim-easymotion
+plugins.setup_easymotion = function()
+  vim.keymap.set('n', '<leader>F', '<Plug>(easymotion-f)', { silent = true })
+  vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
+  vim.keymap.set('n', '<leader>W', '<Plug>(easymotion-w)', { silent = true })
+  vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
+  vim.keymap.set('n', '<leader>J', '<Plug>(easymotion-j)', { silent = true })
+  vim.keymap.set('n', '<leader>K', '<Plug>(easymotion-k)', { silent = true })
+end
+plugins.setup_easymotion()
 
 
-  -- Set up fzf
-  plugins.setup_fzf = function()
-    vim.keymap.set('n', 'F', ':FZF<CR>', { noremap = true, silent = true })
-    vim.keymap.set('n', '<leader>rg', ':Rg ', { noremap = true })
-    vim.g.fzf_colors = {
-      fg = { 'fg', 'Normal' },
-      bg = { 'bg', 'Normal' },
-      hl = { 'fg', 'Comment' },
-      ['fg+'] = { 'fg', 'Cursor', 'CursorColumn', 'Normal' },
-      ['bg+'] = { 'bg', 'Cursor', 'CursorColumn' },
-      ['hl+'] = { 'fg', 'Statement' },
-      info = { 'fg', 'PreProc' },
-      border = { 'fg', 'Ignore' },
-      prompt = { 'fg', 'Conditional' },
-      pointer = { 'fg', 'Cursor' },
-      marker = { 'fg', 'Keyword' },
-      spinner = { 'fg', 'Label' },
-      header = { 'fg', 'Comment' },
-    }
-  end
-  plugins.setup_fzf()
+-- Set up fzf
+plugins.setup_fzf = function()
+  vim.keymap.set('n', 'F', ':FZF<CR>', { noremap = true, silent = true })
+  vim.keymap.set('n', '<leader>rg', ':Rg ', { noremap = true })
+  vim.g.fzf_colors = {
+    fg = { 'fg', 'Normal' },
+    bg = { 'bg', 'Normal' },
+    hl = { 'fg', 'Comment' },
+    ['fg+'] = { 'fg', 'Cursor', 'CursorColumn', 'Normal' },
+    ['bg+'] = { 'bg', 'Cursor', 'CursorColumn' },
+    ['hl+'] = { 'fg', 'Statement' },
+    info = { 'fg', 'PreProc' },
+    border = { 'fg', 'Ignore' },
+    prompt = { 'fg', 'Conditional' },
+    pointer = { 'fg', 'Cursor' },
+    marker = { 'fg', 'Keyword' },
+    spinner = { 'fg', 'Label' },
+    header = { 'fg', 'Comment' },
+  }
+end
+plugins.setup_fzf()
 
 
-  -- Set up ctrlsf
-  plugins.setup_ctrlsf = function()
-    vim.g.ctrlsf_backend = 'rg'
-    vim.g.ctrlsf_ignore_dir = {
-      '*.log',
-      'tsconfig.json',
-      'static',
-      'dist',
-      '.vscode',
-      '.ycm_extra_conf.py',
-    }
-    vim.keymap.set('n', '<leader>sf', ':CtrlSF ', { noremap = true })
-  end
-  -- plugins.setup_ctrlsf()
+-- Set up ctrlsf
+plugins.setup_ctrlsf = function()
+  vim.g.ctrlsf_backend = 'rg'
+  vim.g.ctrlsf_ignore_dir = {
+    '*.log',
+    'tsconfig.json',
+    'static',
+    'dist',
+    '.vscode',
+    '.ycm_extra_conf.py',
+  }
+  vim.keymap.set('n', '<leader>sf', ':CtrlSF ', { noremap = true })
+end
+-- plugins.setup_ctrlsf()
 
 
-  plugins.setup_startify = function()
-    vim.g.startify_session_persistence = 1
-    vim.g.startify_session_delete_buffers = 1
-    vim.g.startify_session_before_save = {
-      'silent! NvimTreeClose',
-      'let g:startify_tmp_tabpagenr = tabpagenr()',
-      'let g:startify_tmp_winnr = winnr()',
-      'echo "Cleaning up before saving.."',
-      'silent! tabdo NvimTreeClose',
-      'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
-      'execute g:startify_tmp_winnr . "wincmd w"'
-    }
-    vim.cmd [[
+plugins.setup_startify = function()
+  vim.g.startify_session_persistence = 1
+  vim.g.startify_session_delete_buffers = 1
+  vim.g.startify_session_before_save = {
+    'silent! NvimTreeClose',
+    'let g:startify_tmp_tabpagenr = tabpagenr()',
+    'let g:startify_tmp_winnr = winnr()',
+    'echo "Cleaning up before saving.."',
+    'silent! tabdo NvimTreeClose',
+    'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
+    'execute g:startify_tmp_winnr . "wincmd w"'
+  }
+  vim.cmd [[
     augroup startify_stuff
     autocmd VimEnter * call init_startify()
     autocmd BufEnter * let &titlestring=fnamemodify(v:this_session, ':t')
     augroup END
-    ]]
-    vim.g.init_startify = function()
-      if not vim.fn.argc() then
-        vim.cmd [[
+  ]]
+  vim.g.init_startify = function()
+    if not vim.fn.argc() then
+      vim.cmd [[
         Startify
         NvimTreeOpen
         sleep 100m
         wincmd w
-        ]]
-      end
+      ]]
     end
   end
-  plugins.setup_startify()
+end
+plugins.setup_startify()
 
 
-  -- Set up indentline
-  plugins.setup_indentline = function()
-    vim.g.indentLine_setColors = 1
-    vim.g.indentLine_defaultGroup = "LineNr"
-    vim.g.indentLine_char_list = { '¦' }
-    vim.g.indentLine_concealcursor = 'c'
-    -- Latex conceal compatibility
-    vim.g.indentLine_fileTypeExclude = { 'tex' }
-  end
-  plugins.setup_indentline()
+-- Set up indentline
+plugins.setup_indentline = function()
+  vim.g.indentLine_setColors = 1
+  vim.g.indentLine_defaultGroup = "LineNr"
+  vim.g.indentLine_char_list = { '¦' }
+  vim.g.indentLine_concealcursor = 'c'
+  -- Latex conceal compatibility
+  vim.g.indentLine_fileTypeExclude = { 'tex' }
+end
+plugins.setup_indentline()
 
 
-  -- Set up vim-cpp-enhanced-highlight
-  plugins.setup_cpp_enhanced_highlight = function()
-    vim.g.cpp_class_scope_highlight = 1
-    vim.g.cpp_member_variable_highlight = 1
-    vim.g.cpp_class_decl_highlight = 1
-    vim.g.cpp_posix_standard = 1
-    vim.g.cpp_experimental_simple_template_highlight = 1
-    vim.g.cpp_concepts_highlight = 1
-  end
-  plugins.setup_cpp_enhanced_highlight()
+-- Set up vim-cpp-enhanced-highlight
+plugins.setup_cpp_enhanced_highlight = function()
+  vim.g.cpp_class_scope_highlight = 1
+  vim.g.cpp_member_variable_highlight = 1
+  vim.g.cpp_class_decl_highlight = 1
+  vim.g.cpp_posix_standard = 1
+  vim.g.cpp_experimental_simple_template_highlight = 1
+  vim.g.cpp_concepts_highlight = 1
+end
+plugins.setup_cpp_enhanced_highlight()
 
 
-  -- Set up vim-pandoc and vim-pandoc-syntax
-  plugins.setup_vim_pandoc = function()
-    -- Overwrite the highlight of Conceal group
-    vim.cmd [[
+-- Set up vim-pandoc and vim-pandoc-syntax
+plugins.setup_vim_pandoc = function()
+  -- Overwrite the highlight of Conceal group
+  vim.cmd [[
     augroup conceal_color
     autocmd!
     autocmd BufEnter *.md,*.tex hi! link Conceal Constant
     augroup END
-    ]]
-  end
-  plugins.setup_vim_pandoc()
+  ]]
+end
+plugins.setup_vim_pandoc()
 
 
-  -- Set up bracey
-  plugins.setup_bracey = function()
-    vim.g.bracey_server_port = 34911
-    vim.g.bracey_server_allow_remote_connections = 1
-    vim.g.bracey_refresh_on_save = 1
-    vim.g.bracey_eval_on_save = 1
-    vim.g.bracey_auto_start_server = 1
-  end
-  plugins.setup_bracey()
+-- Set up bracey
+plugins.setup_bracey = function()
+  vim.g.bracey_server_port = 34911
+  vim.g.bracey_server_allow_remote_connections = 1
+  vim.g.bracey_refresh_on_save = 1
+  vim.g.bracey_eval_on_save = 1
+  vim.g.bracey_auto_start_server = 1
+end
+plugins.setup_bracey()
 
 
-  -- Set up markdown-preview.nvim
-  plugins.setup_markdown_prev = function()
-    vim.g.mkdp_port = '34910'
-    vim.g.mkdp_refresh_slow = 1
-    vim.g.mkdp_open_to_the_world = 1
-    vim.g.mkdp_echo_preview_url = 1
-    vim.keymap.set('n', '<leader>mp', ':MarkdownPreview<CR>', { noremap = true })
-    vim.keymap.set('n', '<leader>ms', ':MarkdownPreviewStop<CR>', { noremap = true })
-  end
-  plugins.setup_markdown_prev()
+-- Set up markdown-preview.nvim
+plugins.setup_markdown_prev = function()
+  vim.g.mkdp_port = '34910'
+  vim.g.mkdp_refresh_slow = 1
+  vim.g.mkdp_open_to_the_world = 1
+  vim.g.mkdp_echo_preview_url = 1
+  vim.keymap.set('n', '<leader>mp', ':MarkdownPreview<CR>', { noremap = true })
+  vim.keymap.set('n', '<leader>ms', ':MarkdownPreviewStop<CR>', { noremap = true })
+end
+plugins.setup_markdown_prev()
 
 
-  -- Set up vimtex
-  plugins.setup_vimtex = function()
-    vim.g.vimtex_complete_enabled = 0
-    vim.g.vimtex_syntax_conceal = {
-      accents = 1,
-      cites = 1,
-      fancy = 1,
-      greek = 1,
-      math_bounds = 1,
-      math_delimiters = 1,
-      math_fracs = 0,
-      math_super_sub = 0,
-      math_symbols = 1,
-      styles = 1,
-    }
-    vim.g.vimtex_compiler_method = 'tectonic'
-    vim.g.vimtex_compiler_tectonic = {
-      build_dir = 'dist',
-      options = { '--keep-logs', '--synctex', },
-    }
-    vim.g.vimtex_view_method = 'general'
-    vim.g.vimtex_view_general_viewer = 'SumatraPDF'
-    vim.g.vimtex_view_general_options = '-reuse-instance -forward-search @tex @line @pdf'
-    -- Inhibit unnecessary font warnings
-    vim.g.vimtex_quickfix_ignore_filters = { [[.*Script "CJK".*]], }
-    vim.keymap.set('n', '<localleader>lb',
+-- Set up vimtex
+plugins.setup_vimtex = function()
+  vim.g.vimtex_complete_enabled = 0
+  vim.g.vimtex_syntax_conceal = {
+    accents = 1,
+    cites = 1,
+    fancy = 1,
+    greek = 1,
+    math_bounds = 1,
+    math_delimiters = 1,
+    math_fracs = 0,
+    math_super_sub = 0,
+    math_symbols = 1,
+    styles = 1,
+  }
+  vim.g.vimtex_compiler_method = 'tectonic'
+  vim.g.vimtex_compiler_tectonic = {
+    build_dir = 'dist',
+    options = { '--keep-logs', '--synctex', },
+  }
+  vim.g.vimtex_view_method = 'general'
+  vim.g.vimtex_view_general_viewer = 'SumatraPDF'
+  vim.g.vimtex_view_general_options = '-reuse-instance -forward-search @tex @line @pdf'
+  -- Inhibit unnecessary font warnings
+  vim.g.vimtex_quickfix_ignore_filters = { [[.*Script "CJK".*]], }
+  vim.keymap.set('n', '<localleader>lb',
     ':VimtexCompile<CR>', { noremap = true, silent = true })
-    vim.cmd [[
+  vim.cmd [[
     augroup vimtex_common
     autocmd!
     autocmd FileType tex call SetServerName()
     augroup END
-    ]]
-  end
-  -- plugins.setup_vimtex()
+  ]]
+end
+-- plugins.setup_vimtex()
 
 
-  -- Set up editorconfig
-  plugins.setup_editorconfig = function()
-    vim.g.EditorConfig_exclude_patterns = { 'fugitive://.*', 'scp://.*' }
-    vim.cmd 'au FileType gitcommit let b:EditorConfig_disable = 1'
-  end
-  plugins.setup_editorconfig()
+-- Set up editorconfig
+plugins.setup_editorconfig = function()
+  vim.g.EditorConfig_exclude_patterns = { 'fugitive://.*', 'scp://.*' }
+  vim.cmd 'au FileType gitcommit let b:EditorConfig_disable = 1'
+end
+plugins.setup_editorconfig()
 
 
-  -- Set up vim-translator
-  plugins.setup_vim_translator = function()
-    vim.keymap.set('n', '<leader>tr', ':Translate<CR>', { noremap = true, silent = true })
-  end
-  plugins.setup_vim_translator()
+-- Set up vim-translator
+plugins.setup_vim_translator = function()
+  vim.keymap.set('n', '<leader>tr', ':Translate<CR>', { noremap = true, silent = true })
+end
+plugins.setup_vim_translator()
 
 
-  -- Set up fcitx.vim
-  plugins.setup_fcitx = function()
-    vim.g.fcitx5_remote = '/usr/bin/fcitx5-remote'
-    vim.g.fcitx5_rime = 1
-  end
-  plugins.setup_fcitx()
+-- Set up fcitx.vim
+plugins.setup_fcitx = function()
+  vim.g.fcitx5_remote = '/usr/bin/fcitx5-remote'
+  vim.g.fcitx5_rime = 1
+end
+plugins.setup_fcitx()
 
 
-  return plugins
+return plugins
