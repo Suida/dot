@@ -7,16 +7,10 @@ vim.g.maplocalleader = "  "
 
 
 -- Set python and node providers
-if vim.fn.has('unix') or vim.fn.has('macunix') then
+if utils.get_os_type() == 'unix' then
   vim.g.python3_host_prog = '~/.pyenv/versions/nvim/bin/python'
-  vim.g.coc_node_path = utils.append_slash(os.getenv('FNM_MULTISHELL_PATH')) .. 'bin/node'
-elseif vim.fn.has('win32') then
+else
   vim.g.python3_host_prog = utils.append_slash(os.getenv('PYENV_ROOT')) .. [[versions\nvim\Scripts\python.exe]]
-  if vim.fn.filereadable(os.getenv('NODE_PATH')) then
-    vim.g.coc_node_path = os.getenv('NODE_PATH')
-  else
-    vim.g.coc_node_path = utils.append_slash(os.getenv('FNM_MULTISHELL_PATH')) .. 'node.exe'
-  end
 end
 
 
