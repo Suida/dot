@@ -76,7 +76,7 @@ set ttimeoutlen=100
 set number
 set relativenumber
 set colorcolumn=80
-set signcolumn=number
+set signcolumn=yes:1
 set cursorline
 set t_Co=256
 set background=light

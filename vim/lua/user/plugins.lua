@@ -1,4 +1,4 @@
-local utils = require 'utils'
+local utils = require 'user.utils'
 
 local plugins = {}
 
@@ -43,15 +43,16 @@ require('packer').startup(function(use)
 
   -- Git
   use 'tpope/vim-fugitive'
-  use {
-    'airblade/vim-gitgutter',
-    opt = true,
-    cmd = {
-      'GitGutterToggle',
-      'GitGutterNextHunk',
-      'GitGutterPrevHunk',
-    }
-  }
+  use 'lewis6991/gitsigns.nvim'
+  -- use {
+  --   'airblade/vim-gitgutter',
+  --   opt = true,
+  --   cmd = {
+  --     'GitGutterToggle',
+  --     'GitGutterNextHunk',
+  --     'GitGutterPrevHunk',
+  --   }
+  -- }
 
   -- Outlook
   use 'majutsushi/tagbar'
@@ -83,8 +84,10 @@ require('packer').startup(function(use)
   use 'kshenoy/vim-signature'
 
   -- Fuzzy finder
-  use { 'junegunn/fzf', run = function() vim.fn['fzf#install']() end, }
-  use 'junegunn/fzf.vim'
+  use {
+    'nvim-telescope/telescope.nvim', tag = '0.1.1',
+    requires = { {'nvim-lua/plenary.nvim'} }
+  }
   -- Global finder
   use 'brooth/far.vim'
   use { 'dyng/ctrlsf.vim', disable = true }
@@ -131,10 +134,6 @@ require('packer').startup(function(use)
   use 'editorconfig/editorconfig-vim'
   use 'vim-scripts/Drawit'
   use 'voldikss/vim-translator'
-  use {
-    'puremourning/vimspector',
-    setup = function() vim.g.vimspector_enable_mappings = 'HUMAN' end
-  }
   use 'jceb/vim-orgmode'
   use 'itchyny/calendar.vim'
   use 'lilydjwg/fcitx.vim'
@@ -143,312 +142,6 @@ require('packer').startup(function(use)
     require('packer').install()
   end
 end)
-
-
--- Set up lspconfig.
-plugins.setup_lspconfig = function()
-  local lspconfig = require 'lspconfig'
-
-  -- Mappings.
-  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-  local opts = { noremap = true, silent = true }
-  vim.keymap.set('n', '<leader>o', vim.diagnostic.open_float, opts)
-  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-  vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
-
-  -- Use an on_attach function to only map the following keys
-  -- after the language server attaches to the current buffer
-  local on_attach = function(_, bufnr)
-    -- Mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local bufopts = { noremap = true, silent = true, buffer = bufnr }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-    vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-    vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-    vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-    vim.keymap.set('n', '<leader>wl', function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, bufopts)
-    vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
-  end
-
-  local lsp_flags = {
-    -- This is the default in Nvim 0.7+
-    debounce_text_changes = 150,
-  }
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
-  local language_servers = {
-    'pyright', 'verible', 'clangd', 'tsserver', 'rust_analyzer', 'jsonls',
-    'lua_ls', 'vimls', 'texlab', 'cmake',
-  }
-
-  for _, server in ipairs(language_servers) do
-    lspconfig[server].setup {
-      on_attach = on_attach,
-      flags = lsp_flags,
-      capabilities = capabilities,
-    }
-  end
-
-  lspconfig.lua_ls.setup {
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-    settings = {
-      Lua = {
-        diagnostics = {
-          globals = { 'vim', 'require', 'ipairs', 'print', 'package', }
-        }
-      }
-    },
-  }
-
-  lspconfig.verible.setup {
-    cmd = {
-      'verible-verilog-ls',
-      '--wrap_spaces',
-      '2',
-      '--rules',
-      '',
-    },
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-  }
-
-  lspconfig.texlab.setup {
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-    settings = {
-      texlab = {
-        build = {
-          executable = 'tectonic',
-          args = { '%f', '--outdir', './build', },
-          onSave = true,
-          forwardSearchAfter = true,
-          forwardSearch = {
-            executable = '~/workspace/github/evince-synctex/evince-synctex.sh',
-            args = { 'sync', '%p', '%f', '%l' },
-          },
-        },
-      },
-    },
-  }
-end
-plugins.setup_lspconfig()
-
-
--- Set up nvim-cmp
-plugins.setup_cmp = function()
-  local cmp = require 'cmp'
-  local compare = require 'cmp.config.compare'
-  local luasnip = require 'luasnip'
-
-  require 'my_snippets'
-
-  cmp.setup {
-    snippet = {
-      expand = function(args)
-        luasnip.lsp_expand(args.body) -- For `luasnip` users.
-      end,
-    },
-    window = {
-      completion = cmp.config.window.bordered(),
-      documentation = cmp.config.window.bordered(),
-    },
-    mapping = cmp.mapping.preset.insert({
-      ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-d>'] = cmp.mapping.scroll_docs(4),
-      ['<C-Space>'] = cmp.mapping.complete(),
-      ['<C-f>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-      ['<Tab>'] = cmp.mapping(function(fallback)
-        if luasnip.expand_or_jumpable() then
-          luasnip.expand_or_jump()
-        elseif utils.has_words_before() then
-          cmp.complete()
-        else
-          fallback()
-        end
-      end, { "i", "s" }),
-      ['<S-Tab>'] = cmp.mapping(function(fallback)
-        if luasnip.jumpable(-1) then
-          luasnip.jump(-1)
-        else
-          fallback()
-        end
-      end, { "i", "s" }),
-    }),
-    matching = {
-      disallow_fuzzy_matching = false,
-      disallow_fullfuzzy_matching = false,
-      disallow_partial_fuzzy_matching = false,
-      disallow_partial_matching = false,
-      disallow_prefix_unmatching = false,
-    },
-    sorting = {
-      priority_weight = 5,
-      comparators = {
-        compare.recently_used,
-        compare.locality,
-        compare.offset,
-        compare.exact,
-        -- compare.scopes,
-        compare.score,
-        compare.kind,
-        -- compare.sort_text,
-        compare.length,
-        compare.order,
-      },
-    },
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'luasnip' }, -- For luasnip users.
-      { name = 'path' },
-      { name = 'pandoc_references' },
-    }, {
-      { name = 'buffer' },
-    }),
-    completion = {
-      keyword_length = 3,
-    },
-  }
-
-  -- Set configuration for specific filetype.
-  cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources({
-      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      { name = 'buffer' },
-    },
-    completion = {
-      autocomplete = false,
-    },
-  })
-
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-      { name = 'path' },
-    }, {
-      { name = 'cmdline' },
-    }),
-    completion = {
-      autocomplete = false,
-    },
-  })
-end
-plugins.setup_cmp()
-
-
--- Set up zk-nvim
-plugins.setup_zk_nvim = function()
-  local zk_nvim = require 'zk'
-  zk_nvim.setup()
-
-  local opts = { noremap = true, silent = false }
-  -- Create a new note after asking for its title.
-  vim.api.nvim_set_keymap("n", "<leader>zn", "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", opts)
-  -- Open notes.
-  vim.api.nvim_set_keymap("n", "<leader>zo", "<Cmd>ZkNotes { sort = { 'modified' } }<CR>", opts)
-  -- Open notes associated with the selected tags.
-  vim.api.nvim_set_keymap("n", "<leader>zt", "<Cmd>ZkTags<CR>", opts)
-  -- Search for the notes matching a given query.
-  vim.api.nvim_set_keymap("n", "<leader>zf",
-    "<Cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>", opts)
-  -- Search for the notes matching the current visual selection.
-  vim.api.nvim_set_keymap("v", "<leader>zf", ":'<,'>ZkMatch<CR>", opts)
-end
-plugins.setup_zk_nvim()
-
-
--- Set up tagbar
-plugins.setup_tagbar = function()
-  vim.g.tagbar_left = 1
-  vim.g.tagbar_width = 32
-  vim.g.tagbar_compact = 1
-  vim.g.tagbar_sort = 0
-  vim.g.typescript_use_builtin_tagbar_defs = 0
-  vim.g.tagbar_type_cpp = {
-    kinds      = {
-      'c:classes:0:1',
-      'd:macros:0:1',
-      'e:enumerators:0:0',
-      'f:functions:0:1',
-      'g:enumeration:0:1',
-      'l:local:0:1',
-      'm:members:0:1',
-      'n:namespaces:0:1',
-      'p:functions_prototypes:0:1',
-      's:structs:0:1',
-      't:typedefs:0:1',
-      'u:unions:0:1',
-      'v:global:0:1',
-      'x:external:0:1'
-    },
-    sro        = '::',
-    kind2scope = {
-      g = 'enum',
-      n = 'namespace',
-      c = 'class',
-      s = 'struct',
-      u = 'union'
-    },
-    scope2kind = {
-      enum      = 'g',
-      namespace = 'n',
-      class     = 'c',
-      struct    = 's',
-      union     = 'u',
-    }
-  }
-  vim.keymap.set('n', '<leader>w', ':TagbarToggle<CR>', { noremap = true })
-end
-plugins.setup_tagbar()
-
-
--- Set up lightline
-plugins.setup_lightline = function()
-  vim.g.lightline = {
-    colorscheme = 'solarized',
-    background = 'dark',
-    active = {
-      left = {
-        { 'mode', 'paste' },
-        { 'gitbranch', 'readonly', 'filename', 'modified' }
-      }
-    },
-    component_function = {
-      gitbranch = 'EmojiedFugitiveHead'
-    },
-    separator = { left = "", right = "" },
-    subseparator = { left = "", right = "" },
-    tabline_separator = { left = "", right = "" },
-    tabline_subseparator = { left = "", right = "" },
-  }
-
-  vim.g.EmojiedFugitiveHead = function()
-    return ' ' .. vim.fn.FugitiveHead()
-  end
-end
-plugins.setup_lightline()
 
 
 -- Set up gitgutter
@@ -462,7 +155,7 @@ plugins.setup_gitgutter = function()
   vim.keymap.set('n', ']c', ':GitGutterNextHunk<CR>', { noremap = true, silent = true })
   vim.keymap.set('n', '[c', ':GitGutterPrevHunk<CR>', { noremap = true, silent = true })
 end
-plugins.setup_gitgutter()
+-- plugins.setup_gitgutter()
 
 
 -- Set up floaterm
@@ -568,36 +261,13 @@ plugins.setup_nvim_tree = function()
   -- Set up vim-easymotion
   plugins.setup_easymotion = function()
     vim.keymap.set('n', '<leader>F', '<Plug>(easymotion-f)', { silent = true })
-    vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
+    vim.keymap.set('n', 'S',         '<Plug>(easymotion-s)', { silent = true })
     vim.keymap.set('n', '<leader>W', '<Plug>(easymotion-w)', { silent = true })
     vim.keymap.set('n', '<leader>S', '<Plug>(easymotion-s)', { silent = true })
     vim.keymap.set('n', '<leader>J', '<Plug>(easymotion-j)', { silent = true })
     vim.keymap.set('n', '<leader>K', '<Plug>(easymotion-k)', { silent = true })
   end
   plugins.setup_easymotion()
-
-
-  -- Set up fzf
-  plugins.setup_fzf = function()
-    vim.keymap.set('n', 'F', ':FZF<CR>', { noremap = true, silent = true })
-    vim.keymap.set('n', '<leader>rg', ':Rg ', { noremap = true })
-    vim.g.fzf_colors = {
-      fg = { 'fg', 'Normal' },
-      bg = { 'bg', 'Normal' },
-      hl = { 'fg', 'Comment' },
-      ['fg+'] = { 'fg', 'Cursor', 'CursorColumn', 'Normal' },
-      ['bg+'] = { 'bg', 'Cursor', 'CursorColumn' },
-      ['hl+'] = { 'fg', 'Statement' },
-      info = { 'fg', 'PreProc' },
-      border = { 'fg', 'Ignore' },
-      prompt = { 'fg', 'Conditional' },
-      pointer = { 'fg', 'Cursor' },
-      marker = { 'fg', 'Keyword' },
-      spinner = { 'fg', 'Label' },
-      header = { 'fg', 'Comment' },
-    }
-  end
-  plugins.setup_fzf()
 
 
   -- Set up ctrlsf

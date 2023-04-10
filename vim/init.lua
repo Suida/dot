@@ -1,4 +1,4 @@
-local utils = require 'utils'
+local utils = require 'user.utils'
 
 
 -- Set leader
@@ -29,7 +29,15 @@ vim.cmd('source ' .. vim_config_src)
 vim.cmd('source ' .. vim_mapping_src)
 
 
-vim.g.plugins = require 'plugins'
+vim.g.plugins = require 'user.plugins'
+require 'user.lspconfig'
+require 'user.cmp'
+require 'user.zk'
+require 'user.tagbar'
+require 'user.lightline'
+require 'user.gitsigns'
+
+require 'user.telescope'
 
 
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]
