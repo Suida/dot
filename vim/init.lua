@@ -33,11 +33,21 @@ vim.g.plugins = require 'user.plugins'
 require 'user.lspconfig'
 require 'user.cmp'
 require 'user.zk'
+require 'user.gitsigns'
 require 'user.tagbar'
 require 'user.lightline'
-require 'user.gitsigns'
-
+require 'user.floaterm'
+require 'user.nvim-tree'
+require 'user.vim-easymotion'
 require 'user.telescope'
+require 'user.vim-startify'
+require 'user.indentline'
+require 'user.vim-pandoc'
+require 'user.bracey'
+require 'user.markdown-preview'
+require 'user.editorconfig'
+require 'user.vim-translator'
+require 'user.fcitx'
 
 
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]
