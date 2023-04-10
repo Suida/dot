@@ -1,5 +1,5 @@
 vim.g.lightline = {
-  colorscheme = 'solarized',
+  colorscheme = 'tokyonight',
   background = 'dark',
   active = {
     left = {

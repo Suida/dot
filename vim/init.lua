@@ -29,15 +29,17 @@ vim.cmd('source ' .. vim_config_src)
 vim.cmd('source ' .. vim_mapping_src)
 
 
-vim.g.plugins = require 'user.plugins'
+require 'user.plugins'
 require 'user.mason'
 require 'user.lspconfig'
 require 'user.dap'
+require 'user.null-ls'
+require 'user.treesitter'
 require 'user.cmp'
 require 'user.zk'
 require 'user.gitsigns'
 require 'user.tagbar'
-require 'user.lightline'
+require 'user.lualine'
 require 'user.floaterm'
 require 'user.nvim-tree'
 require 'user.easymotion'
@@ -73,3 +75,5 @@ augroup filtype_vim
   autocmd FileType vim setlocal foldmethod=marker
 augroup END
 ]]
+
+vim.cmd.colorscheme 'tokyonight-storm'

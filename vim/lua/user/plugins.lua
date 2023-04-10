@@ -1,7 +1,3 @@
-local utils = require 'user.utils'
-
-local plugins = {}
-
 local ensure_packer = function()
   local fn = vim.fn
   local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
@@ -22,7 +18,10 @@ require('packer').startup(function(use)
     'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
     'mfussenegger/nvim-dap',
+    'jose-elias-alvarez/null-ls.nvim',
   }
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
 
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
@@ -53,23 +52,33 @@ require('packer').startup(function(use)
   -- Outlook
   use 'majutsushi/tagbar'
   use {
-    'sonph/onehalf',
-    rtp = 'vim/',
-    config = function()
-      vim.cmd.colorscheme 'onehalflight'
-      -- Hide (~) at the end of buffer
-      vim.cmd.highlight 'NonText guifg=bg'
-      vim.cmd.highlight 'EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg'
+    'folke/tokyonight.nvim',
+    config = function ()
+      vim.cmd.colorscheme 'tokyonight-storm'
     end
   }
-  use 'itchyny/lightline.vim'
+  -- use {
+  --   'sonph/onehalf',
+  --   rtp = 'vim/',
+  --   config = function()
+  --     vim.cmd.colorscheme 'onehalflight'
+  --     -- Hide (~) at the end of buffer
+  --     vim.cmd.highlight 'NonText guifg=bg'
+  --     vim.cmd.highlight 'EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg'
+  --   end
+  -- }
+  -- use 'itchyny/lightline.vim'
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = 'nvim-tree/nvim-web-devicons',
+  }
   use 'voldikss/vim-floaterm'
   use 'willothy/flatten.nvim'
   use 'tomtom/tcomment_vim'
 
   -- Better move
-  use 'kyazdani42/nvim-web-devicons'
-  use 'kyazdani42/nvim-tree.lua'
+  use 'nvim-tree/nvim-web-devicons'
+  use 'nvim-tree/nvim-tree.lua'
   use 'easymotion/vim-easymotion'
   use 'andymass/vim-matchup'
   use 'tpope/vim-surround'
@@ -96,8 +105,6 @@ require('packer').startup(function(use)
 
 
   -- Language supports
-  -- C/C++
-  -- use { 'octol/vim-cpp-enhanced-highlight', disable = true, ft = { 'cpp', 'c' } }
   -- Python utils // The indent really saved my life
   use { 'Vimjas/vim-python-pep8-indent', ft = { 'python', } }
   use { 'jmcantrell/vim-virtualenv', ft = { 'python', } }
@@ -136,4 +143,3 @@ require('packer').startup(function(use)
   end
 end)
 
-return plugins
