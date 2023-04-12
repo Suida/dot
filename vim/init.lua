@@ -76,4 +76,3 @@ augroup filtype_vim
 augroup END
 ]]
 
-vim.cmd.colorscheme 'tokyonight-storm'

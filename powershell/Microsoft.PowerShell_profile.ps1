@@ -1,11 +1,12 @@
 Import-Module posh-git
+Import-Module Get-ChildItemColor
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\default.omp.json" | Invoke-Expression
 
 New-Alias ~ $HOME
 function .. { Set-Location .. }
 
 function l  { ls -Force $args }
-New-Alias ll ls
+New-Alias ll Get-ChildItemColor
 New-Alias touch New-Item
 New-Alias which Get-Command
 function du {
@@ -35,9 +36,18 @@ function v { nvim-qt.exe $args }
 function Get-GUID { curl https://guid.it/string }
 
 $PSReadLineOptions = @{
-    EditMode = "Emacs"
-    BellStyle = "None"
+    EditMode         = "Emacs"
+    BellStyle        = "None"
     PredictionSource = "History"
+    Color            = @{
+        Command          = 'DarkGreen'
+        Number           = 'DarkGreen'
+        Member           = 'Magenta'
+        Parameter        = 'White'
+        Operator         = 'White'
+        InlinePrediction = 'Cyan'
+        Default          = 'White'
+    }
 }
 Set-PSReadLineOption @PSReadLineOptions
  
@@ -54,6 +64,16 @@ if (Test-Path($ChocolateyProfile)) {
 
 # Batcat
 $env:BAT_THEME="GitHub"
+
+
+function showColors {
+    $colors = [enum]::GetValues([System.ConsoleColor])
+    Foreach ($bgcolor in $colors){
+        Foreach ($fgcolor in $colors) { Write-Host "$fgcolor|"  -ForegroundColor $fgcolor -BackgroundColor $bgcolor -NoNewLine }
+        Write-Host " on $bgcolor"
+    }
+}
+
 
 $env:http_proxy="http://127.0.0.1:7890"
 $env:https_proxy="http://127.0.0.1:7890"
