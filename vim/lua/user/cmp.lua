@@ -13,6 +13,8 @@ if not luasnip_status_ok then
   return
 end
 
+local utils = require('user.utils')
+
 require 'user.my_snippets'
 
 cmp.setup {

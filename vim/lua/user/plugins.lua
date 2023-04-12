@@ -57,17 +57,6 @@ require('packer').startup(function(use)
       vim.cmd.colorscheme 'tokyonight-storm'
     end
   }
-  -- use {
-  --   'sonph/onehalf',
-  --   rtp = 'vim/',
-  --   config = function()
-  --     vim.cmd.colorscheme 'onehalflight'
-  --     -- Hide (~) at the end of buffer
-  --     vim.cmd.highlight 'NonText guifg=bg'
-  --     vim.cmd.highlight 'EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg'
-  --   end
-  -- }
-  -- use 'itchyny/lightline.vim'
   use {
     'nvim-lualine/lualine.nvim',
     requires = 'nvim-tree/nvim-web-devicons',
@@ -75,6 +64,17 @@ require('packer').startup(function(use)
   use 'voldikss/vim-floaterm'
   use 'willothy/flatten.nvim'
   use 'tomtom/tcomment_vim'
+  use {
+    "folke/trouble.nvim",
+    requires = "nvim-tree/nvim-web-devicons",
+    config = function()
+      require("trouble").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
 
   -- Better move
   use 'nvim-tree/nvim-web-devicons'

@@ -148,7 +148,7 @@ key_bindings = TableConcat(key_bindings, get_win_key_bindings())-- }}}
 return {
   font = wezterm.font 'CaskaydiaCove Nerd Font Mono',
   font_size = 10.0,
-  color_scheme = 'OneHalfLight',
+  color_scheme = 'OneHalfDark',
   default_prog = { 'pwsh' },
 
   cursor_blink_ease_in = 'Constant',
@@ -156,39 +156,12 @@ return {
 
   use_fancy_tab_bar = false,
   tab_bar_at_bottom = true,
-  colors = {
-    cursor_bg = '#0184bc',
-    cursor_fg = '#ffffff',
-
-    tab_bar = {-- {{{
-      background = '#fafafa',
-
-      active_tab = {
-        bg_color = '#fafafa',
-        fg_color = '#0184bc',
-        intensity = 'Bold',
-        underline = 'Single',
-      },
-      inactive_tab = {
-        bg_color = '#fafafa',
-        fg_color = '#383a42',
-      },
-      new_tab = {
-        bg_color = '#fafafa',
-        fg_color = '#383a42',
-      },
-      new_tab_hover = {
-        bg_color = '#fafafa',
-        fg_color = '#383a42',
-      }
-    },-- }}}
-  },
 
   window_padding = {
     left = 1,
     right = 1,
     top = 1,
-    bottom = 1,
+    bottom = 0.5,
   },
 
   -- Mux{{{
