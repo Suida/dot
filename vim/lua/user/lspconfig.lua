@@ -56,6 +56,13 @@ for _, server in ipairs(language_servers) do
   }
 end
 
+lspconfig.clangd.setup {
+  cmd = { 'clangd', '--header-insertion=never' },
+  on_attach = on_attach,
+  flags = lsp_flags,
+  capabilities = capabilities,
+}
+
 lspconfig.lua_ls.setup {
   on_attach = on_attach,
   flags = lsp_flags,
