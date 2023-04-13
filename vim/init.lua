@@ -1,4 +1,4 @@
-local utils = require 'utils'
+local utils = require 'user.utils'
 
 
 -- Set leader
@@ -29,7 +29,29 @@ vim.cmd('source ' .. vim_config_src)
 vim.cmd('source ' .. vim_mapping_src)
 
 
-vim.g.plugins = require 'plugins'
+require 'user.plugins'
+require 'user.mason'
+require 'user.lspconfig'
+require 'user.dap'
+require 'user.null-ls'
+require 'user.treesitter'
+require 'user.cmp'
+require 'user.zk'
+require 'user.gitsigns'
+require 'user.tagbar'
+require 'user.lualine'
+require 'user.floaterm'
+require 'user.nvim-tree'
+require 'user.easymotion'
+require 'user.telescope'
+require 'user.startify'
+require 'user.indentline'
+require 'user.pandoc'
+require 'user.bracey'
+require 'user.markdown-preview'
+require 'user.editorconfig'
+require 'user.translator'
+require 'user.fcitx'
 
 
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]
@@ -53,3 +75,4 @@ augroup filtype_vim
   autocmd FileType vim setlocal foldmethod=marker
 augroup END
 ]]
+
