@@ -8,8 +8,8 @@
 #
 # All imports must either be absolute paths starting with `/`, or paths relative
 # to the user's home directory starting with `~/`.
-#import:
-#  - /path/to/alacritty.yml
+import:
+ - ~/.config/alacritty/theme/themes/tokyo-night-storm.yaml
 
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
@@ -189,33 +189,33 @@ font:
 #draw_bold_text_with_bright_colors: false
 
 # Colors (Tomorrow Night)
-colors:
-  primary:
-    background: '#fafafa'
-    foreground: '#383a42'
-
-  normal:
-    black: '#383a42'
-    red: '#e45649'
-    green: '#50a14f'
-    yellow: '#c18401'
-    blue: '#0184bc'
-    magenta: '#a626a4'
-    cyan: '#0997b3'
-    white: '#fafafa'
-
-  bright:
-    black: '#383a42'
-    red: '#e45649'
-    green: '#50a14f'
-    yellow: '#c18401'
-    blue: '#0184bc'
-    magenta: '#a626a4'
-    cyan: '#0997b3'
-    white: '#fafafa'
-  cursor:
-    text: CellBackground
-    cursor: '#0184bc'
+# colors:
+#   primary:
+#     background: '#fafafa'
+#     foreground: '#383a42'
+#
+#   normal:
+#     black: '#383a42'
+#     red: '#e45649'
+#     green: '#50a14f'
+#     yellow: '#c18401'
+#     blue: '#0184bc'
+#     magenta: '#a626a4'
+#     cyan: '#0997b3'
+#     white: '#fafafa'
+#
+#   bright:
+#     black: '#383a42'
+#     red: '#e45649'
+#     green: '#50a14f'
+#     yellow: '#c18401'
+#     blue: '#0184bc'
+#     magenta: '#a626a4'
+#     cyan: '#0997b3'
+#     white: '#fafafa'
+#   cursor:
+#     text: CellBackground
+#     cursor: '#0184bc'
   # Default colors
   #primary:
   #  background: '#1d1f21'
