@@ -67,7 +67,6 @@ require('packer').startup(function(use)
   use 'lewis6991/gitsigns.nvim'
 
   -- Outlook
-  use 'majutsushi/tagbar'
   use {
     'folke/tokyonight.nvim',
     config = function ()
