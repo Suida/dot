@@ -64,13 +64,16 @@ lspconfig.clangd.setup {
 }
 
 lspconfig.lua_ls.setup {
+  cmd = { "lua-language-server.exe", "--metapath", "~/.cache/lua-language-server/meta/" },
   on_attach = on_attach,
   flags = lsp_flags,
   capabilities = capabilities,
   settings = {
     Lua = {
       diagnostics = {
-        globals = { 'vim', 'require', 'ipairs', 'print', 'package', 'pcall', }
+        globals = {
+          'vim',
+        }
       }
     }
   },

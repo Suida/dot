@@ -34,6 +34,7 @@ require 'user.mason'
 require 'user.lspconfig'
 require 'user.dap'
 require 'user.null-ls'
+require 'user.lspsaga'
 require 'user.treesitter'
 require 'user.cmp'
 require 'user.zk'
@@ -52,6 +53,7 @@ require 'user.markdown-preview'
 require 'user.editorconfig'
 require 'user.translator'
 require 'user.fcitx'
+require 'user.diagnostic'
 
 
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]
