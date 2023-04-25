@@ -10,7 +10,9 @@ vim.g.maplocalleader = "  "
 if utils.get_os_type() == 'unix' then
   vim.g.python3_host_prog = '~/.pyenv/versions/nvim/bin/python'
 else
-  vim.g.python3_host_prog = utils.append_slash(os.getenv('PYENV_ROOT')) .. [[versions\nvim\Scripts\python.exe]]
+  if os.getenv('PYENV_ROOT') ~= nil then
+    vim.g.python3_host_prog = utils.append_slash(os.getenv('PYENV_ROOT')) .. [[versions\nvim\Scripts\python.exe]]
+  end
 end
 
 

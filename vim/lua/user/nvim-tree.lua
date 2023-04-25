@@ -5,20 +5,13 @@ end
 
 local utils = require 'user.utils'
 
-local mappings = {
-  list = {
-    { key = "K", action = "toggle_file_info" },
-    { key = "t", action = "tabnew" },
-    { key = "<C-k>", action = "" },
-    { key = "<C-e>", action = "" },
-  },
-}
+local on_attach = require("user.nvim-tree-on-attach")
 
 nvim_tree.setup({
+  on_attach = on_attach,
   hijack_netrw = false,
   view = {
     side = "right",
-    mappings = mappings,
     number = true,
     relativenumber = true,
     signcolumn = "yes",
