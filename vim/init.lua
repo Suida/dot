@@ -10,7 +10,9 @@ vim.g.maplocalleader = "  "
 if utils.get_os_type() == 'unix' then
   vim.g.python3_host_prog = '~/.pyenv/versions/nvim/bin/python'
 else
-  vim.g.python3_host_prog = utils.append_slash(os.getenv('PYENV_ROOT')) .. [[versions\nvim\Scripts\python.exe]]
+  if os.getenv('PYENV_ROOT') ~= nil then
+    vim.g.python3_host_prog = utils.append_slash(os.getenv('PYENV_ROOT')) .. [[versions\nvim\Scripts\python.exe]]
+  end
 end
 
 
@@ -34,11 +36,11 @@ require 'user.mason'
 require 'user.lspconfig'
 require 'user.dap'
 require 'user.null-ls'
+require 'user.lspsaga'
 require 'user.treesitter'
 require 'user.cmp'
 require 'user.zk'
 require 'user.gitsigns'
-require 'user.tagbar'
 require 'user.lualine'
 require 'user.floaterm'
 require 'user.nvim-tree'
@@ -52,6 +54,7 @@ require 'user.markdown-preview'
 require 'user.editorconfig'
 require 'user.translator'
 require 'user.fcitx'
+require 'user.diagnostic'
 
 
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]

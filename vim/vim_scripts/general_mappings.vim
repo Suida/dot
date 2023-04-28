@@ -25,7 +25,6 @@ nnoremap <silent> XC :w<CR>
 nnoremap <silent> XX :w \| bd<CR>
 nnoremap <silent> <leader>pp :set paste!<CR>
 nmap <leader>gb ysiw}lysiw{
-nmap <silent> <leader>ft :TableFormat<CR>
 nnoremap <silent> - :m .+1<CR>
 nnoremap <silent> _ :m .-2<CR>
 

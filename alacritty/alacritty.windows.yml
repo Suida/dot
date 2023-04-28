@@ -8,8 +8,8 @@
 #
 # All imports must either be absolute paths starting with `/`, or paths relative
 # to the user's home directory starting with `~/`.
-#import:
-#  - /path/to/alacritty.yml
+import:
+ - ~/.config/alaritty/themes/themes/tokyo-night-storm.yaml
 
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
@@ -175,61 +175,34 @@ font:
 # If `true`, bold text is drawn using the bright color variants.
 #draw_bold_text_with_bright_colors: false
 
-# Colors (Tomorrow Night)
-# One half dark
-# colors:
-  # primary:
-  #   background: '#282c34'
-  #   foreground: '#dcdfe4'
-  #
-  # normal:
-  #   black: '#282c34'
-  #   red: '#e06c75'
-  #   green: '#98c379'
-  #   yellow: '#e5c07b'
-  #   blue: '#61afef'
-  #   magenta: '#c678dd'
-  #   cyan: '#56b6c2'
-  #   white: '#dcdfe4'
-  #
-  # bright:
-  #   black: '#585c64'
-  #   red: '#e06c75'
-  #   green: '#98c379'
-  #   yellow: '#e5c07b'
-  #   blue: '#61afef'
-  #   magenta: '#c678dd'
-  #   cyan: '#56b6c2'
-  #   white: '#dcdfe4'
-
 # # One half light
-colors:
-  primary:
-    background: '#fafafa'
-    foreground: '#383a42'
-
-  normal:
-    black: '#383a42'
-    red: '#e45649'
-    green: '#50a14f'
-    yellow: '#c18401'
-    blue: '#0184bc'
-    magenta: '#a626a4'
-    cyan: '#0997b3'
-    white: '#fafafa'
-
-  bright:
-    black: '#383a42'
-    red: '#e45649'
-    green: '#50a14f'
-    yellow: '#c18401'
-    blue: '#0184bc'
-    magenta: '#a626a4'
-    cyan: '#0997b3'
-    white: '#fafafa'
-  cursor:
-    text: CellBackground
-    cursor: '#0184bc'
+# colors:
+#   primary:
+#     background: '#fafafa'
+#     foreground: '#383a42'
+#
+#   normal:
+#     black: '#383a42'
+#     red: '#e45649'
+#     green: '#50a14f'
+#     yellow: '#c18401'
+#     blue: '#0184bc'
+#     magenta: '#a626a4'
+#     cyan: '#0997b3'
+#     white: '#fafafa'
+#
+#   bright:
+#     black: '#383a42'
+#     red: '#e45649'
+#     green: '#50a14f'
+#     yellow: '#c18401'
+#     blue: '#0184bc'
+#     magenta: '#a626a4'
+#     cyan: '#0997b3'
+#     white: '#fafafa'
+#   cursor:
+#     text: CellBackground
+#     cursor: '#0184bc'
 
   # Default colors
   #primary:

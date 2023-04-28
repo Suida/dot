@@ -43,12 +43,12 @@ lualine.setup {
     lualine_z = {}
   },
   tabline = {
-    lualine_a = { tab_no },
-    lualine_b = {'buffers'},
-    lualine_c = {'filename'},
+    lualine_a = {'tabs'},
+    lualine_b = {'filename'},
+    lualine_c = {},
     lualine_x = {},
-    lualine_y = {},
-    lualine_z = {'tabs'}
+    lualine_y = {'buffers'},
+    lualine_z = { tab_no }
   },
   winbar = {},
   inactive_winbar = {},
