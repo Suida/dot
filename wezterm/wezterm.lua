@@ -1,5 +1,9 @@
 local wezterm = require 'wezterm'
 
+function get_os_type ()
+  return package.config:sub(1,1) == '/' and 'unix' or 'win32'
+end
+
 function TableConcat(t1,t2)
     for i=1,#t2 do
         t1[#t1+1] = t2[i]
@@ -145,11 +149,13 @@ local get_win_key_bindings = function()-- {{{
 end
 key_bindings = TableConcat(key_bindings, get_win_key_bindings())-- }}}
 
+default_prog = get_os_type() === 'win32' ? { 'pwsh' } : { 'zsh' }
+
 return {
   font = wezterm.font 'CaskaydiaCove Nerd Font Mono',
   font_size = 10.0,
   color_scheme = 'OneHalfDark',
-  default_prog = { 'pwsh' },
+  default_prog = default_prog,
 
   cursor_blink_ease_in = 'Constant',
   cursor_blink_ease_out = 'Constant',
