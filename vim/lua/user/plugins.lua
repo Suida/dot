@@ -24,19 +24,20 @@ require('packer').startup(function(use)
     }
   }
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+  use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } }
   use {
-    "glepnir/lspsaga.nvim",
+    'glepnir/lspsaga.nvim',
     opt = true,
-    branch = "main",
-    event = "LspAttach",
+    branch = 'main',
+    event = 'LspAttach',
     config = function()
-      require("lspsaga").setup({})
+      ---@diagnostic disable-next-line: different-requires
+      require('lspsaga').setup({})
     end,
     requires = {
-      {"nvim-tree/nvim-web-devicons"},
+      { 'nvim-tree/nvim-web-devicons' },
       --Please make sure you install markdown and markdown_inline parser
-      {"nvim-treesitter/nvim-treesitter"}
+      { 'nvim-treesitter/nvim-treesitter' }
     },
   }
 
@@ -60,7 +61,11 @@ require('packer').startup(function(use)
   }
 
   -- Zettelkasten
-  use 'mickael-menu/zk-nvim'
+  use {
+    'renerocksai/telekasten.nvim',
+    requires = { 'nvim-telescope/telescope.nvim' }
+  }
+  use 'mzlogin/vim-markdown-toc'
 
   -- Git
   use 'tpope/vim-fugitive'
@@ -69,7 +74,7 @@ require('packer').startup(function(use)
   -- Outlook
   use {
     'folke/tokyonight.nvim',
-    config = function ()
+    config = function()
       vim.cmd.colorscheme 'tokyonight-storm'
     end
   }
@@ -81,10 +86,10 @@ require('packer').startup(function(use)
   use 'willothy/flatten.nvim'
   use 'tomtom/tcomment_vim'
   use {
-    "folke/trouble.nvim",
-    requires = "nvim-tree/nvim-web-devicons",
+    'folke/trouble.nvim',
+    requires = 'nvim-tree/nvim-web-devicons',
     config = function()
-      require("trouble").setup {
+      require('trouble').setup {
         -- your configuration comes here
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
@@ -107,7 +112,13 @@ require('packer').startup(function(use)
   -- Fuzzy finder
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.1',
-    requires = { {'nvim-lua/plenary.nvim'} }
+    requires = {
+      { 'nvim-lua/popup.nvim' },
+      { 'nvim-lua/plenary.nvim' },
+      { 'nvim-telescope/telescope-media-files.nvim' },
+      { 'nvim-telescope/telescope-bibtex.nvim' },
+      { 'nvim-telescope/telescope-symbols.nvim' },
+    }
   }
   -- Global finder
   use 'brooth/far.vim'
