@@ -6,6 +6,7 @@ end
 telekasten.setup({
   home = vim.fn.expand('~/Zettelkasten'),
   tag_notation = 'yaml-bare',
+  auto_set_filetype = false,
 })
 
 -- Launch panel if nothing is typed after <leader>z

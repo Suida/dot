@@ -64,7 +64,7 @@ lspconfig.clangd.setup {
 }
 
 lspconfig.lua_ls.setup {
-  cmd = { "lua-language-server.exe", "--metapath", "~/.cache/lua-language-server/meta/" },
+  cmd = { "lua-language-server", "--metapath", "~/.cache/lua-language-server/meta/" },
   on_attach = on_attach,
   flags = lsp_flags,
   capabilities = capabilities,
