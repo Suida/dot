@@ -5,7 +5,7 @@ end
 
 local utils = require 'user.utils'
 
-local on_attach = require("user.nvim-tree-on-attach")
+local on_attach = require("plugin_conf.nvim-tree-on-attach")
 
 nvim_tree.setup({
   on_attach = on_attach,
