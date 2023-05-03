@@ -13,16 +13,12 @@ vim.g.floaterm_width = 0.99999
 vim.g.floaterm_height = 0.4
 vim.g.floaterm_position = 'bottom'
 vim.g.floaterm_borderchars = '─ ─ ┌┐┘└'
-vim.keymap.set('n', '<C-t>t', [[:FloatermToggle<CR>]], opts)
-vim.keymap.set('n', '<C-t>c', [[:FloatermNew<CR>]], opts)
-vim.keymap.set('n', '<C-t>x', [[:FloatermKill<CR>]], opts)
-vim.keymap.set('n', '<C-t>n', [[:FloatermNext<CR>]], opts)
-vim.keymap.set('n', '<C-t>p', [[:FloatermPrev<CR>]], opts)
-vim.keymap.set('t', '<C-t>t', [[<C-\><C-n>:exe "sleep 100m \| FloatermToggle"<CR>]], opts)
-vim.keymap.set('t', '<C-t>c', [[<C-\><C-n>:exe "sleep 100m \| FloatermNew"<CR>]], opts)
-vim.keymap.set('t', '<C-t>x', [[<C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>]], opts)
-vim.keymap.set('t', '<C-t>n', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], opts)
-vim.keymap.set('t', '<C-t>p', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], opts)
+vim.keymap.set('n', '<A-Backspace>', [[:FloatermToggle<CR>]], opts)
+vim.keymap.set('t', '<A-Backspace>', [[<C-\><C-n>:exe "sleep 100m \| FloatermToggle"<CR>]], opts)
+vim.keymap.set('t', '<C-v>', [[<C-\><C-n>:exe "sleep 100m \| FloatermNew"<CR>]], opts)
+vim.keymap.set('t', '<C-x>', [[<C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>]], opts)
+vim.keymap.set('t', '<C-l>', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], opts)
+vim.keymap.set('t', '<C-h>', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], opts)
 
 vim.cmd [[
   augroup floater_color
@@ -30,3 +26,5 @@ vim.cmd [[
   autocmd BufEnter * hi! link FloatermBorder CursorLineNr
   augroup END
 ]]
+
+

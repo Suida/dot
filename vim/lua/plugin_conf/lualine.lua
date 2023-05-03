@@ -3,6 +3,8 @@ if not lualine_status_ok then
   return
 end
 
+local utils = require 'user.utils'
+
 local tab_no = function ()
   return vim.fn.tabpagenr()
 end
@@ -43,11 +45,26 @@ lualine.setup {
     lualine_z = {}
   },
   tabline = {
-    lualine_a = {'tabs'},
-    lualine_b = {'filename'},
+    lualine_a = {{
+      'tabs',
+      mode = 2,
+      max_length = function ()
+        return utils.get_tab_width() * 9 / 10
+      end,
+      fmt = function(name, context)
+        -- Show + if buffer is modified in tab
+        local buflist = vim.fn.tabpagebuflist(context.tabnr)
+        local winnr = vim.fn.tabpagewinnr(context.tabnr)
+        local bufnr = buflist[winnr]
+        local mod = vim.fn.getbufvar(bufnr, '&mod')
+
+        return name .. (mod == 1 and ' +' or '')
+      end
+    }},
+    lualine_b = {},
     lualine_c = {},
     lualine_x = {},
-    lualine_y = {'buffers'},
+    lualine_y = {},
     lualine_z = { tab_no }
   },
   winbar = {},

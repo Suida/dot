@@ -67,15 +67,36 @@ require('packer').startup(function(use)
   }
   use 'mzlogin/vim-markdown-toc'
 
+  -- Project-wide
   -- Git
   use 'tpope/vim-fugitive'
   use 'lewis6991/gitsigns.nvim'
+  -- Global finder
+  use 'brooth/far.vim'
+  -- Session manager
+  use 'mhinz/vim-startify'
+  use 'stevearc/overseer.nvim'
 
   -- Outlook
   use {
+    'sonph/onehalf',
+    rtp = 'vim/',
+    config = function()
+      -- vim.cmd.colorscheme 'onehalflight'
+    end,
+  }
+  use {
     'folke/tokyonight.nvim',
     config = function()
-      vim.cmd.colorscheme 'tokyonight-storm'
+      vim.cmd.colorscheme 'tokyonight'
+      local switch = function ()
+        if (vim.o.background == 'dark') then
+          vim.o.background = 'light'
+        else
+          vim.o.background = 'dark'
+        end
+      end
+      vim.keymap.set({'n'}, '<leader>bg', switch, { noremap = true, silent = true })
     end
   }
   use {
@@ -120,12 +141,6 @@ require('packer').startup(function(use)
       { 'nvim-telescope/telescope-symbols.nvim' },
     }
   }
-  -- Global finder
-  use 'brooth/far.vim'
-
-  -- Session manager
-  use 'mhinz/vim-startify'
-
   -- Indentation line
   use 'Yggdroot/indentLine'
   use 'tpope/vim-sleuth'
@@ -169,4 +184,3 @@ require('packer').startup(function(use)
     require('packer').install()
   end
 end)
-

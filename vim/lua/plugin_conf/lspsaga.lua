@@ -53,7 +53,7 @@ keymap("n", "]D", function()
 end)
 
 -- Toggle outline
-keymap("n","<leader>o", "<cmd>Lspsaga outline<CR>")
+keymap("n","<leader>oo", "<cmd>Lspsaga outline<CR>")
 
 -- Hover Doc
 -- If there is no hover doc,
