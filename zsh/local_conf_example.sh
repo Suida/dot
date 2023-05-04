@@ -1,3 +1,23 @@
+# For Manjaro
+if [[ -e /etc/manjaro-release ]]
+then
+    # Use powerline
+    USE_POWERLINE="false"
+    # Source manjaro-zsh-configuration
+    if [[ -e /usr/share/zsh/manjaro-zsh-config ]]; then
+      source /usr/share/zsh/manjaro-zsh-config
+    fi
+    # Use manjaro zsh prompt
+    if [[ -e /usr/share/zsh/manjaro-zsh-prompt ]]; then
+      source /usr/share/zsh/manjaro-zsh-prompt
+    fi
+else
+    plugins+=(
+        zsh-autosuggestions
+        zsh-syntax-highlighting
+    )
+fi
+
 # Pipx & pipenv
 export PATH="$PATH:/home/hugh/.local/bin"
 autoload -U bashcompinit
