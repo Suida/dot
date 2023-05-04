@@ -207,8 +207,5 @@ add-zsh-hook -Uz chpwd insource
 # Fix tmux color
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#989cb4"
 
-# Bat theme
-export BAT_THEME=GitHub
-
 # Machine specific configurations
 [ -f ~/.local_conf.sh ] && source ~/.local_conf.sh

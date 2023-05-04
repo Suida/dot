@@ -3,6 +3,11 @@ if not lualine_status_ok then
   return
 end
 
+local web_devicons_status_ok, web_devicons = pcall(require, 'nvim-web-devicons')
+if not web_devicons_status_ok then
+  return
+end
+
 local utils = require 'user.utils'
 
 local tab_no = function ()
@@ -13,8 +18,8 @@ lualine.setup {
   options = {
     icons_enabled = true,
     theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
+    section_separators = { left = '', right = '' },
+    component_separators = { left = '', right = '' },
     disabled_filetypes = {
       statusline = {},
       winbar = {},
@@ -52,13 +57,16 @@ lualine.setup {
         return utils.get_tab_width() * 9 / 10
       end,
       fmt = function(name, context)
-        -- Show + if buffer is modified in tab
         local buflist = vim.fn.tabpagebuflist(context.tabnr)
         local winnr = vim.fn.tabpagewinnr(context.tabnr)
         local bufnr = buflist[winnr]
         local mod = vim.fn.getbufvar(bufnr, '&mod')
-
-        return name .. (mod == 1 and ' +' or '')
+        local icon, _ = web_devicons.get_icon(name)
+        if icon ~= nil then
+          return icon .. ' ' .. name .. (mod == 1 and ' +' or '')
+        else
+          return name .. (mod == 1 and ' +' or '')
+        end
       end
     }},
     lualine_b = {},

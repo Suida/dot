@@ -24,7 +24,7 @@ nvim_tree.setup({
         return {
           relative = "editor",
           anchor = 'NE',
-          width = 50,
+          width = 40,
           height = utils.get_tab_height() - 3,
           row = 1,
           col = utils.get_tab_width() - 1,
