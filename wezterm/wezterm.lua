@@ -149,7 +149,12 @@ local get_win_key_bindings = function()-- {{{
 end
 key_bindings = TableConcat(key_bindings, get_win_key_bindings())-- }}}
 
-default_prog = get_os_type() === 'win32' ? { 'pwsh' } : { 'zsh' }
+local default_prog 
+if get_os_type() == 'win32' then
+  default_prog = { 'pwsh' }
+else
+  default_prog = { 'zsh' }
+end
 
 return {
   font = wezterm.font 'CaskaydiaCove Nerd Font Mono',

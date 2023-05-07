@@ -3,7 +3,7 @@ if not telekasten_status_ok then
   return
 end
 
-local zk_home = vim.fn.expand('~/Zettelkasten')
+local zk_home = vim.fn.expand('$ZK_NOTEBOOK_DIR')
 local template_dir = zk_home .. '/templates'
 
 telekasten.setup({

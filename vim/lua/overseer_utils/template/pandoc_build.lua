@@ -27,7 +27,7 @@ local cmd_bin = vim.fn.expand('./scripts/build.py')
 overseer.register_template {
   name = 'build all',
   builder = function()
-    local cmd = { cmd_bin, }
+    local cmd = { 'python', cmd_bin, }
     return {
       cmd = cmd,
       components = components,
@@ -39,7 +39,7 @@ overseer.register_template {
 overseer.register_template {
   name = 'build all (force)',
   builder = function()
-    local cmd = { cmd_bin, '-f', }
+    local cmd = { 'python', cmd_bin, '-f', }
     return {
       cmd = cmd,
       components = components,
@@ -52,7 +52,7 @@ overseer.register_template {
   name = 'build current file',
   builder = function()
     local file = vim.fn.expand('%:p')
-    local cmd = { cmd_bin, file, }
+    local cmd = { 'python', cmd_bin, file, }
     return {
       cmd = cmd,
       components = components,
@@ -65,7 +65,7 @@ overseer.register_template {
   name = 'build current file (force)',
   builder = function()
     local file = vim.fn.expand('%:p')
-    local cmd = { cmd_bin, '-f', file, }
+    local cmd = { 'python', cmd_bin, '-f', file, }
     return {
       cmd = cmd,
       components = components,
@@ -78,7 +78,7 @@ overseer.register_template {
   name = 'build current file as slides',
   builder = function()
     local file = vim.fn.expand('%:p')
-    local cmd = { cmd_bin, file, '-zs', }
+    local cmd = { 'python', cmd_bin, file, '-zs', }
     return {
       cmd = cmd,
       components = components,
@@ -91,7 +91,7 @@ overseer.register_template {
   name = 'build current file as slides (force)',
   builder = function()
     local file = vim.fn.expand('%:p')
-    local cmd = { cmd_bin, '-f', file, '-zs', }
+    local cmd = { 'python', cmd_bin, '-f', file, '-zs', }
     return {
       cmd = cmd,
       components = components,
