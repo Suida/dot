@@ -83,5 +83,27 @@ local c_cpp_snippets = {
   }),
 }
 
+local pandoc_snippets = {
+  s({
+    trig = '$$',
+    name = 'Katex math block'
+  }, {
+    t({ '$$', '', }),
+    i(1),
+    t({ '', '$$', '', }),
+    i(0),
+  }),
+  s({
+    trig = '$$\\',
+    name = 'Aligned Katex math block'
+  }, {
+    t({ '$$\\begin{aligned}', '', }),
+    i(1),
+    t({ ' \\\\', '\\end{aligned}$$', '', }),
+    i(0),
+  }),
+}
+
 luasnip.add_snippets("c", c_cpp_snippets)
 luasnip.add_snippets("cpp", c_cpp_snippets)
+luasnip.add_snippets("pandoc", pandoc_snippets)

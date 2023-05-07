@@ -57,6 +57,11 @@ lualine.setup {
         return utils.get_tab_width() * 9 / 10
       end,
       fmt = function(name, context)
+        if #name > 15 then
+          name = string.sub(name, 1, 14) .. "…"
+        else
+          name = string.sub(name, 1, 15)
+        end
         local buflist = vim.fn.tabpagebuflist(context.tabnr)
         local winnr = vim.fn.tabpagewinnr(context.tabnr)
         local bufnr = buflist[winnr]
