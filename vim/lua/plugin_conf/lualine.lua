@@ -57,10 +57,11 @@ lualine.setup {
         return utils.get_tab_width() * 9 / 10
       end,
       fmt = function(name, context)
+        local shortname;
         if #name > 15 then
-          name = string.sub(name, 1, 14) .. "…"
+          shortname = string.sub(name, 1, 14) .. "…"
         else
-          name = string.sub(name, 1, 15)
+          shortname = string.sub(name, 1, 15)
         end
         local buflist = vim.fn.tabpagebuflist(context.tabnr)
         local winnr = vim.fn.tabpagewinnr(context.tabnr)
@@ -68,9 +69,9 @@ lualine.setup {
         local mod = vim.fn.getbufvar(bufnr, '&mod')
         local icon, _ = web_devicons.get_icon(name)
         if icon ~= nil then
-          return icon .. ' ' .. name .. (mod == 1 and ' +' or '')
+          return icon .. ' ' .. shortname .. (mod == 1 and ' +' or '')
         else
-          return name .. (mod == 1 and ' +' or '')
+          return shortname .. (mod == 1 and ' +' or '')
         end
       end
     }},

@@ -9,6 +9,11 @@ vim.g.startify_session_before_save = {
   'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
   'execute g:startify_tmp_winnr . "wincmd w"'
 }
+vim.g.startify_lists = {
+  { type='sessions',  header= {'   Sessions'}       },
+  { type='bookmarks', header= {'   Bookmarks'}      },
+  { type='commands',  header= {'   Commands'}       },
+}
 vim.cmd [[
 augroup startify_stuff
 autocmd VimEnter * call init_startify()

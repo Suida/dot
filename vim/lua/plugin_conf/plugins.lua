@@ -89,14 +89,14 @@ require('packer').startup(function(use)
     'folke/tokyonight.nvim',
     config = function()
       vim.cmd.colorscheme 'tokyonight'
-      local switch = function ()
+      local switch = function()
         if (vim.o.background == 'dark') then
           vim.o.background = 'light'
         else
           vim.o.background = 'dark'
         end
       end
-      vim.keymap.set({'n'}, '<leader>bg', switch, { noremap = true, silent = true })
+      vim.keymap.set({ 'n' }, '<leader>bg', switch, { noremap = true, silent = true })
     end
   }
   use {
@@ -110,11 +110,15 @@ require('packer').startup(function(use)
     'folke/trouble.nvim',
     requires = 'nvim-tree/nvim-web-devicons',
     config = function()
-      require('trouble').setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
+      require('trouble').setup {}
+      vim.keymap.set({ 'n' }, '<leader>tt', '<cmd>TroubleToggle<CR>')
+    end
+  }
+  use {
+    'TimUntersberger/neogit',
+    config = function()
+      require('neogit').setup {}
+      vim.keymap.set({ 'n' }, '<leader>gg', '<cmd>Neogit<CR>')
     end
   }
 
