@@ -51,7 +51,8 @@ nnoremap <space>l <C-w>l
 tnoremap <silent> <C-w> <C-\><C-n><C-w>
 
 nnoremap <leader>bt :b 
-nnoremap <leader>bs :vert sb 
+nnoremap <leader>bs :sb 
+nnoremap <leader>bv :vert sb 
 nnoremap <silent> <leader>bb :<C-u>execute 'buffer ' . v:count<CR>
 nnoremap <silent> <leader>bl :buffers<CR>
 nnoremap <silent> <leader>ba :buffer #<CR>

@@ -79,4 +79,3 @@ augroup filtype_vim
   autocmd FileType vim setlocal foldmethod=marker
 augroup END
 ]]
-
