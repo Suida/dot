@@ -13,6 +13,8 @@ if not luasnip_status_ok then
   return
 end
 
+require('luasnip.loaders.from_snipmate').lazy_load()
+
 local utils = require('user.utils')
 
 require 'user.my_snippets'

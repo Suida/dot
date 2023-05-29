@@ -104,6 +104,31 @@ local pandoc_snippets = {
   }),
 }
 
+local systemverilog_snippets = {
+  s({
+    trig = 'module',
+    name = 'Verilog module',
+  }, {
+    t({ 'module ', }), i(1), t({ ' (', }), i(2), t({ ');', '', }),
+    i(3),
+    t({ '', 'endmodule', '', }),
+    i(0),
+  }),
+  s({
+    trig = 'import',
+    name = 'SystemVerilog import',
+  }, {
+    t({ 'import ', }), i(1), t({ '::*;' }), i(0),
+  }),
+  s({
+    trig = 'timescale',
+    name = 'Verilog time scale',
+  }, {
+    t({ '`timescale 1ns / 1ps', }),
+  }),
+}
+
 luasnip.add_snippets("c", c_cpp_snippets)
 luasnip.add_snippets("cpp", c_cpp_snippets)
 luasnip.add_snippets("pandoc", pandoc_snippets)
+luasnip.add_snippets("systemverilog", systemverilog_snippets)

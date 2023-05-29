@@ -59,6 +59,7 @@ require('packer').startup(function(use)
     'mattn/emmet-vim',
     setup = function() vim.g.user_emmet_leader_key = '<C-x>' end
   }
+  use 'honza/vim-snippets'
 
   -- Zettelkasten
   use {
