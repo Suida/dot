@@ -129,6 +129,7 @@ then
 fi
 
 # Get proxy uri
+AWK=awk
 if [[ -e "$HOME/.PROXY" ]]
 then
     PROXY_IP=$($AWK 'BEGIN{FS=":"} {print $2}' $HOME/.PROXY | cut -c 3-)

@@ -84,7 +84,7 @@ lspconfig.verible.setup {
     '--wrap_spaces',
     '2',
     '--rules',
-    '-explicit-parameter-storage-type,-no-tabs,-unpacked-ordering',
+    '-explicit-parameter-storage-type,-no-tabs,-unpacked-dimensions-range-ordering',
   },
   on_attach = on_attach,
   flags = lsp_flags,

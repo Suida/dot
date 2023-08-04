@@ -39,6 +39,7 @@ require('packer').startup(function(use)
       --Please make sure you install markdown and markdown_inline parser
       { 'nvim-treesitter/nvim-treesitter' }
     },
+    disable = true,
   }
 
   use 'hrsh7th/cmp-nvim-lsp'
