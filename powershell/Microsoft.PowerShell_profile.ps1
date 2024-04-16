@@ -43,10 +43,10 @@ $PSReadLineOptions = @{
         Command          = 'DarkGreen'
         Number           = 'DarkGreen'
         Member           = 'Magenta'
-        Parameter        = 'White'
-        Operator         = 'White'
+        Parameter        = 'DarkYellow'
+        Operator         = 'DarkYellow'
         InlinePrediction = 'Cyan'
-        Default          = 'White'
+        Default          = 'DarkYellow'
     }
 }
 Set-PSReadLineOption @PSReadLineOptions
@@ -82,5 +82,5 @@ New-Alias vcpkg ~\workspace\vcpkg\vcpkg.exe
 # Fnm
 fnm env --use-on-cd | Out-String | Invoke-Expression
 $env:PNPM_HOME=$env:FNM_MULTISHELL_PATH
-$env:npm_config_registry="https://registry.npm.taobao.org"
+$env:npm_config_registry="https://registry.npmmirror.com"
 

@@ -6,28 +6,18 @@
         {
             "command": 
             {
+                "action": "moveFocus",
+                "direction": "down"
+            },
+            "keys": "ctrl+shift+j"
+        },
+        {
+            "command": 
+            {
                 "action": "splitPane",
                 "split": "right"
             },
             "keys": "ctrl+shift+\\"
-        },
-        {
-            "command": 
-            {
-                "action": "copy"
-            },
-            "keys": "alt+c"
-        },
-        {
-            "command": 
-            {
-                "action": "prevTab"
-            },
-            "keys": "ctrl+shift+["
-        },
-        {
-            "command": "paste",
-            "keys": "alt+v"
         },
         {
             "command": 
@@ -39,17 +29,32 @@
         {
             "command": 
             {
-                "action": "closeTab"
+                "action": "copy"
             },
-            "keys": "alt+w"
+            "keys": "alt+c"
         },
         {
             "command": 
             {
-                "action": "splitPane",
-                "split": "down"
+                "action": "switchToTab",
+                "index": 2
             },
-            "keys": "ctrl+shift+minus"
+            "keys": "alt+3"
+        },
+        {
+            "command": 
+            {
+                "action": "prevTab"
+            },
+            "keys": "ctrl+shift+["
+        },
+        {
+            "command": 
+            {
+                "action": "resizePane",
+                "direction": "up"
+            },
+            "keys": "ctrl+shift+i"
         },
         {
             "command": 
@@ -60,12 +65,35 @@
             "keys": "alt+4"
         },
         {
+            "command": "paste",
+            "keys": "alt+v"
+        },
+        {
+            "command": 
+            {
+                "action": "closeTab"
+            },
+            "keys": "alt+w"
+        },
+        {
             "command": 
             {
                 "action": "moveFocus",
                 "direction": "right"
             },
             "keys": "ctrl+shift+l"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "down"
+            },
+            "keys": "ctrl+shift+minus"
+        },
+        {
+            "command": "unbound",
+            "keys": "ctrl+t"
         },
         {
             "command": "closePane",
@@ -106,14 +134,6 @@
         {
             "command": 
             {
-                "action": "moveFocus",
-                "direction": "down"
-            },
-            "keys": "ctrl+shift+j"
-        },
-        {
-            "command": 
-            {
                 "action": "resizePane",
                 "direction": "left"
             },
@@ -123,29 +143,9 @@
             "command": 
             {
                 "action": "resizePane",
-                "direction": "up"
-            },
-            "keys": "ctrl+shift+i"
-        },
-        {
-            "command": 
-            {
-                "action": "resizePane",
                 "direction": "right"
             },
             "keys": "ctrl+shift+o"
-        },
-        {
-            "command": "unbound",
-            "keys": "ctrl+t"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 2
-            },
-            "keys": "alt+3"
         },
         {
             "command": 
@@ -188,41 +188,41 @@
         }
     ],
     "alwaysShowTabs": true,
+    "copyFormatting": "none",
     "copyOnSelect": true,
-    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
     "initialCols": 100,
     "launchMode": "maximized",
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
     "profiles": 
     {
         "defaults": 
         {
             "bellStyle": "none",
-            "colorScheme": "One Half Light",
+            "colorScheme": 
+            {
+                "dark": "One Half Dark",
+                "light": "One Half Light"
+            },
             "cursorShape": "filledBox",
             "font": 
             {
-                "face": "CaskaydiaCove NF",
-                "size": 10
+                "face": "CaskaydiaCove Nerd Font",
+                "size": 10.0
             }
         },
         "list": 
         [
             {
-                "backgroundImage": null,
-                "bellStyle": "taskbar",
-                "colorScheme": "One Half Light",
-                "commandline": "pwsh.exe",
-                "cursorColor": "#0184BC",
-                "cursorShape": "filledBox",
-                "font": 
-                {
-                    "face": "CaskaydiaCove NF",
-                    "size": 10
-                },
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
                 "hidden": false,
-                "name": "Windows PowerShell",
-                "padding": "4"
+                "name": "PowerShell",
+                "source": "Windows.Terminal.PowershellCore"
             },
             {
                 "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -shell zsh",
@@ -246,13 +246,16 @@
                 "startingDirectory": "C:/msys64/home/%USERNAME%"
             },
             {
-                "font": 
-                {
-                    "size": 11
-                },
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
-                "name": "cmd"
+                "name": "Command Prompt"
             },
             {
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
@@ -261,22 +264,22 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-                "hidden": false,
-                "name": "PowerShell",
-                "source": "Windows.Terminal.PowershellCore"
-            },
-            {
-                "guid": "{9e56b959-4e09-5690-b6f1-bba92df80f63}",
+                "guid": "{4a4b8aa4-efcd-5493-a516-8944fd10f2d8}",
                 "hidden": false,
                 "name": "Developer Command Prompt for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
             },
             {
-                "guid": "{3898ba89-ca79-54bb-88fd-d0594cd19f62}",
+                "guid": "{39834dfa-279a-5378-9f39-8273b4bc8fbd}",
                 "hidden": false,
                 "name": "Developer PowerShell for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{34a13805-9b56-5e89-9234-f02de44bd971}",
+                "hidden": false,
+                "name": "PowerShell 7 (x86)",
+                "source": "Windows.Terminal.PowershellCore"
             }
         ]
     },
@@ -361,7 +364,7 @@
             "brightGreen": "#98C379",
             "brightPurple": "#C577DD",
             "brightRed": "#DF6C75",
-            "brightWhite": "#0997B3",
+            "brightWhite": "#FFFFFF",
             "brightYellow": "#E4C07A",
             "cursorColor": "#4F525D",
             "cyan": "#0997B3",
@@ -370,7 +373,7 @@
             "name": "One Half Light",
             "purple": "#A626A4",
             "red": "#E45649",
-            "selectionBackground": "#FFFFFF",
+            "selectionBackground": "#4F525D",
             "white": "#FAFAFA",
             "yellow": "#C18301"
         },
@@ -416,7 +419,7 @@
             "name": "Solarized Light",
             "purple": "#D33682",
             "red": "#DC322F",
-            "selectionBackground": "#FFFFFF",
+            "selectionBackground": "#073642",
             "white": "#EEE8D5",
             "yellow": "#B58900"
         },
@@ -462,7 +465,7 @@
             "name": "Tango Light",
             "purple": "#75507B",
             "red": "#CC0000",
-            "selectionBackground": "#FFFFFF",
+            "selectionBackground": "#555753",
             "white": "#D3D7CF",
             "yellow": "#C4A000"
         },
@@ -493,5 +496,7 @@
     "showTabsInTitlebar": true,
     "showTerminalTitleInTitlebar": false,
     "tabWidthMode": "equal",
-    "theme": "light"
+    "theme": "system",
+    "themes": [],
+    "windowingBehavior": "useExisting"
 }

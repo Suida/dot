@@ -11,6 +11,32 @@ function TableConcat(t1,t2)
     return t1
 end
 
+-- wezterm.gui is not available to the mux server, so take care to
+-- do something reasonable when this config is evaluated by the mux
+function get_appearance()
+  if wezterm.gui then
+    return wezterm.gui.get_appearance()
+  end
+  return 'Dark'
+end
+
+function scheme_for_appearance(appearance)
+  if appearance:find 'Dark' then
+    return 'OneHalfDark'
+  else
+    return 'OneHalfLight'
+  end
+end
+
+wezterm.on('update-right-status', function (window, pane)
+  local overrides = window:get_config_overrides() or {}
+  local color = scheme_for_appearance(get_appearance())
+  if overrides.color_scheme ~= color then
+    overrides.color_scheme = color
+    window:set_config_overrides(overrides)
+  end
+end)
+
 local act = wezterm.action
 
 -- Initial Key Bindings
@@ -126,7 +152,7 @@ local get_tab_key_bindings = function()-- {{{
 end
 key_bindings = TableConcat(key_bindings, get_tab_key_bindings())-- }}}
 
--- Key Bindings Window  Operations
+-- Key Bindings Window Operations
 local get_win_key_bindings = function()-- {{{
   local ret = {
     {
@@ -159,7 +185,7 @@ end
 return {
   font = wezterm.font 'CaskaydiaCove Nerd Font Mono',
   font_size = 10.0,
-  color_scheme = 'OneHalfDark',
+  color_scheme = scheme_for_appearance(get_appearance()),
   default_prog = default_prog,
 
   cursor_blink_ease_in = 'Constant',
@@ -212,4 +238,5 @@ return {
   leader = { key = 's', mods = 'CTRL', timeout_milliseconds = 3000 },
   keys = key_bindings,
   harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
+  status_update_interval = 2000,
 }
