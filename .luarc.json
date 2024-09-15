@@ -1,0 +1,6 @@
+{
+    "diagnostics.globals": [
+        "vim",
+        "get_os_type"
+    ]
+}
