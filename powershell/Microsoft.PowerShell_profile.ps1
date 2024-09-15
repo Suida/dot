@@ -1,6 +1,6 @@
-Import-Module posh-git
 Import-Module Get-ChildItemColor
-oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\default.omp.json" | Invoke-Expression
+
+Invoke-Expression (&starship init powershell)
 
 New-Alias ~ $HOME
 function .. { Set-Location .. }
@@ -77,7 +77,7 @@ function showColors {
 
 $env:http_proxy="http://127.0.0.1:7890"
 $env:https_proxy="http://127.0.0.1:7890"
-New-Alias vcpkg ~\workspace\vcpkg\vcpkg.exe
+New-Alias vcpkg $env:HOME\workspace\github\vcpkg\vcpkg.exe
 
 # Fnm
 fnm env --use-on-cd | Out-String | Invoke-Expression
