@@ -127,7 +127,13 @@ require('packer').startup(function(use)
   -- Better move
   use 'nvim-tree/nvim-web-devicons'
   use 'nvim-tree/nvim-tree.lua'
-  use 'easymotion/vim-easymotion'
+  use {
+    'smoka7/hop.nvim',
+    tag = '2.*',
+    config = function()
+      require'hop'.setup {}
+    end
+  }
   use 'andymass/vim-matchup'
   use 'tpope/vim-surround'
   -- Brackets
