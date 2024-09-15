@@ -1,14 +1,14 @@
 local wezterm = require 'wezterm'
 
-function get_os_type ()
-  return package.config:sub(1,1) == '/' and 'unix' or 'win32'
+function get_os_type()
+  return package.config:sub(1, 1) == '/' and 'unix' or 'win32'
 end
 
-function TableConcat(t1,t2)
-    for i=1,#t2 do
-        t1[#t1+1] = t2[i]
-    end
-    return t1
+function TableConcat(t1, t2)
+  for i = 1, #t2 do
+    t1[#t1 + 1] = t2[i]
+  end
+  return t1
 end
 
 -- wezterm.gui is not available to the mux server, so take care to
@@ -28,7 +28,7 @@ function scheme_for_appearance(appearance)
   end
 end
 
-wezterm.on('update-right-status', function (window, pane)
+wezterm.on('update-right-status', function(window, pane)
   local overrides = window:get_config_overrides() or {}
   local color = scheme_for_appearance(get_appearance())
   if overrides.color_scheme ~= color then
@@ -40,7 +40,7 @@ end)
 local act = wezterm.action
 
 -- Initial Key Bindings
-local key_bindings = {-- {{{
+local key_bindings = { -- {{{
   {
     key = '[',
     mods = 'LEADER',
@@ -61,59 +61,59 @@ local key_bindings = {-- {{{
     mods = 'CTRL',
     action = act.SendKey { key = 'Escape', },
   },
-}-- }}}
+} -- }}}
 
 -- Key Bindings Pane Operations
-local get_pane_key_bindings = function()-- {{{
-local ret = {
-  {
-    key = '|',
-    mods = 'LEADER|SHIFT',
-    action = act.SplitHorizontal { domain = 'CurrentPaneDomain' },
-  },
-  {
-    key = '-',
-    mods = 'LEADER',
-    action = act.SplitVertical { domain = 'CurrentPaneDomain' },
-  },
-  {
-    key = 'x',
-    mods = 'LEADER',
-    action = act.CloseCurrentPane { confirm = true },
-  },
-  {
-    key = 'h',
-    mods = 'LEADER',
-    action = act.ActivatePaneDirection 'Left',
-  },
-  {
-    key = 'l',
-    mods = 'LEADER',
-    action = act.ActivatePaneDirection 'Right',
-  },
-  {
-    key = 'k',
-    mods = 'LEADER',
-    action = act.ActivatePaneDirection 'Up',
-  },
-  {
-    key = 'j',
-    mods = 'LEADER',
-    action = act.ActivatePaneDirection 'Down',
-  },
-  {
-    key = '1',
-    mods = 'LEADER',
-    action = act.ActivateTab(0),
-  },
-}
+local get_pane_key_bindings = function() -- {{{
+  local ret = {
+    {
+      key = '|',
+      mods = 'LEADER|SHIFT',
+      action = act.SplitHorizontal { domain = 'CurrentPaneDomain' },
+    },
+    {
+      key = '-',
+      mods = 'LEADER',
+      action = act.SplitVertical { domain = 'CurrentPaneDomain' },
+    },
+    {
+      key = 'x',
+      mods = 'LEADER',
+      action = act.CloseCurrentPane { confirm = true },
+    },
+    {
+      key = 'h',
+      mods = 'LEADER',
+      action = act.ActivatePaneDirection 'Left',
+    },
+    {
+      key = 'l',
+      mods = 'LEADER',
+      action = act.ActivatePaneDirection 'Right',
+    },
+    {
+      key = 'k',
+      mods = 'LEADER',
+      action = act.ActivatePaneDirection 'Up',
+    },
+    {
+      key = 'j',
+      mods = 'LEADER',
+      action = act.ActivatePaneDirection 'Down',
+    },
+    {
+      key = '1',
+      mods = 'LEADER',
+      action = act.ActivateTab(0),
+    },
+  }
 
-return ret
+  return ret
 end
-key_bindings = TableConcat(key_bindings, get_pane_key_bindings())-- }}}
+key_bindings = TableConcat(key_bindings, get_pane_key_bindings()) -- }}}
 
 -- Key Bindings Tab  Operations
-local get_tab_key_bindings = function()-- {{{
+local get_tab_key_bindings = function() -- {{{
   local ret = {
     {
       key = 'c',
@@ -145,15 +145,15 @@ local get_tab_key_bindings = function()-- {{{
     table.insert(ret, {
       key = tostring(i),
       mods = 'LEADER',
-      action = act.ActivateTab(i - 1);
+      action = act.ActivateTab(i - 1),
     })
   end
   return ret
 end
-key_bindings = TableConcat(key_bindings, get_tab_key_bindings())-- }}}
+key_bindings = TableConcat(key_bindings, get_tab_key_bindings()) -- }}}
 
 -- Key Bindings Window Operations
-local get_win_key_bindings = function()-- {{{
+local get_win_key_bindings = function() -- {{{
   local ret = {
     {
       key = 'C',
@@ -173,9 +173,9 @@ local get_win_key_bindings = function()-- {{{
   }
   return ret
 end
-key_bindings = TableConcat(key_bindings, get_win_key_bindings())-- }}}
+key_bindings = TableConcat(key_bindings, get_win_key_bindings()) -- }}}
 
-local default_prog 
+local default_prog
 if get_os_type() == 'win32' then
   default_prog = { 'pwsh' }
 else
@@ -232,7 +232,7 @@ return {
       -- `wezterm ssh` subcommand.
       bootstrap_via_ssh = 'hugh@localhost:29203',
     },
-  },-- }}}
+  }, -- }}}
 
   -- timeout_milliseconds defaults to 3000 and can be omitted
   leader = { key = 's', mods = 'CTRL', timeout_milliseconds = 3000 },
