@@ -1,200 +1,221 @@
-local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
-    vim.cmd [[packadd packer.nvim]]
-    return true
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
   end
-  return false
 end
 
-local packer_bootstrap = ensure_packer()
+vim.opt.rtp:prepend(lazypath)
 
-require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim'
-  use {
-    'williamboman/mason.nvim',
-    'williamboman/mason-lspconfig.nvim',
-    'neovim/nvim-lspconfig',
-    'mfussenegger/nvim-dap',
+require('lazy').setup({
+  spec = {
     {
-      'jose-elias-alvarez/null-ls.nvim',
-      ft = { 'lua', 'python', },
-    }
-  }
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } }
-  use { 'julianolf/nvim-dap-lldb', requires = { "mfussenegger/nvim-dap" } }
-  use { 'mfussenegger/nvim-dap-python', requires = { "mfussenegger/nvim-dap" } }
-  use {
-    'glepnir/lspsaga.nvim',
-    opt = true,
-    branch = 'main',
-    event = 'LspAttach',
-    config = function()
-      ---@diagnostic disable-next-line: different-requires
-      require('lspsaga').setup({})
-    end,
-    requires = {
-      { 'nvim-tree/nvim-web-devicons' },
-      --Please make sure you install markdown and markdown_inline parser
-      { 'nvim-treesitter/nvim-treesitter' }
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'neovim/nvim-lspconfig',
+      'mfussenegger/nvim-dap',
+      {
+        'jose-elias-alvarez/null-ls.nvim',
+        ft = { 'lua', 'python', },
+      }
     },
-    disable = true,
-  }
-
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
-  use({
-    'hrsh7th/nvim-cmp',
-    requires = {
-      { 'jc-doyle/cmp-pandoc-references' }
+    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+    { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
+    { 'julianolf/nvim-dap-lldb', dependencies = { "mfussenegger/nvim-dap" } },
+    { 'mfussenegger/nvim-dap-python', dependencies = { "mfussenegger/nvim-dap" } },
+    {
+      'glepnir/lspsaga.nvim',
+      lazy = true,
+      branch = 'main',
+      event = 'LspAttach',
+      config = function()
+        ---@diagnostic disable-next-line: different-requires
+        require('lspsaga').setup({})
+      end,
+      dependencies = {
+        { 'nvim-tree/nvim-web-devicons' },
+        --Please make sure you install markdown and markdown_inline parser
+        { 'nvim-treesitter/nvim-treesitter' }
+      },
+      enabled = false,
     }
-  })
+  ,
+    'hrsh7th/cmp-nvim-lsp',
+    'hrsh7th/cmp-buffer',
+    'hrsh7th/cmp-path',
+    'hrsh7th/cmp-cmdline',
+    {
+      'hrsh7th/nvim-cmp',
+      dependencies = {
+        { 'jc-doyle/cmp-pandoc-references' }
+      }
+    },
 
-  use 'L3MON4D3/LuaSnip'
-  use 'saadparwaiz1/cmp_luasnip'
-  -- Code template
-  use {
-    'mattn/emmet-vim',
-    setup = function() vim.g.user_emmet_leader_key = '<C-x>' end
-  }
-  use 'honza/vim-snippets'
+    'L3MON4D3/LuaSnip',
+    'saadparwaiz1/cmp_luasnip',
+    -- Code template
+    {
+      'mattn/emmet-vim',
+      init = function() vim.g.user_emmet_leader_key = '<C-x>' end
+    },
+    'honza/vim-snippets'
+  ,
+    -- Zettelkasten
+    {
+      'renerocksai/telekasten.nvim',
+      dependencies = { 'nvim-telescope/telescope.nvim' }
+    },
+    'mzlogin/vim-markdown-toc',
 
-  -- Zettelkasten
-  use {
-    'renerocksai/telekasten.nvim',
-    requires = { 'nvim-telescope/telescope.nvim' }
-  }
-  use 'mzlogin/vim-markdown-toc'
+    -- Project-wide
+    -- Git
+    'tpope/vim-fugitive',
+    'lewis6991/gitsigns.nvim',
+    -- Global finder
+    'brooth/far.vim',
+    -- Session manager
+    'mhinz/vim-startify',
+    'stevearc/overseer.nvim',
 
-  -- Project-wide
-  -- Git
-  use 'tpope/vim-fugitive'
-  use 'lewis6991/gitsigns.nvim'
-  -- Global finder
-  use 'brooth/far.vim'
-  -- Session manager
-  use 'mhinz/vim-startify'
-  use 'stevearc/overseer.nvim'
-
-  -- Outlook
-  use {
-    'sonph/onehalf',
-    rtp = 'vim/',
-    config = function()
-      -- vim.cmd.colorscheme 'onehalflight'
-    end,
-  }
-  use {
-    'folke/tokyonight.nvim',
-    config = function()
-      vim.cmd.colorscheme 'tokyonight'
-      local switch = function()
-        if (vim.o.background == 'dark') then
-          vim.o.background = 'light'
-        else
-          vim.o.background = 'dark'
-        end
+    -- Outlook
+    {
+      'sonph/onehalf',
+      lazy = false,
+      config = function(plugin)
+        vim.opt.rtp:append(plugin.dir .. "/vim")
+        require('user.utils').detect_windows_theme(function(mode)
+          if mode:match('dark') then
+            vim.schedule(function()
+              vim.o.background = 'dark'
+              vim.cmd.colorscheme 'onehalfdark'
+            end)
+          elseif mode:match('light') then
+            vim.schedule(function()
+              vim.o.background = 'light'
+              vim.cmd.colorscheme 'onehalflight'
+            end)
+          else
+            print("Color mode not resolved")
+          end
+        end)
+      end,
+    },
+    {
+      'folke/tokyonight.nvim',
+      config = function()
+        -- vim.cmd.colorscheme 'tokyonight'
+        -- local switch = function()
+        --   if (vim.o.background == 'dark') then
+        --     vim.o.background = 'light'
+        --   else
+        --     vim.o.background = 'dark'
+        --   end
+        -- end
+        -- vim.keymap.set({ 'n' }, '<leader>bg', switch, { noremap = true, silent = true })
+      end,
+      enabled = false,
+    },
+    {
+      'nvim-lualine/lualine.nvim',
+      dependencies = 'nvim-tree/nvim-web-devicons',
+    },
+    'voldikss/vim-floaterm',
+    'willothy/flatten.nvim',
+    'tomtom/tcomment_vim',
+    {
+      'folke/trouble.nvim',
+      dependencies = 'nvim-tree/nvim-web-devicons',
+      config = function()
+        require('trouble').setup {}
+        vim.keymap.set({ 'n' }, '<leader>tt', '<cmd>TroubleToggle<CR>')
       end
-      vim.keymap.set({ 'n' }, '<leader>bg', switch, { noremap = true, silent = true })
-    end
-  }
-  use {
-    'nvim-lualine/lualine.nvim',
-    requires = 'nvim-tree/nvim-web-devicons',
-  }
-  use 'voldikss/vim-floaterm'
-  use 'willothy/flatten.nvim'
-  use 'tomtom/tcomment_vim'
-  use {
-    'folke/trouble.nvim',
-    requires = 'nvim-tree/nvim-web-devicons',
-    config = function()
-      require('trouble').setup {}
-      vim.keymap.set({ 'n' }, '<leader>tt', '<cmd>TroubleToggle<CR>')
-    end
-  }
-  use {
-    'TimUntersberger/neogit',
-    config = function()
-      require('neogit').setup {}
-      vim.keymap.set({ 'n' }, '<leader>gg', '<cmd>Neogit<CR>')
-    end
-  }
-
-  -- Better move
-  use 'nvim-tree/nvim-web-devicons'
-  use 'nvim-tree/nvim-tree.lua'
-  use {
-    'smoka7/hop.nvim',
-    tag = '2.*',
-    config = function()
-      require'hop'.setup {}
-    end
-  }
-  use 'andymass/vim-matchup'
-  use 'tpope/vim-surround'
-  -- Brackets
-  use 'jiangmiao/auto-pairs'
-  use 'tpope/vim-unimpaired'
-  -- Marker
-  use 'kshenoy/vim-signature'
-
-  -- Fuzzy finder
-  use {
-    'nvim-telescope/telescope.nvim',
-    requires = {
-      { 'nvim-lua/popup.nvim' },
-      { 'nvim-lua/plenary.nvim' },
-      { 'nvim-telescope/telescope-media-files.nvim' },
-      { 'nvim-telescope/telescope-bibtex.nvim' },
-      { 'nvim-telescope/telescope-symbols.nvim' },
+    },
+    {
+      'TimUntersberger/neogit',
+      config = function()
+        require('neogit').setup {}
+        vim.keymap.set({ 'n' }, '<leader>gg', '<cmd>Neogit<CR>')
+      end
     }
-  }
-  -- Indentation line
-  use 'Yggdroot/indentLine'
-  use 'tpope/vim-sleuth'
+  ,
+    -- Better move
+    'nvim-tree/nvim-web-devicons',
+    'nvim-tree/nvim-tree.lua',
+    {
+      'smoka7/hop.nvim',
+      version = '2.*',
+      config = function()
+        require'hop'.setup {}
+      end
+    },
+    'andymass/vim-matchup',
+    'tpope/vim-surround',
+    -- Brackets
+    'jiangmiao/auto-pairs',
+    'tpope/vim-unimpaired',
+    -- Marker
+    'kshenoy/vim-signature'
+  ,
+    -- Fuzzy finder
+    {
+      'nvim-telescope/telescope.nvim',
+      dependencies = {
+        { 'nvim-lua/popup.nvim' },
+        { 'nvim-lua/plenary.nvim' },
+        { 'nvim-telescope/telescope-media-files.nvim' },
+        { 'nvim-telescope/telescope-bibtex.nvim' },
+        { 'nvim-telescope/telescope-symbols.nvim' },
+      }
+    },
+    -- Indentation line
+    'Yggdroot/indentLine',
+    'tpope/vim-sleuth',
 
 
-  -- Language supports
-  -- Python utils // The indent really saved my life
-  use { 'Vimjas/vim-python-pep8-indent', ft = { 'python', } }
-  use { 'jmcantrell/vim-virtualenv', ft = { 'python', } }
-  -- Font-end tool chain
-  use { 'ap/vim-css-color', ft = { 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', } }
-  use { 'maxmellon/vim-jsx-pretty', ft = { 'tsx', 'jsx', } }
-  use 'HerringtonDarkholme/yats.vim'
-  use 'posva/vim-vue'
-  -- Pandoc
-  use 'vim-pandoc/vim-pandoc'
-  use 'vim-pandoc/vim-pandoc-syntax'
-  -- Html preview
-  use { 'turbio/bracey.vim', ft = { 'html', } }
-  -- Markdown syntax and preview
-  use 'godlygeek/tabular'
-  use {
-    'iamcco/markdown-preview.nvim',
-    run = function() vim.fn['mkdp#util#install']() end,
-    ft = { 'markdown', 'vim-plug', }
-  }
-  -- Asm
-  use { 'Shirk/vim-gas', ft = 'asm' }
-  use { 'cespare/vim-toml', ft = { 'toml', } }
+    -- Language supports
+    -- Python utils // The indent really saved my life
+    { 'Vimjas/vim-python-pep8-indent', ft = { 'python', } },
+    { 'jmcantrell/vim-virtualenv', ft = { 'python', } },
+    -- Font-end tool chain
+    { 'ap/vim-css-color', ft = { 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', } },
+    { 'maxmellon/vim-jsx-pretty', ft = { 'tsx', 'jsx', } },
+    'HerringtonDarkholme/yats.vim',
+    'posva/vim-vue',
+    -- Pandoc
+    'vim-pandoc/vim-pandoc',
+    'vim-pandoc/vim-pandoc-syntax',
+    -- Html preview
+    { 'turbio/bracey.vim', ft = { 'html', } },
+    -- Markdown syntax and preview
+    'godlygeek/tabular',
+    {
+      'iamcco/markdown-preview.nvim',
+      build = function() vim.fn['mkdp#util#install']() end,
+      ft = { 'markdown', 'vim-plug', }
+    },
+    -- Asm
+    { 'Shirk/vim-gas', ft = 'asm' },
+    { 'cespare/vim-toml', ft = { 'toml', } }
+  ,
+    -- Other utilities
+    'mhinz/vim-rfc',
+    'editorconfig/editorconfig-vim',
+    'vim-scripts/Drawit',
+    'voldikss/vim-translator',
+    'jceb/vim-orgmode',
+    'itchyny/calendar.vim',
+    'lilydjwg/fcitx.vim'
+  },
 
-  -- Other utilities
-  use 'mhinz/vim-rfc'
-  use 'editorconfig/editorconfig-vim'
-  use 'vim-scripts/Drawit'
-  use 'voldikss/vim-translator'
-  use 'jceb/vim-orgmode'
-  use 'itchyny/calendar.vim'
-  use 'lilydjwg/fcitx.vim'
-
-  if packer_bootstrap then
-    require('packer').install()
-  end
-end)
+  install = { colorscheme = { 'onehalflight' } },
+  checker = { enabled = true },
+})

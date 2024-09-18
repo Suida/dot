@@ -3,7 +3,7 @@ local utils = require 'user.utils'
 
 -- Set leader
 vim.g.mapleader = " "
-vim.g.maplocalleader = "  "
+vim.g.maplocalleader = "\\"
 
 
 -- Set python and node providers
@@ -56,6 +56,7 @@ require 'plugin_conf.editorconfig'
 require 'plugin_conf.translator'
 require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
+require 'user.color_mode_detector'
 
 
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]

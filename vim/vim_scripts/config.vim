@@ -109,10 +109,6 @@ function! SetServerName()
 endfunction
 
 function! s:guisettings()
-    if has('nvim') && exists('g:GuiLoaded')
-        GuiFont! CaskaydiaCove\ NF:h10
-        GuiTabline 0
-        GuiPopupmenu 0
-    endif
+    set guifont=CaskaydiaCove\ NFM\ SemiBold:h10.6
 endfunction
 " }}}

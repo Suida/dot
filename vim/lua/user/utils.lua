@@ -63,6 +63,38 @@ M = {
 
   get_os_type = function ()
     return package.config:sub(1,1) == '/' and 'unix' or 'win32'
+  end,
+
+  detect_windows_theme = function (cb)
+    local handle
+    local stdout = vim.loop.new_pipe(false)
+    local result = ''
+
+    -- Define the PowerShell command to check the Windows theme
+    local cmd = [[(Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize').AppsUseLightTheme]]
+
+    -- Run the command asynchronously using vim.loop
+    handle = vim.loop.spawn('pwsh.exe', {
+      args = { '-nop', '-Command', cmd },
+      stdio = {nil, stdout, nil},
+    }, function(code, signal)
+      stdout:read_stop()
+      stdout:close()
+      handle:close()
+      -- Use the callback function to return the result
+      if cb then cb(result) end
+    end)
+
+    -- Capture the output
+    stdout:read_start(function(err, data)
+      if data then
+        if data:match('0') then
+          result = result .. 'dark'
+        else
+          result = result .. 'light'
+        end
+      end
+    end)
   end
 }
 
