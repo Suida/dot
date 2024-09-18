@@ -1,7 +1,12 @@
-return {
+M = {
   append_slash = function (path)
-    if path:sub(#path, #path) ~= '/' then
-      return path .. '/'
+    if M.get_os_type() == 'win32' then
+      sep = '\\'
+    else
+      sep = '/'
+    end
+    if path:sub(#path, #path) ~= sep then
+      return path .. sep 
     end
     return path
   end,
@@ -60,3 +65,5 @@ return {
     return package.config:sub(1,1) == '/' and 'unix' or 'win32'
   end
 }
+
+return M

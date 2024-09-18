@@ -43,7 +43,7 @@ if not cmp_lsp_status_ok then
 end
 local capabilities = cmp_lsp.default_capabilities()
 local language_servers = {
-  'pyright', 'verible', 'clangd', 'tsserver', 'rust_analyzer', 'jsonls',
+  'pyright', 'verible', 'clangd', 'ts_ls', 'rust_analyzer', 'jsonls',
   'lua_ls', 'vimls', 'texlab', 'cmake',
 }
 
