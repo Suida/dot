@@ -39,15 +39,6 @@ $PSReadLineOptions = @{
     EditMode         = "Emacs"
     BellStyle        = "None"
     PredictionSource = "History"
-    Color            = @{
-        Command          = 'DarkGreen'
-        Number           = 'DarkGreen'
-        Member           = 'Magenta'
-        Parameter        = 'DarkYellow'
-        Operator         = 'DarkYellow'
-        InlinePrediction = 'Cyan'
-        Default          = 'DarkYellow'
-    }
 }
 Set-PSReadLineOption @PSReadLineOptions
  

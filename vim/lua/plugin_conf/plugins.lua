@@ -46,7 +46,6 @@ require('lazy').setup({
         --Please make sure you install markdown and markdown_inline parser
         { 'nvim-treesitter/nvim-treesitter' }
       },
-      enabled = false,
     }
   ,
     'hrsh7th/cmp-nvim-lsp',
@@ -88,8 +87,28 @@ require('lazy').setup({
 
     -- Outlook
     {
-      'sonph/onehalf',
+      'rose-pine/neovim',
       lazy = false,
+      config = function ()
+        require('user.utils').detect_windows_theme(function(mode)
+          if mode:match('dark') then
+            vim.schedule(function()
+              vim.o.background = 'dark'
+              vim.cmd.colorscheme 'rose-pine-moon'
+            end)
+          elseif mode:match('light') then
+            vim.schedule(function()
+              vim.o.background = 'light'
+              vim.cmd.colorscheme 'rose-pine-dawn'
+            end)
+          else
+            print("Color mode not resolved")
+          end
+        end)
+      end
+    },
+    {
+      'sonph/onehalf',
       config = function(plugin)
         vim.opt.rtp:append(plugin.dir .. "/vim")
         require('user.utils').detect_windows_theme(function(mode)
@@ -104,23 +123,9 @@ require('lazy').setup({
               vim.cmd.colorscheme 'onehalflight'
             end)
           else
-            print("Color mode not resolved")
+            vim.notify("An error occurred!", vim.log.levels.ERROR)
           end
         end)
-      end,
-    },
-    {
-      'folke/tokyonight.nvim',
-      config = function()
-        -- vim.cmd.colorscheme 'tokyonight'
-        -- local switch = function()
-        --   if (vim.o.background == 'dark') then
-        --     vim.o.background = 'light'
-        --   else
-        --     vim.o.background = 'dark'
-        --   end
-        -- end
-        -- vim.keymap.set({ 'n' }, '<leader>bg', switch, { noremap = true, silent = true })
       end,
       enabled = false,
     },
