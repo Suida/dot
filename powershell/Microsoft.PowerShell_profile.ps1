@@ -77,10 +77,9 @@ function showColors {
 
 $env:http_proxy="http://127.0.0.1:7890"
 $env:https_proxy="http://127.0.0.1:7890"
-New-Alias vcpkg $env:HOME\workspace\github\vcpkg\vcpkg.exe
 
 # Fnm
-fnm env --use-on-cd | Out-String | Invoke-Expression
+fnm env --use-on-cd --shell power-shell | Out-String | Invoke-Expression
 $env:PNPM_HOME=$env:FNM_MULTISHELL_PATH
 $env:npm_config_registry="https://registry.npmmirror.com"
 
