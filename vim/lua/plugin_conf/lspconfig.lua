@@ -44,7 +44,7 @@ end
 local capabilities = cmp_lsp.default_capabilities()
 local language_servers = {
   'pyright', 'verible', 'clangd', 'ts_ls', 'rust_analyzer', 'jsonls',
-  'lua_ls', 'vimls', 'texlab', 'cmake',
+  'vimls', 'texlab', 'cmake',
 }
 
 for _, server in ipairs(language_servers) do
@@ -62,22 +62,22 @@ lspconfig.clangd.setup {
   capabilities = capabilities,
 }
 
-lspconfig.lua_ls.setup {
-  cmd = { "lua-language-server", "--metapath", "~/.cache/lua-language-server/meta/" },
-  on_attach = on_attach,
-  flags = lsp_flags,
-  capabilities = capabilities,
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = {
-          'vim',
-        }
-      }
-    }
-  },
-}
-
+-- lspconfig.lua_ls.setup {
+--   cmd = { "lua-language-server", "--metapath", "~/.cache/lua-language-server/meta/" },
+--   on_attach = on_attach,
+--   flags = lsp_flags,
+--   capabilities = capabilities,
+--   settings = {
+--     Lua = {
+--       diagnostics = {
+--         globals = {
+--           'vim',
+--         }
+--       }
+--     }
+--   },
+-- }
+--
 lspconfig.verible.setup {
   cmd = {
     'verible-verilog-ls',

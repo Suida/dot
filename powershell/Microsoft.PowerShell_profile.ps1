@@ -56,7 +56,6 @@ if (Test-Path($ChocolateyProfile)) {
 # Batcat
 $env:BAT_THEME="GitHub"
 
-
 function showColors {
     $colors = [enum]::GetValues([System.ConsoleColor])
     Foreach ($bgcolor in $colors){

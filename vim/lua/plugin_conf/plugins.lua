@@ -34,7 +34,6 @@ require('lazy').setup({
     { 'mfussenegger/nvim-dap-python', dependencies = { "mfussenegger/nvim-dap" } },
     {
       'glepnir/lspsaga.nvim',
-      lazy = true,
       branch = 'main',
       event = 'LspAttach',
       config = function()
@@ -46,6 +45,7 @@ require('lazy').setup({
         --Please make sure you install markdown and markdown_inline parser
         { 'nvim-treesitter/nvim-treesitter' }
       },
+      enabled = true,
     }
   ,
     'hrsh7th/cmp-nvim-lsp',

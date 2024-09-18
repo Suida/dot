@@ -56,7 +56,8 @@ require 'plugin_conf.editorconfig'
 require 'plugin_conf.translator'
 require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
-require 'user.color_mode_detector'
+
+require('user.autocolor').setup()
 
 
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]
