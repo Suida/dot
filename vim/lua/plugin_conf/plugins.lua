@@ -24,7 +24,9 @@ require('packer').startup(function(use)
     }
   }
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } }
+  use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } }
+  use { 'julianolf/nvim-dap-lldb', requires = { "mfussenegger/nvim-dap" } }
+  use { 'mfussenegger/nvim-dap-python', requires = { "mfussenegger/nvim-dap" } }
   use {
     'glepnir/lspsaga.nvim',
     opt = true,
