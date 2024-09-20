@@ -22,9 +22,9 @@ end
 
 function scheme_for_appearance(appearance)
   if appearance:find 'Dark' then
-    return 'OneHalfDark'
+    return 'rose-pine-moon'
   else
-    return 'OneHalfLight'
+    return 'rose-pine-dawn'
   end
 end
 
@@ -183,7 +183,7 @@ else
 end
 
 return {
-  font = wezterm.font 'CaskaydiaCove Nerd Font Mono',
+  font = wezterm.font 'CaskaydiaCove Nerd Font',
   font_size = 10.0,
   color_scheme = scheme_for_appearance(get_appearance()),
   default_prog = default_prog,
@@ -237,6 +237,6 @@ return {
   -- timeout_milliseconds defaults to 3000 and can be omitted
   leader = { key = 's', mods = 'CTRL', timeout_milliseconds = 3000 },
   keys = key_bindings,
-  harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
+  harfbuzz_features = { "calt=1", "clig=1", "liga=1" },
   status_update_interval = 2000,
 }
