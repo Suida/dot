@@ -7,6 +7,7 @@ M = {
       if M.previous_mode:match(mode) then
         return;
       end
+      M.previous_mode = mode
       if mode:match('dark') then
         vim.schedule(function()
           vim.o.background = 'dark';
