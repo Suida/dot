@@ -18,9 +18,6 @@ end
 
 -- Exit terminal mode
 vim.keymap.set({ 't', 'i' }, 'jk', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set({ 't', 'i' }, 'Jk', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set({ 't', 'i' }, 'JK', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set({ 't', 'i' }, 'jjk', [[<C-\><C-n>]], { noremap = true })
 
 
 -- Load vim config files

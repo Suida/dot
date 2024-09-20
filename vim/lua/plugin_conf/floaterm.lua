@@ -1,30 +1,61 @@
-local utils = require 'user.utils'
+local toggleterm, utils = require('toggleterm'), require 'user.utils';
+
+local shell;
 
 if utils.get_os_type() == 'unix' then
-  vim.g.floaterm_shell = '/usr/bin/zsh'
+  shell = [[/usr/bin/zsh]];
 else
-  vim.g.floaterm_shell = [[pwsh.exe]]
+  shell = [[pwsh.exe]];
 end
 
-local opts = { noremap = true, silent = true }
 
--- vim.g.floaterm_wintype = 'split'
-vim.g.floaterm_width = 0.99999
-vim.g.floaterm_height = 0.4
-vim.g.floaterm_position = 'bottom'
-vim.g.floaterm_borderchars = '─ ─ ┌┐┘└'
-vim.keymap.set('n', '<A-Backspace>', [[:FloatermToggle<CR>]], opts)
-vim.keymap.set('t', '<A-Backspace>', [[<C-\><C-n>:exe "sleep 100m \| FloatermToggle"<CR>]], opts)
-vim.keymap.set('t', '<C-v>', [[<C-\><C-n>:exe "sleep 100m \| FloatermNew"<CR>]], opts)
-vim.keymap.set('t', '<C-x>', [[<C-\><C-n>:exe "sleep 100m \| FloatermKill"<CR>]], opts)
-vim.keymap.set('t', '<C-l>', [[<C-\><C-n>:exe "sleep 100m \| FloatermNext"<CR>]], opts)
-vim.keymap.set('t', '<C-h>', [[<C-\><C-n>:exe "sleep 100m \| FloatermPrev"<CR>]], opts)
+toggleterm.setup({
+  shell = shell,
+  size = function(term)
+    if term.direction == 'horizontal' then
+      return math.max(utils.get_tab_height() / 3, 20);
+    elseif term.direction == 'vertical' then
+      return math.max(utils.get_tab_width() / 5, 50);
+    end
+  end,
+});
 
-vim.cmd [[
-  augroup floater_color
-  autocmd!
-  autocmd BufEnter * hi! link FloatermBorder CursorLineNr
-  augroup END
-]]
+local toggle_keys =  '<A-d>%d'
+local toggle_cmd = '<cmd>ToggleTerm %d<CR>'
 
+for i = 1,9 do
+  vim.keymap.set({ 'n', 't' }, string.format(toggle_keys, i), string.format(toggle_cmd, i), opts)
+end
+vim.keymap.set({ 'n', 't' }, '<A-Backspace>',  '<cmd>ToggleTermToggleAll<CR>', opts)
+
+
+-- Lazygit Integration
+local Terminal = require('toggleterm.terminal').Terminal;
+
+local lazygit = Terminal:new({
+  cmd = "lazygit",
+  dir = "git_dir",
+  direction = "float",
+  float_opts = {
+    border = "double",
+  },
+  -- function to run on opening the terminal
+  on_open = function(term)
+    vim.cmd("startinsert!")
+    vim.keymap.set("n", "q", "<cmd>close<CR>", { noremap = true, silent = true, buffer = term.bufnr, });
+    -- print(term.bufnr)
+    -- vim.defer_fn(function ()
+      vim.keymap.del({ 'i', 't' }, 'jk');
+    -- end, 3000);
+  end,
+  -- function to run on closing the terminal
+  on_close = function(term)
+    vim.keymap.set({ 'i', 't' }, 'jk', [[<C-\><C-n>]], { noremap = true })
+    vim.cmd("startinsert!")
+  end,
+})
+function _lazygit_toggle()
+  lazygit:toggle()
+end
+vim.api.nvim_set_keymap("n", "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
 

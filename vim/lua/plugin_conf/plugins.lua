@@ -138,6 +138,7 @@ require('lazy').setup({
       dependencies = 'nvim-tree/nvim-web-devicons',
     },
     'voldikss/vim-floaterm',
+    'akinsho/toggleterm.nvim',
     'willothy/flatten.nvim',
     'tomtom/tcomment_vim',
     {
@@ -151,11 +152,13 @@ require('lazy').setup({
     {
       'TimUntersberger/neogit',
       config = function()
-        require('neogit').setup {}
+        require('neogit').setup {
+          graph_style = "unicode",
+        }
         vim.keymap.set({ 'n' }, '<leader>gg', '<cmd>Neogit<CR>')
       end
-    }
-  ,
+    },
+
     -- Better move
     'nvim-tree/nvim-web-devicons',
     'nvim-tree/nvim-tree.lua',
@@ -208,7 +211,10 @@ require('lazy').setup({
     'godlygeek/tabular',
     {
       'iamcco/markdown-preview.nvim',
-      build = function() vim.fn['mkdp#util#install']() end,
+      build = 'cd app && npx --yes yarn install',
+      init = function()
+        vim.g.mkdp_filetypes = { "markdown" }
+      end,
       ft = { 'markdown', 'vim-plug', }
     },
     -- Asm
@@ -226,5 +232,11 @@ require('lazy').setup({
   },
 
   install = { colorscheme = { 'onehalflight' } },
-  checker = { enabled = true },
+  checker = {
+    enabled = true,
+    concurrency = nil, ---@type number? set to 1 to check for updates very slowly
+    notify = true, -- get a notification when new updates are found
+    frequency = 3600*24*7, -- check for updates every hour
+    check_pinned = false, -- check for pinned packages that can't be updated
+  },
 })
