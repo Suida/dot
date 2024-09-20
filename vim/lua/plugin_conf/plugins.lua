@@ -38,7 +38,11 @@ require('lazy').setup({
       event = 'LspAttach',
       config = function()
         ---@diagnostic disable-next-line: different-requires
-        require('lspsaga').setup({})
+        require('lspsaga').setup({
+          beacon = {
+            enable = false,
+          },
+        });
       end,
       dependencies = {
         { 'nvim-tree/nvim-web-devicons' },
