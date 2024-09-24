@@ -94,42 +94,14 @@ require('lazy').setup({
       'rose-pine/neovim',
       lazy = false,
       config = function ()
-        require('user.utils').detect_windows_theme(function(mode)
-          if mode:match('dark') then
-            vim.schedule(function()
-              vim.o.background = 'dark'
-              vim.cmd.colorscheme 'rose-pine-moon'
-            end)
-          elseif mode:match('light') then
-            vim.schedule(function()
-              vim.o.background = 'light'
-              vim.cmd.colorscheme 'rose-pine-dawn'
-            end)
-          else
-            print("Color mode not resolved")
-          end
-        end)
+        require('user.utils').auto_color_config('rose-pine-dawn', 'rose-pine-moon');
       end
     },
     {
       'sonph/onehalf',
       config = function(plugin)
         vim.opt.rtp:append(plugin.dir .. "/vim")
-        require('user.utils').detect_windows_theme(function(mode)
-          if mode:match('dark') then
-            vim.schedule(function()
-              vim.o.background = 'dark'
-              vim.cmd.colorscheme 'onehalfdark'
-            end)
-          elseif mode:match('light') then
-            vim.schedule(function()
-              vim.o.background = 'light'
-              vim.cmd.colorscheme 'onehalflight'
-            end)
-          else
-            vim.notify("An error occurred!", vim.log.levels.ERROR)
-          end
-        end)
+        require('user.utils').auto_color_config('onehalfdark', 'onehalflight');
       end,
       enabled = false,
     },

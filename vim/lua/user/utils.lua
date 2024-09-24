@@ -90,12 +90,34 @@ M = {
       if data then
         if data:match('0') then
           result = result .. 'dark'
-        else
+        elseif data:match('1') then
           result = result .. 'light'
         end
       end
     end)
-  end
+  end,
+
+  -- Using asynchronous API, auto-detect system's color mode,
+  -- based on which set Neovim's color scheme
+  auto_color_config = function(light, dark)
+    require('user.utils').detect_windows_theme(function(mode)
+      if mode:match('dark') then
+        vim.schedule(function()
+          vim.o.background = 'dark'
+          vim.cmd('colorscheme ' .. dark)
+        end)
+      elseif mode:match('light') then
+        vim.schedule(function()
+          vim.o.background = 'light'
+          vim.cmd('colorscheme ' .. light)
+        end)
+      else
+        vim.schedule(function()
+          vim.notify("Color mode not detected!", vim.log.levels.ERROR)
+        end)
+      end
+    end);
+  end,
 }
 
 return M

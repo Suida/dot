@@ -44,7 +44,7 @@ end
 local capabilities = cmp_lsp.default_capabilities()
 local language_servers = {
   'pyright', 'verible', 'clangd', 'ts_ls', 'rust_analyzer', 'jsonls',
-  'vimls', 'texlab', 'cmake',
+  'vimls', 'texlab', 'cmake', 'svls',
 }
 
 for _, server in ipairs(language_servers) do
@@ -99,7 +99,14 @@ lspconfig.texlab.setup {
     texlab = {
       build = {
         executable = 'tectonic',
-        args = { '%f', '--outdir', './build', },
+        args = {
+          "-X",
+          "compile",
+          "%f",
+          "--synctex",
+          "--keep-logs",
+          "--keep-intermediates"
+        },
         onSave = true,
         forwardSearchAfter = true,
         forwardSearch = {
