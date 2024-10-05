@@ -35,7 +35,7 @@ set nobackup
 set nowritebackup
 set shortmess+=c
 set updatetime=100
-set guicursor=n-v-c-sm:block-blinkwait300-blinkon500-blinkoff500-Cursor,i:hor20-blinkwait300-blinkon500-blinkoff500-Cursor
+set guicursor=n-v-c-sm:block-blinkwait300-blinkon500-blinkoff500-TermCursor,i:hor20-blinkwait300-blinkon500-blinkoff500-TermCursor
 augroup guidetect
     autocmd VimEnter * call s:guisettings()
 augroup END

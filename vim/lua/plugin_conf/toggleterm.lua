@@ -20,7 +20,7 @@ toggleterm.setup({
   end,
 });
 
-local toggle_keys =  '<A-d>%d'
+local toggle_keys = '<A-d>%d'
 local toggle_cmd = '<cmd>ToggleTerm %d<CR>'
 
 for i = 1,9 do

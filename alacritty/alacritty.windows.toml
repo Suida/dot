@@ -1,0 +1,28 @@
+import = [
+  "~/workspace/github/rose-pine-alacritty/dist/rose-pine-moon.toml",
+]
+
+[shell]
+program = "pwsh"
+args = [ "-WorkingDirectory", "~", ]
+
+[font]
+normal = { family = "CaskaydiaCove NFM", style = "Regular" }
+bold = { family = "CaskaydiaCove NFM", style = "Bold" }
+italic = { family = "CaskaydiaCove NFM", style = "Italic" }
+bold_italic = { family = "CaskaydiaCove NFM", style = "Bold Italic" }
+size = 11.0
+
+[keyboard]
+bindings = [
+  { key = "W"    , mods = "Alt"          , action = "Quit"                                },
+  { key = "N"    , mods = "Alt"          , action = "SpawnNewInstance"                    },
+  { key = "C"    , mods = "Alt"          , action = "Copy"                                },
+  { key = "V"    , mods = "Alt"          , action = "Paste"                               },
+  { key = "M"    , mods = "Alt"          , action = "Minimize"                            },
+  { key = "W"    , mods = "Command"      , action = "Quit"                                },
+  { key = "N"    , mods = "Command"      , action = "SpawnNewInstance"                    },
+  { key = "Space", mods = "Control"      , chars  = "\u001b"                              },
+  { key = "Space", mods = "Shift|Control", action = "ScrollToBottom", mode = "Vi|~Search" },
+  { key = "Space", mods = "Shift|Control", action = "ToggleViMode",   mode = "~Search"    },
+]
