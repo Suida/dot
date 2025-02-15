@@ -30,11 +30,32 @@ end
 
 wezterm.on('update-right-status', function(window, pane)
   local overrides = window:get_config_overrides() or {}
-  local color = scheme_for_appearance(get_appearance())
+  local appearance = get_appearance()
+
+  local color = scheme_for_appearance(appearance)
+  local cursor_bg = appearance == "Dark" and "#DDDDDD" or "#AAAAAA"
+  local cursor_fg = appearance == "Dark" and "#222222" or "#DDDDDD"
+
+
   if overrides.color_scheme ~= color then
     overrides.color_scheme = color
+    overrides.colors = {
+      cursor_bg = cursor_bg,
+      cursor_fg = cursor_fg,
+    }
     window:set_config_overrides(overrides)
   end
+end)
+
+wezterm.on("format-tab-title", function(tab_info)
+  local title = tab_info.active_pane.title
+  local _, _, pat0 = title:find("(.*)%.exe")
+  local _, _, pat1 = title:find(".*\\(.*)%.EXE")
+
+
+  title = tab_info.tab_index + 1 .. ": " .. (pat0 or pat1 or title)
+
+  return title
 end)
 
 local act = wezterm.action
@@ -191,8 +212,7 @@ return {
   cursor_blink_ease_in = 'Constant',
   cursor_blink_ease_out = 'Constant',
 
-  use_fancy_tab_bar = false,
-  tab_bar_at_bottom = true,
+  window_decorations = "INTEGRATED_BUTTONS",
 
   window_padding = {
     left = 1,
@@ -235,7 +255,7 @@ return {
   }, -- }}}
 
   -- timeout_milliseconds defaults to 3000 and can be omitted
-  leader = { key = 's', mods = 'CTRL', timeout_milliseconds = 3000 },
+  leader = { key = 'i', mods = 'CTRL', timeout_milliseconds = 3000 },
   keys = key_bindings,
   harfbuzz_features = { "calt=1", "clig=1", "liga=1" },
   status_update_interval = 2000,
