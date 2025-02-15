@@ -1,4 +1,8 @@
-local dap, dapui, dap_python, dap_lldb = require('dap'), require('dapui'), require('dap-python'), require('dap-lldb');
+local dap_status_ok, dap = pcall(require, 'dap')
+if not dap_status_ok then
+  return
+end
+local dapui, dap_python, dap_lldb = require('dapui'), require('dap-python'), require('dap-lldb');
 
 dapui.setup()
 dap_python.setup();

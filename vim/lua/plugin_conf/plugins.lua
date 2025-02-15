@@ -23,10 +23,6 @@ require('lazy').setup({
       'williamboman/mason-lspconfig.nvim',
       'neovim/nvim-lspconfig',
       'mfussenegger/nvim-dap',
-      {
-        'jose-elias-alvarez/null-ls.nvim',
-        ft = { 'lua', 'python', },
-      }
     },
     { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
     { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
@@ -49,9 +45,35 @@ require('lazy').setup({
         --Please make sure you install markdown and markdown_inline parser
         { 'nvim-treesitter/nvim-treesitter' }
       },
-      enabled = true,
-    }
-  ,
+      enabled = false,
+    },
+
+    {
+      "scalameta/nvim-metals",
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+      },
+      ft = { "scala", "sbt", "java" },
+      -- opts = function()
+      --   local metals_config = require("metals").bare_config()
+      --   metals_config.on_attach = function(client, bufnr)
+      --     -- your on_attach function
+      --   end
+      --
+      --   return metals_config
+      -- end,
+      config = function(self, metals_config)
+        local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = self.ft,
+          callback = function()
+            require("metals").initialize_or_attach(metals_config)
+          end,
+          group = nvim_metals_group,
+        })
+      end
+    },
+
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-buffer',
     'hrsh7th/cmp-path',
@@ -70,8 +92,8 @@ require('lazy').setup({
       'mattn/emmet-vim',
       init = function() vim.g.user_emmet_leader_key = '<C-x>' end
     },
-    'honza/vim-snippets'
-  ,
+    'honza/vim-snippets',
+
     -- Zettelkasten
     {
       'renerocksai/telekasten.nvim',
@@ -87,9 +109,9 @@ require('lazy').setup({
     'brooth/far.vim',
     -- Session manager
     'mhinz/vim-startify',
-    'stevearc/overseer.nvim',
-
-    -- Outlook
+  --   'stevearc/overseer.nvim',
+  --
+  --   -- Outlook
     {
       'rose-pine/neovim',
       lazy = false,
@@ -109,7 +131,6 @@ require('lazy').setup({
       'nvim-lualine/lualine.nvim',
       dependencies = 'nvim-tree/nvim-web-devicons',
     },
-    'voldikss/vim-floaterm',
     'akinsho/toggleterm.nvim',
     {
       "willothy/flatten.nvim",
@@ -184,14 +205,14 @@ require('lazy').setup({
         require'hop'.setup {}
       end
     },
-    'andymass/vim-matchup',
+    -- 'andymass/vim-matchup',
     'tpope/vim-surround',
     -- Brackets
     'jiangmiao/auto-pairs',
     'tpope/vim-unimpaired',
     -- Marker
-    'kshenoy/vim-signature'
-  ,
+    'kshenoy/vim-signature',
+
     -- Fuzzy finder
     {
       'nvim-telescope/telescope.nvim',
@@ -206,7 +227,6 @@ require('lazy').setup({
     -- Indentation line
     'Yggdroot/indentLine',
     'tpope/vim-sleuth',
-
 
     -- Language supports
     -- Python utils // The indent really saved my life
@@ -234,8 +254,8 @@ require('lazy').setup({
     },
     -- Asm
     { 'Shirk/vim-gas', ft = 'asm' },
-    { 'cespare/vim-toml', ft = { 'toml', } }
-  ,
+    { 'cespare/vim-toml', ft = { 'toml', } },
+
     -- Other utilities
     'mhinz/vim-rfc',
     'editorconfig/editorconfig-vim',
@@ -243,7 +263,7 @@ require('lazy').setup({
     'voldikss/vim-translator',
     'jceb/vim-orgmode',
     'itchyny/calendar.vim',
-    'lilydjwg/fcitx.vim'
+    'lilydjwg/fcitx.vim',
   },
 
   install = { colorscheme = { 'onehalflight' } },
