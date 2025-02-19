@@ -109,7 +109,7 @@ require('lazy').setup({
     'brooth/far.vim',
     -- Session manager
     'mhinz/vim-startify',
-  --   'stevearc/overseer.nvim',
+    'stevearc/overseer.nvim',
   --
   --   -- Outlook
     {

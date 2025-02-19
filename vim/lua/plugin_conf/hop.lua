@@ -5,9 +5,7 @@ end
 
 local directions = require('hop.hint').HintDirection
 
-vim.keymap.set('n', 'S', 's', { remap = false })
-
-vim.keymap.set('n', 's', function()
+vim.keymap.set('n', ';', function()
   hop.hint_char1({ direction = nil, current_line_only = false })
 end, { remap = true })
 
@@ -23,6 +21,10 @@ vim.keymap.set('n', 't', function()
   hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false, hint_offset = -1 })
 end, {remap=true})
 
-vim.keymap.set('n', 'T', function()
-  hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false, hint_offset = 1 })
+vim.keymap.set('n', '<leader>K', function()
+  hop.hint_lines({ direction = directions.BEFORE_CURSOR, current_line_only = false })
+end, {remap=true})
+
+vim.keymap.set('n', '<leader>J', function()
+  hop.hint_lines({ direction = directions.AFTER_CURSOR, current_line_only = false })
 end, {remap=true})

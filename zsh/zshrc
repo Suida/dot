@@ -73,7 +73,7 @@ plugins=(
     history
     vscode
     z
-    docker 
+    # docker 
     docker-compose
     kubectl
     golang
