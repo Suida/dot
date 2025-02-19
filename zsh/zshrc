@@ -142,6 +142,11 @@ fi
 # Cargo env
 . "$HOME/.cargo/env"
 
+export PATH=$HOME/bin:$PATH
+
 # Machine specific configurations
 [ -f ~/.local_conf.sh ] && source ~/.local_conf.sh
 
+
+# Coursier
+export PATH="$PATH:/home/hang/.local/share/coursier/bin"

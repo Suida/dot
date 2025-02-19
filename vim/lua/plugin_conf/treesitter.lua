@@ -6,7 +6,7 @@ end
 require('nvim-treesitter.configs').setup {
   ensure_installed = {
     "c", "cpp", "lua", "vim", "vimdoc", "query",
-    "python", "latex", "verilog", "markdown",
+    "python", "verilog", "markdown",
   },
   highlight = {
     enable = true,
