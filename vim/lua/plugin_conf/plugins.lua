@@ -28,6 +28,7 @@ require('lazy').setup({
     { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
     { 'julianolf/nvim-dap-lldb', dependencies = { "mfussenegger/nvim-dap" } },
     { 'mfussenegger/nvim-dap-python', dependencies = { "mfussenegger/nvim-dap" } },
+    { 'github/copilot.vim' },
     {
       'glepnir/lspsaga.nvim',
       branch = 'main',
@@ -208,7 +209,13 @@ require('lazy').setup({
     -- 'andymass/vim-matchup',
     'tpope/vim-surround',
     -- Brackets
-    'jiangmiao/auto-pairs',
+    {
+        'windwp/nvim-autopairs',
+        event = "InsertEnter",
+        config = true
+        -- use opts = {} for passing setup options
+        -- this is equivalent to setup({}) function
+    },
     'tpope/vim-unimpaired',
     -- Marker
     'kshenoy/vim-signature',
