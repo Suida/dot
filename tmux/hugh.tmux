@@ -12,7 +12,7 @@ set-window-option -g window-status-format '#[fg=#6699cc] #I#[fg=#aaaaaa] #W#[282
 
 # make foreground window look like bold yellow foreground tab
 set-window-option -g window-status-current-style none
-set-window-option -g window-status-current-format '#[fg=#f99157] #I#[fg=#eeeeee] #W#[282c34]'
+set-window-option -g window-status-current-format '#[fg=#f99157] #I#[fg=#AAAAAA] #W#[282c34]'
 
 # message bar or "prompt"
 set -g message-style bg="#eaeaea"

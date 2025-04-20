@@ -73,7 +73,7 @@ plugins=(
     history
     vscode
     z
-    docker 
+    # docker 
     docker-compose
     kubectl
     golang
@@ -104,67 +104,8 @@ then
 fi
 alias doc="nohup evince $* > /dev/null &"
 
-# Define `open` command and `wh` variable
-if [[ -e "/proc/sys/kernel/osrelease" ]] && [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
-then
-    function open
-    {
-        if [[ $1 && ! -e $1 ]]
-        then
-            echo "File not found: $1" 1>&2
-            return 1
-        fi
-        abspath=$(echo -E '\\wsl.localhost\'$WSL_DISTRO_NAME$(realpath $1) | sed 's|\/|\\|g')
-        cmd.exe /C start $abspath 2> /dev/null
-    }
-
-    if [[ -e "$HOME/.winhome" ]]
-    then
-        export WIN_HOME=$(cat $HOME/.winhome)
-    else
-        export WIN_HOME=$(pwsh.exe -nop -c '-join ("/mnt/c", ($Env:HOMEPATH -split "\\" -join "/"))' | sed 's/\r//')
-        echo $WIN_HOME > $HOME/.winhome
-    fi
-    export wh=$WIN_HOME
-fi
-
-# Get proxy uri
-AWK=awk
-if [[ -e "$HOME/.PROXY" ]]
-then
-    PROXY_IP=$($AWK 'BEGIN{FS=":"} {print $2}' $HOME/.PROXY | cut -c 3-)
-    PROXY_URI=$(cat $HOME/.PROXY)
-else
-    # Get windows host ip address if it is under WSL environment.
-    if [[ -e "/proc/sys/kernel/osrelease" ]] && [[ $(cat /proc/sys/kernel/osrelease) = *microsoft* ]]
-    then
-        PROXY_IP=$(cat /etc/resolv.conf | awk '$1=="nameserver" {print $2}')
-    else
-        # If not, the default ip address is localhost
-        PROXY_IP=127.0.0.1
-    fi
-
-    # Set default proxy port which will possibly be reformed when meeting new
-    # requirements.
-    PROXY_URI=http://$PROXY_IP:7890
-fi
-export http_proxy=$PROXY_URI
-export https_proxy=$PROXY_URI
-export HTTP_PROXY=$PROXY_URI
-export HTTPS_PROXY=$PROXY_URI
-export NO_PROXY=.docker.internal,$NO_PROXY
-
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# fnm
-export PATH=$HOME/.fnm:$PATH
-eval "`fnm env`"
-export npm_config_registry=https://registry.npm.taobao.org
-
-# pnpm
-export PNPM_HOME="/home/hugh/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
 
 # Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -191,5 +132,16 @@ add-zsh-hook -Uz chpwd insource
 # Fix tmux color
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#989cb4"
 
+# fnm
+FNM_PATH="/home/hang/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="/home/hang/.local/share/fnm:$PATH"
+  eval "`fnm env`"
+fi
+
+# Cargo env
+. "$HOME/.cargo/env"
+
 # Machine specific configurations
 [ -f ~/.local_conf.sh ] && source ~/.local_conf.sh
+
