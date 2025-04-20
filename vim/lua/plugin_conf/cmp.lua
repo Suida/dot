@@ -63,10 +63,10 @@ cmp.setup {
     end, { "i", "s" }),
   }),
   matching = {
-    -- disallow_fuzzy_matching = false,
-    -- disallow_fullfuzzy_matching = false,
-    -- disallow_partial_fuzzy_matching = false,
-    -- disallow_partial_matching = false,
+    disallow_fuzzy_matching = false,
+    disallow_fullfuzzy_matching = false,
+    disallow_partial_fuzzy_matching = false,
+    disallow_partial_matching = false,
     disallow_prefix_unmatching = false,
     disallow_symbol_nonprefix_matching = false,
   },
@@ -94,6 +94,9 @@ cmp.setup {
   }),
   completion = {
     keyword_length = 3,
+  },
+  experimental = {
+    ghost_text = false -- this feature conflict with copilot.vim's preview.
   },
 }
 
