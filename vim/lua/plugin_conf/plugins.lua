@@ -23,6 +23,10 @@ require('lazy').setup({
       'williamboman/mason-lspconfig.nvim',
       'neovim/nvim-lspconfig',
       'mfussenegger/nvim-dap',
+      {
+        'nvimtools/none-ls.nvim',
+        ft = { 'lua', 'python' },
+      }
     },
     { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
     { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },

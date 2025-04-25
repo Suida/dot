@@ -43,7 +43,7 @@ if not cmp_lsp_status_ok then
 end
 local capabilities = cmp_lsp.default_capabilities()
 local language_servers = {
-  'pyright', 'verible', 'clangd', 'ts_ls', 'rust_analyzer', 'jsonls',
+  'verible', 'clangd', 'ts_ls', 'rust_analyzer', 'jsonls',
   'vimls', 'texlab', 'cmake', -- 'svls',
 }
 
@@ -62,22 +62,23 @@ lspconfig.clangd.setup {
   capabilities = capabilities,
 }
 
--- lspconfig.lua_ls.setup {
---   cmd = { "lua-language-server", "--metapath", "~/.cache/lua-language-server/meta/" },
---   on_attach = on_attach,
---   flags = lsp_flags,
---   capabilities = capabilities,
---   settings = {
---     Lua = {
---       diagnostics = {
---         globals = {
---           'vim',
---         }
---       }
---     }
---   },
--- }
---
+
+lspconfig.lua_ls.setup {
+  cmd = { "lua-language-server", "--metapath", "~/.cache/lua-language-server/meta/" },
+  on_attach = on_attach,
+  flags = lsp_flags,
+  capabilities = capabilities,
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = {
+          'vim',
+        }
+      }
+    }
+  },
+}
+
 lspconfig.verible.setup {
   cmd = {
     'verible-verilog-ls',
@@ -117,3 +118,5 @@ lspconfig.texlab.setup {
     },
   },
 }
+
+require("plugin_conf.lsp-python").setup(lspconfig, on_attach, lsp_flags, capabilities)
