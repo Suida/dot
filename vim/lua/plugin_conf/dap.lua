@@ -2,16 +2,18 @@ local dap_status_ok, dap = pcall(require, 'dap')
 if not dap_status_ok then
   return
 end
-local dapui, dap_python, dap_lldb = require('dapui'), require('dap-python'), require('dap-lldb');
+local dapui, dap_lldb = require('dapui'), require('dap-lldb');
+local dap_python = require('plugin_conf.dap-python');
 
 dapui.setup()
-dap_python.setup();
 dap_lldb.setup();
+dap_python.setup(dap)
 
+vim.keymap.set('n', '<F17>', function() require('dap').disconnect() end)  -- <F17> is <S-F5> in wezterm
 vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
 vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
 vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
-vim.keymap.set('n', '<F12>', function() require('dap').step_out() end)
+vim.keymap.set('n', '<F23>', function() require('dap').step_out() end)    -- <F23> is <S-F11> in wezterm
 vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end)
 vim.keymap.set('n', '<Leader>dB', function() require('dap').set_breakpoint() end)
 vim.keymap.set('n', '<Leader>dcb', function() require('dap').set_breakpoint(vim.fn.input("Condition: ")) end)
