@@ -74,12 +74,13 @@ plugins=(
     vscode
     z
     # docker 
-    docker-compose
+    # docker-compose
     kubectl
     golang
     yarn
     rust
     virtualenv
+    poetry
     zsh-autosuggestions
     zsh-syntax-highlighting
 )
@@ -107,18 +108,6 @@ alias doc="nohup evince $* > /dev/null &"
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-fi
-eval "$(pyenv virtualenv-init -)"
-export PYTHON_CONFIGURE_OPTS="--enable-framework"
-export PYTHON_CONFIGURE_OPTS="--enable-shared"
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-
 # Change driectory hook
 function insource() {
     if [[ $(ls -a) == *.zsh-chpwd-hook* ]]
@@ -145,3 +134,4 @@ fi
 # Machine specific configurations
 [ -f ~/.local_conf.sh ] && source ~/.local_conf.sh
 
+export PATH="/home/hang/.local/bin:$PATH"
