@@ -31,6 +31,7 @@ vim.cmd('source ' .. vim_mapping_src)
 require 'plugin_conf.plugins'
 require 'plugin_conf.mason'
 require 'plugin_conf.lspconfig'
+require 'plugin_conf.none-ls'
 require 'plugin_conf.dap'
 -- require 'plugin_conf.lspsaga'
 require 'plugin_conf.treesitter'

@@ -22,7 +22,7 @@ endif
 set hlsearch
 set incsearch
 set showmatch
-set textwidth=80
+set textwidth=120
 set encoding=utf-8
 set spelllang=en_us,cjk
 set conceallevel=2
@@ -75,7 +75,7 @@ set ttimeoutlen=100
 " Color
 set number
 set relativenumber
-set colorcolumn=80
+set colorcolumn=120
 set signcolumn=yes:1
 set cursorline
 set t_Co=256
