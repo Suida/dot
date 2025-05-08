@@ -122,16 +122,26 @@ add-zsh-hook -Uz chpwd insource
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#989cb4"
 
 # fnm
-FNM_PATH="/home/hang/.local/share/fnm"
+FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
-  export PATH="/home/hang/.local/share/fnm:$PATH"
+  export PATH="$HOME/.local/share/fnm:$PATH"
   eval "`fnm env`"
 fi
 
 # Cargo env
 . "$HOME/.cargo/env"
 
+# uv
+autoload -U bashcompinit
+bashcompinit
+
+eval "$(uv generate-shell-completion zsh)"
+eval "$(uvx --generate-shell-completion zsh)"
+
+alias ll="exa --long --group-directories-first $*"
+alias l="exa --long --group-directories-first -a $*"
+
+export PATH="$HOME/.local/bin:$PATH"
+
 # Machine specific configurations
 [ -f ~/.local_conf.sh ] && source ~/.local_conf.sh
-
-export PATH="/home/hang/.local/bin:$PATH"
