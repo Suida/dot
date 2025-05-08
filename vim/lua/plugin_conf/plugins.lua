@@ -20,14 +20,22 @@ require('lazy').setup({
   spec = {
     {
       'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
+      { 'williamboman/mason-lspconfig.nvim', dependencies = { 'williamboman/mason.nvim' } },
       'neovim/nvim-lspconfig',
       'mfussenegger/nvim-dap',
+      {
+        'nvimtools/none-ls.nvim',
+        ft = { 'lua', 'python' },
+      }
     },
     { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
     { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
-    { 'julianolf/nvim-dap-lldb', dependencies = { "mfussenegger/nvim-dap" } },
+    { 'suida/nvim-dap-lldb', dependencies = { "mfussenegger/nvim-dap" } },
     { 'mfussenegger/nvim-dap-python', dependencies = { "mfussenegger/nvim-dap" } },
+    {
+      'github/copilot.vim',
+      enabled = false,
+    },
     {
       'glepnir/lspsaga.nvim',
       branch = 'main',
@@ -110,8 +118,8 @@ require('lazy').setup({
     -- Session manager
     'mhinz/vim-startify',
     'stevearc/overseer.nvim',
-  --
-  --   -- Outlook
+
+    -- Outlook
     {
       'rose-pine/neovim',
       lazy = false,
@@ -208,7 +216,14 @@ require('lazy').setup({
     -- 'andymass/vim-matchup',
     'tpope/vim-surround',
     -- Brackets
-    'jiangmiao/auto-pairs',
+    {
+        'windwp/nvim-autopairs',
+        dependencies = { { 'hrsh7th/nvim-cmp' } },
+        event = "InsertEnter",
+        config = true
+        -- use opts = {} for passing setup options
+        -- this is equivalent to setup({}) function
+    },
     'tpope/vim-unimpaired',
     -- Marker
     'kshenoy/vim-signature',

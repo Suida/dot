@@ -27,6 +27,7 @@ toggleterm.setup({
 local toggle_keys = '<A-d>%d'
 local toggle_cmd = '<cmd>ToggleTerm %d<CR>'
 
+local opts = { noremap = true, silent = true }
 for i = 1,9 do
   vim.keymap.set({ 'n', 't' }, string.format(toggle_keys, i), string.format(toggle_cmd, i), opts)
 end
@@ -58,8 +59,10 @@ local lazygit = Terminal:new({
     vim.cmd("startinsert!")
   end,
 })
-function _lazygit_toggle()
+
+local function _lazygit_toggle()
   lazygit:toggle()
 end
-vim.api.nvim_set_keymap("n", "<leader>gl", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
+
+vim.keymap.set('n',  "<leader>gl", function() _lazygit_toggle() end)
 

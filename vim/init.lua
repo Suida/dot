@@ -8,7 +8,7 @@ vim.g.maplocalleader = "\\"
 
 -- Set python and node providers
 if utils.get_os_type() == 'unix' then
-  vim.g.python3_host_prog = '~/.pyenv/versions/nvim/bin/python'
+  vim.g.python3_host_prog = '~/.local/share/pynvim-env/.venv/bin/python'
 else
   if os.getenv('PYENV_ROOT') ~= nil then
     vim.g.python3_host_prog = utils.append_slash(os.getenv('PYENV_ROOT')) .. [[versions\nvim\Scripts\python.exe]]
@@ -31,6 +31,7 @@ vim.cmd('source ' .. vim_mapping_src)
 require 'plugin_conf.plugins'
 require 'plugin_conf.mason'
 require 'plugin_conf.lspconfig'
+require 'plugin_conf.none-ls'
 require 'plugin_conf.dap'
 -- require 'plugin_conf.lspsaga'
 require 'plugin_conf.treesitter'
@@ -52,6 +53,7 @@ require 'plugin_conf.editorconfig'
 require 'plugin_conf.translator'
 require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
+require 'plugin_conf.copilot'
 
 require('user.autocolor').setup()
 

@@ -1,12 +1,13 @@
 M = {
   append_slash = function (path)
+    local sep = ''
     if M.get_os_type() == 'win32' then
       sep = '\\'
     else
       sep = '/'
     end
     if path:sub(#path, #path) ~= sep then
-      return path .. sep 
+      return path .. sep
     end
     return path
   end,
@@ -117,6 +118,24 @@ M = {
         end)
       end
     end);
+  end,
+
+  get_class_or_method_name = function()
+    local ts_utils = require("nvim-treesitter.ts_utils")
+
+    local node = ts_utils.get_node_at_cursor()
+    while node do
+      if node:type() == "function_definition" or node:type() == "function_declaration" or node:type() == "method_definition" then
+        for i = 0, node:child_count() - 1 do
+          local child = node:child(i)
+          if child:type() == "identifier" then
+            return vim.treesitter.get_node_text(child, 0)
+          end
+        end
+      end
+      node = node:parent()
+    end
+    return nil
   end,
 }
 

@@ -64,9 +64,9 @@ function showColors {
     }
 }
 
-
-$env:http_proxy="http://127.0.0.1:7890"
-$env:https_proxy="http://127.0.0.1:7890"
+$wsl_host_ip=(Get-NetIPAddress -InterfaceAlias "*WSL*" | Where-Object { $_.AddressFamily -eq "IPv4" }).IPAddress
+$env:http_proxy="http://${wsl_host_ip}:7890"
+$env:https_proxy="http://${wsl_host_ip}:7890"
 
 # Fnm
 fnm env --use-on-cd --shell power-shell | Out-String | Invoke-Expression
