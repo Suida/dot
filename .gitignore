@@ -6,3 +6,5 @@ __pycache__/
 
 # Temp directory created by Nvim Packer
 vim/plugin
+
+tags
