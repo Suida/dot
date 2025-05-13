@@ -124,20 +124,45 @@ require('lazy').setup({
       'rose-pine/neovim',
       lazy = false,
       config = function ()
-        require('user.utils').auto_color_config('rose-pine-dawn', 'rose-pine-moon');
+        vim.o.background = 'dark'
+        vim.cmd('colorscheme rose-pine-moon')
       end
     },
     {
       'sonph/onehalf',
       config = function(plugin)
         vim.opt.rtp:append(plugin.dir .. "/vim")
-        require('user.utils').auto_color_config('onehalfdark', 'onehalflight');
       end,
       enabled = false,
     },
     {
       'nvim-lualine/lualine.nvim',
       dependencies = 'nvim-tree/nvim-web-devicons',
+    },
+    {
+      'akinsho/bufferline.nvim',
+      dependencies = 'nvim-tree/nvim-web-devicons',
+      config = function()
+        vim.schedule(function()
+          require("bufferline").setup {
+            options = {
+              mode = 'tabs',
+              max_name_length = 12,
+              max_prefix_length = 10,
+              numbers = 'ordinal',
+              separator_style = 'slant',
+              show_buffer_close_icons = false,
+              show_duplicate_prefix = false,
+              show_close_icon = false,
+              diagnostics = "nvim_lsp",
+              diagnostics_indicator = function(count, level)
+                  local icon = level:match("error") and " " or " "
+                  return " " .. icon .. count
+              end
+            },
+          }
+        end)
+      end,
     },
     'akinsho/toggleterm.nvim',
     {
@@ -198,6 +223,7 @@ require('lazy').setup({
       config = function()
         require('neogit').setup {
           graph_style = "unicode",
+          disable_context_highlighting = true,
         }
         vim.keymap.set({ 'n' }, '<leader>gg', '<cmd>Neogit<CR>')
       end
