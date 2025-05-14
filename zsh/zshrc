@@ -134,16 +134,15 @@ fi
 export PATH="$PATH:$HOME/.local/share/coursier/bin"
 
 # uv
+export PATH="$HOME/.local/bin:$PATH"
 autoload -U bashcompinit
 bashcompinit
-
 eval "$(uv generate-shell-completion zsh)"
 eval "$(uvx --generate-shell-completion zsh)"
 
 alias ll="exa --long --group-directories-first $*"
 alias l="exa --long --group-directories-first -a $*"
 
-export PATH="$HOME/.local/bin:$PATH"
 export PATH=$HOME/bin:$PATH
 
 # Machine specific configurations
