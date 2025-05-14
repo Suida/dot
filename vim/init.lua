@@ -42,7 +42,7 @@ require 'plugin_conf.overseer'
 require 'plugin_conf.lualine'
 require 'plugin_conf.toggleterm'
 require 'plugin_conf.nvim-tree'
-require 'plugin_conf.hop'
+require 'plugin_conf.hop_conf'
 require 'plugin_conf.telescope'
 require 'plugin_conf.startify'
 require 'plugin_conf.indentline'
@@ -54,11 +54,16 @@ require 'plugin_conf.translator'
 require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
 require 'plugin_conf.copilot'
+require 'plugin_conf.codecompanion_ds'
 
 require('user.autocolor').setup()
 
 
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]
+
+
+-- Hide "~" after the end of a buffer
+vim.opt.fillchars:append({ eob = " " })
 
 
 -- Indentation

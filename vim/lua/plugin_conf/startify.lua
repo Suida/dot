@@ -31,3 +31,4 @@ vim.g.init_startify = function()
   end
 end
 
+vim.g.startify_custom_header = vim.fn['startify#pad'](vim.fn['startify#fortune#boxed']())

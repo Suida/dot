@@ -25,9 +25,6 @@ M = {
     vim.defer_fn(M.worker, 10000);
   end,
   setup = function ()
-    detect_windows_theme(function (mode)
-      M.previous_mode = mode;
-    end);
     M.worker();
   end
 }

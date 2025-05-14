@@ -1,6 +1,6 @@
 local wezterm = require 'wezterm'
 
-function get_os_type()
+local get_os_type = function ()
   return package.config:sub(1, 1) == '/' and 'unix' or 'win32'
 end
 
@@ -13,14 +13,14 @@ end
 
 -- wezterm.gui is not available to the mux server, so take care to
 -- do something reasonable when this config is evaluated by the mux
-function get_appearance()
+local get_appearance = function ()
   if wezterm.gui then
     return wezterm.gui.get_appearance()
   end
   return 'Dark'
 end
 
-function scheme_for_appearance(appearance)
+local scheme_for_appearance = function (appearance)
   if appearance:find 'Dark' then
     return 'rose-pine-moon'
   else
@@ -28,7 +28,7 @@ function scheme_for_appearance(appearance)
   end
 end
 
-wezterm.on('update-right-status', function(window, pane)
+wezterm.on('update-right-status', function(window, _)
   local overrides = window:get_config_overrides() or {}
   local appearance = get_appearance()
 

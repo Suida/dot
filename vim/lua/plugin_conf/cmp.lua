@@ -3,7 +3,7 @@ if not cmp_status_ok then
   return
 end
 
-local compare_status_ok, compare = pcall(require, 'cmp.config.compare')
+local compare_status_ok, _ = pcall(require, 'cmp.config.compare')
 if not compare_status_ok then
   return
 end
@@ -70,21 +70,6 @@ cmp.setup {
     disallow_prefix_unmatching = false,
     disallow_symbol_nonprefix_matching = false,
   },
-  -- sorting = {
-  --   priority_weight = 5,
-  --   comparators = {
-  --     compare.recently_used,
-  --     compare.locality,
-  --     compare.offset,
-  --     compare.exact,
-  --     -- compare.scopes,
-  --     compare.score,
-  --     compare.kind,
-  --     -- compare.sort_text,
-  --     compare.length,
-  --     compare.order,
-  --   },
-  -- },
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
     { name = 'luasnip' }, -- For luasnip users.
