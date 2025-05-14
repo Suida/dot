@@ -48,6 +48,8 @@ codecompanion.setup({
   },
   display = {
     chat = {
+      show_settings = true,
+
       -- Change the default icons
       icons = {
         pinned_buffer = " ",
