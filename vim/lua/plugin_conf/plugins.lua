@@ -33,8 +33,85 @@ require('lazy').setup({
     { 'suida/nvim-dap-lldb', dependencies = { "mfussenegger/nvim-dap" } },
     { 'mfussenegger/nvim-dap-python', dependencies = { "mfussenegger/nvim-dap" } },
     {
-      'github/copilot.vim',
+      "yetone/avante.nvim",
+      event = "VeryLazy",
+      lazy = false,
+      version = false, -- set this if you want to always pull the latest change
+      opts = {
+        provider = "deepseek",
+        vendors = {
+          deepseek = {
+            __inherited_from = "openai",
+            api_key_name = "DEEPSEEK_API_KEY",
+            endpoint = "https://api.deepseek.com",
+            model = "deepseek-coder",
+            timeout = 30000,
+          },
+        },
+      },
+      -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+      build = "make",
+      -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+      dependencies = {
+        "nvim-treesitter/nvim-treesitter",
+        "stevearc/dressing.nvim",
+        "nvim-lua/plenary.nvim",
+        "MunifTanjim/nui.nvim",
+        --- The below dependencies are optional,
+        "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+        {
+          -- support for image pasting
+          "HakonHarnes/img-clip.nvim",
+          event = "VeryLazy",
+          opts = {
+            -- recommended settings
+            default = {
+              embed_image_as_base64 = false,
+              prompt_for_file_name = false,
+              drag_and_drop = {
+                insert_mode = true,
+              },
+              -- required for Windows users
+              use_absolute_path = true,
+            },
+          },
+        },
+        {
+          -- Make sure to set this up properly if you have lazy=true
+          'MeanderingProgrammer/render-markdown.nvim',
+          opts = {
+            file_types = { "markdown", "Avante" },
+          },
+          ft = { "markdown", "Avante" },
+        },
+      },
       enabled = false,
+    },
+    {
+      "olimorris/codecompanion.nvim",
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "nvim-treesitter/nvim-treesitter",
+        "j-hui/fidget.nvim",
+        {
+          'MeanderingProgrammer/render-markdown.nvim',
+          opts = {
+            file_types = { "markdown", "codecompanion" },
+          },
+          ft = { "markdown", "codecompanion" },
+        },
+      },
+    },
+    {
+      enabled = false,
+      "Kurama622/llm.nvim",
+      dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim", },
+      cmd = { "LLMSessionToggle", "LLMSelectedTextHandler", "LLMAppHandler", },
+      keys = {
+        { "<leader>ac", mode = "n", "<cmd>LLMSessionToggle<cr>" },
+        { "<leader>ae", mode = "v", "<cmd>LLMSelectedTextHandler 请解释下面这段代码<cr>" },
+        { "<leader>ts", mode = "x", "<cmd>LLMSelectedTextHandler 英译汉<cr>" },
+      },
     },
     {
       'glepnir/lspsaga.nvim',
@@ -62,14 +139,6 @@ require('lazy').setup({
         "nvim-lua/plenary.nvim",
       },
       ft = { "scala", "sbt", "java" },
-      -- opts = function()
-      --   local metals_config = require("metals").bare_config()
-      --   metals_config.on_attach = function(client, bufnr)
-      --     -- your on_attach function
-      --   end
-      --
-      --   return metals_config
-      -- end,
       config = function(self, metals_config)
         local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
         vim.api.nvim_create_autocmd("FileType", {
@@ -156,8 +225,8 @@ require('lazy').setup({
               show_close_icon = false,
               diagnostics = "nvim_lsp",
               diagnostics_indicator = function(count, level)
-                  local icon = level:match("error") and " " or " "
-                  return " " .. icon .. count
+                local icon = level:match("error") and " " or " "
+                return " " .. icon .. count
               end
             },
           }
@@ -243,12 +312,12 @@ require('lazy').setup({
     'tpope/vim-surround',
     -- Brackets
     {
-        'windwp/nvim-autopairs',
-        dependencies = { { 'hrsh7th/nvim-cmp' } },
-        event = "InsertEnter",
-        config = true
-        -- use opts = {} for passing setup options
-        -- this is equivalent to setup({}) function
+      'windwp/nvim-autopairs',
+      dependencies = { { 'hrsh7th/nvim-cmp' } },
+      event = "InsertEnter",
+      config = true
+      -- use opts = {} for passing setup options
+      -- this is equivalent to setup({}) function
     },
     'tpope/vim-unimpaired',
     -- Marker

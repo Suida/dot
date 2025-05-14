@@ -54,6 +54,7 @@ require 'plugin_conf.translator'
 require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
 require 'plugin_conf.copilot'
+require 'plugin_conf.codecompanion_ds'
 
 require('user.autocolor').setup()
 
