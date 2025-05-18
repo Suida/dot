@@ -167,7 +167,13 @@ require('lazy').setup({
     -- Git
     'lewis6991/gitsigns.nvim',
     -- Project-wide replace
-    'brooth/far.vim',
+    {
+      'MagicDuck/grug-far.nvim',
+      config = function()
+        require('grug-far').setup({
+        });
+      end
+    },
     -- Task runner
     'stevearc/overseer.nvim',
 
