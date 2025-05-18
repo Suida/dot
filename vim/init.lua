@@ -81,7 +81,7 @@ augroup END
 -- File type certain settings
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "tex", "typst", "markdown" },
-  callback = function(ev)
+  callback = function(_)
     vim.opt_local.wrap = true
   end,
 })
