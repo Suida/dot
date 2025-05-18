@@ -6,7 +6,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
+      { out,                            "WarningMsg" },
       { "\nPress any key to exit..." },
     }, true, {})
     vim.fn.getchar()
@@ -35,9 +35,9 @@ require('lazy').setup({
         'nvim-treesitter/nvim-treesitter',
       },
     },
-    { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
-    { 'suida/nvim-dap-lldb', dependencies = { "mfussenegger/nvim-dap" } },
-    { 'mfussenegger/nvim-dap-python', dependencies = { "mfussenegger/nvim-dap" } },
+    { 'rcarriga/nvim-dap-ui',            dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
+    { 'suida/nvim-dap-lldb',             dependencies = { "mfussenegger/nvim-dap" } },
+    { 'mfussenegger/nvim-dap-python',    dependencies = { "mfussenegger/nvim-dap" } },
     {
       "yetone/avante.nvim",
       event = "VeryLazy",
@@ -120,26 +120,6 @@ require('lazy').setup({
       },
     },
     {
-      'glepnir/lspsaga.nvim',
-      branch = 'main',
-      event = 'LspAttach',
-      config = function()
-        ---@diagnostic disable-next-line: different-requires
-        require('lspsaga').setup({
-          beacon = {
-            enable = false,
-          },
-        });
-      end,
-      dependencies = {
-        { 'nvim-tree/nvim-web-devicons' },
-        --Please make sure you install markdown and markdown_inline parser
-        { 'nvim-treesitter/nvim-treesitter' }
-      },
-      enabled = false,
-    },
-
-    {
       "scalameta/nvim-metals",
       dependencies = {
         "nvim-lua/plenary.nvim",
@@ -184,21 +164,19 @@ require('lazy').setup({
     },
     'mzlogin/vim-markdown-toc',
 
-    -- Project-wide
     -- Git
-    'tpope/vim-fugitive',
     'lewis6991/gitsigns.nvim',
-    -- Global finder
+    -- Project-wide replace
     'brooth/far.vim',
-    -- Session manager
-    'mhinz/vim-startify',
+    -- Task runner
     'stevearc/overseer.nvim',
 
     -- Outlook
+    'nvim-tree/nvim-web-devicons',
     {
       'rose-pine/neovim',
       lazy = false,
-      config = function ()
+      config = function()
         vim.o.background = 'dark'
         vim.cmd('colorscheme rose-pine-moon')
       end
@@ -305,25 +283,38 @@ require('lazy').setup({
     },
 
     -- Better move
-    'nvim-tree/nvim-web-devicons',
-    -- 'nvim-tree/nvim-tree.lua',
     {
       'smoka7/hop.nvim',
       version = '2.*',
       config = function()
-        require'hop'.setup {}
+        require 'hop'.setup {}
       end
     },
-    -- 'andymass/vim-matchup',
     'tpope/vim-surround',
     -- Brackets
     {
       'windwp/nvim-autopairs',
       dependencies = { { 'hrsh7th/nvim-cmp' } },
       event = "InsertEnter",
-      config = true
-      -- use opts = {} for passing setup options
-      -- this is equivalent to setup({}) function
+      config = function()
+        local npairs = require("nvim-autopairs")
+
+        npairs.setup {
+          check_ts = true,
+        }
+
+        local Rule = require("nvim-autopairs.rule")
+        local cond = require('nvim-autopairs.conds')
+
+        -- Before: {|}
+        -- Input: <Space>
+        -- After: { | }
+        npairs.add_rules({
+          Rule(" ", " ")
+              :with_pair(cond.after_regex("[%}%]%)]"))
+              :with_pair(cond.before_regex("[%{%[%(]"))
+        })
+      end,
     },
     'tpope/vim-unimpaired',
     -- Marker
@@ -340,17 +331,15 @@ require('lazy').setup({
         { 'nvim-telescope/telescope-symbols.nvim' },
       }
     },
-    -- Indentation line
-    'Yggdroot/indentLine',
     'tpope/vim-sleuth',
 
     -- Language supports
     -- Python utils // The indent really saved my life
     { 'Vimjas/vim-python-pep8-indent', ft = { 'python', } },
-    { 'jmcantrell/vim-virtualenv', ft = { 'python', } },
+    { 'jmcantrell/vim-virtualenv',     ft = { 'python', } },
     -- Font-end tool chain
-    { 'ap/vim-css-color', ft = { 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', } },
-    { 'maxmellon/vim-jsx-pretty', ft = { 'tsx', 'jsx', } },
+    { 'ap/vim-css-color',              ft = { 'css', 'less', 'scss', 'tsx', 'ts', 'vim', 'tmux', } },
+    { 'maxmellon/vim-jsx-pretty',      ft = { 'tsx', 'jsx', } },
     'HerringtonDarkholme/yats.vim',
     'posva/vim-vue',
     -- Pandoc
@@ -369,8 +358,8 @@ require('lazy').setup({
       ft = { 'markdown', 'vim-plug', }
     },
     -- Asm
-    { 'Shirk/vim-gas', ft = 'asm' },
-    { 'cespare/vim-toml', ft = { 'toml', } },
+    { 'Shirk/vim-gas',     ft = 'asm' },
+    { 'cespare/vim-toml',  ft = { 'toml', } },
 
     -- Other utilities
     'mhinz/vim-rfc',
@@ -380,6 +369,27 @@ require('lazy').setup({
     'jceb/vim-orgmode',
     'itchyny/calendar.vim',
     'lilydjwg/fcitx.vim',
+    {
+      "folke/persistence.nvim",
+      event = "BufReadPre", -- this will only start session saving when an actual file was opened
+      config = function()
+        require('persistence').setup {
+          dir = vim.fn.stdpath("state") .. "/sessions/", -- directory where session files are saved
+          -- minimum number of file buffers that need to be open to save
+          -- Set to 0 to always save
+          need = 1,
+          branch = true, -- use git branch to save session
+        }
+        -- load the session for the current directory
+        vim.keymap.set("n", "<leader>qs", function() require("persistence").load() end)
+        -- select a session to load
+        vim.keymap.set("n", "<leader>qS", function() require("persistence").select() end)
+        -- load the last session
+        vim.keymap.set("n", "<leader>ql", function() require("persistence").load({ last = true }) end)
+        -- stop Persistence => session won't be saved on exit
+        vim.keymap.set("n", "<leader>qd", function() require("persistence").stop() end)
+      end,
+    },
     {
       "folke/snacks.nvim",
       priority = 1000,
@@ -404,9 +414,11 @@ require('lazy').setup({
             Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
             Snacks.toggle.diagnostics():map("<leader>ud")
             Snacks.toggle.line_number():map("<leader>ul")
-            Snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>uc")
+            Snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
+                :map("<leader>uc")
             Snacks.toggle.treesitter():map("<leader>uT")
-            Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
+            Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map(
+            "<leader>ub")
             Snacks.toggle.inlay_hints():map("<leader>uh")
             Snacks.toggle.indent():map("<leader>ug")
             Snacks.toggle.dim():map("<leader>uD")
@@ -420,8 +432,8 @@ require('lazy').setup({
   checker = {
     enabled = true,
     concurrency = nil, ---@type number? set to 1 to check for updates very slowly
-    notify = true, -- get a notification when new updates are found
-    frequency = 3600*24*7, -- check for updates every hour
-    check_pinned = false, -- check for pinned packages that can't be updated
+    notify = true,         -- get a notification when new updates are found
+    frequency = 3600 * 24 * 7, -- check for updates every hour
+    check_pinned = false,  -- check for pinned packages that can't be updated
   },
 })
