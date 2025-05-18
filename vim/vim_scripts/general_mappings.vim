@@ -71,9 +71,6 @@ nnoremap <silent> <leader>sl :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<C
 
 " Command
 nnoremap ! :!
-" Spell check
-nnoremap <leader>sw 1z=
-nnoremap <leader>ss :set spell!<CR>
 " Copy & paste
 noremap <leader>y "*y
 noremap <leader>p "*p

@@ -3,9 +3,72 @@ if not snacks_status_ok then
   return
 end
 
+local dashboard_opts = {
+  enabled = true,
+  width = 60,
+  row = nil, -- dashboard position. nil for center
+  col = nil, -- dashboard position. nil for center
+  pane_gap = 4, -- empty columns between vertical panes
+  autokeys = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", -- autokey sequence
+  -- These settings are used by some built-in sections
+  preset = {
+    -- Defaults to a picker that supports `fzf-lua`, `telescope.nvim` and `mini.pick`
+    ---@type fun(cmd:string, opts:table)|nil
+    pick = nil,
+    -- Used by the `keys` section to show keymaps.
+    -- Set your custom keymaps here.
+    -- When using a function, the `items` argument are the default keymaps.
+    ---@type snacks.dashboard.Item[]
+    keys = {
+      { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+      { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+      { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+      { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+      { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+      { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+      { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
+      { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+    },
+    -- Used by the `header` section
+    header = [[
+███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+  },
+  -- item field formatters
+  sections = {
+    { section = "header" },
+    {
+      pane = 2,
+      section = "terminal",
+      cmd = "colorscript -e square",
+      height = 7,
+      padding = 1,
+    },
+    { section = "keys", gap = 1, padding = 2 },
+    { pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+    { pane = 2, icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+    { pane = 2, section = "startup", padding = 1 },
+  },
+
+}
+
 snacks.setup {
+  animate = {
+    enabled = vim.fn.has("nvim-0.10") == 1,
+    style = "out",
+    easing = "linear",
+    duration = {
+      step = 20, -- ms per step
+      total = 300, -- maximum duration
+    },
+  },
+
   bigfile = { enabled = true },
-  dashboard = { enabled = true },
+  dashboard = dashboard_opts,
   explorer = { enabled = true },
   indent = { enabled = true },
   input = { enabled = true },
@@ -35,7 +98,7 @@ snacks.setup {
     notification = {
       wo = { wrap = true } -- Wrap notifications
     }
-  }
+  },
 }
 
 local keymap_opts = {
@@ -82,7 +145,6 @@ local keymap_tbl = {
   { "<leader>si", function() snacks.picker.icons() end, desc = "Icons" },
   { "<leader>sj", function() snacks.picker.jumps() end, desc = "Jumps" },
   { "<leader>sk", function() snacks.picker.keymaps() end, desc = "Keymaps" },
-  { "<leader>sl", function() snacks.picker.loclist() end, desc = "Location List" },
   { "<leader>sm", function() snacks.picker.marks() end, desc = "Marks" },
   { "<leader>sM", function() snacks.picker.man() end, desc = "Man Pages" },
   { "<leader>sp", function() snacks.picker.lazy() end, desc = "Search for Plugin Spec" },
@@ -94,7 +156,7 @@ local keymap_tbl = {
   { "gd", function() snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
   { "gD", function() snacks.picker.lsp_declarations() end, desc = "Goto Declaration" },
   { "gr", function() snacks.picker.lsp_references() end, nowait = true, desc = "References" },
-  { "gI", function() snacks.picker.lsp_implementations() end, desc = "Goto Implementation" },
+  { "gi", function() snacks.picker.lsp_implementations() end, desc = "Goto Implementation" },
   { "gy", function() snacks.picker.lsp_type_definitions() end, desc = "Goto T[y]pe Definition" },
   { "<leader>ss", function() snacks.picker.lsp_symbols() end, desc = "LSP Symbols" },
   { "<leader>sS", function() snacks.picker.lsp_workspace_symbols() end, desc = "LSP Workspace Symbols" },
@@ -107,10 +169,7 @@ local keymap_tbl = {
   { "<leader>bd", function() snacks.bufdelete() end, desc = "Delete Buffer" },
   { "<leader>cR", function() snacks.rename.rename_file() end, desc = "Rename File" },
   { "<leader>gB", function() snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
-  -- { "<leader>gg", function() snacks.lazygit() end, desc = "Lazygit" },
   { "<leader>un", function() snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
-  { "<c-/>",      function() snacks.terminal() end, desc = "Toggle Terminal" },
-  { "<c-_>",      function() snacks.terminal() end, desc = "which_key_ignore" },
   { "]]",         function() snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
   { "[[",         function() snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
   {
@@ -206,4 +265,6 @@ local explorer_opts = {
     },
   },
 }
+
 vim.keymap.set('n', '<leader>e',  function() snacks.picker.explorer(explorer_opts) end, keymap_opts)
+
