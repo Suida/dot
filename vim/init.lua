@@ -41,9 +41,9 @@ require 'plugin_conf.gitsigns'
 require 'plugin_conf.overseer'
 require 'plugin_conf.lualine'
 require 'plugin_conf.toggleterm'
-require 'plugin_conf.nvim-tree'
+-- require 'plugin_conf.nvim-tree'
 require 'plugin_conf.hop_conf'
-require 'plugin_conf.telescope'
+-- require 'plugin_conf.telescope'
 require 'plugin_conf.startify'
 require 'plugin_conf.indentline'
 require 'plugin_conf.pandoc'
@@ -55,6 +55,7 @@ require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
 require 'plugin_conf.copilot'
 require 'plugin_conf.codecompanion_ds'
+require 'plugin_conf.snacks-conf'
 
 require('user.autocolor').setup()
 
@@ -62,8 +63,13 @@ require('user.autocolor').setup()
 vim.cmd [[autocmd FileType scss setl iskeyword+=@-@]]
 
 
--- Hide "~" after the end of a buffer
-vim.opt.fillchars:append({ eob = " " })
+-- Configure the statusline. Although snacks has done this job, this is reserved for future changes.
+vim.opt.fillchars:append({
+  eob = " ",
+  foldsep = " ",
+  foldopen = "",
+  foldclose = "",
+})
 
 
 -- Indentation
@@ -75,12 +81,10 @@ augroup END
 ]]
 
 
--- Folding behaviour of viml files
-vim.cmd [[
-augroup filtype_vim
-  autocmd!
-  autocmd FileType vim setlocal foldenable
-  autocmd FileType vim setlocal foldlevel=0
-  autocmd FileType vim setlocal foldmethod=marker
-augroup END
-]]
+-- File type certain settings
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "tex", "typst", "markdown" },
+  callback = function(ev)
+    vim.opt_local.wrap = true
+  end,
+})
