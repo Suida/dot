@@ -22,7 +22,7 @@ local dashboard_opts = {
     keys = {
       { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
       { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-      { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+      { icon = " ", key = "s", desc = "Restore Session", section = "session" },
       { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
       { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
       { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
@@ -66,10 +66,10 @@ snacks.setup {
       total = 300, -- maximum duration
     },
   },
-
   bigfile = { enabled = true },
   dashboard = dashboard_opts,
   explorer = { enabled = true },
+  image = { enabled = true },
   indent = { enabled = true },
   input = { enabled = true },
   notifier = {

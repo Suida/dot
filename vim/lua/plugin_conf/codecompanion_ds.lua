@@ -50,7 +50,7 @@ codecompanion.setup({
   display = {
     chat = {
       show_settings = true,
-      start_in_insert_mode = false,
+      start_in_insert_mode = true,
 
       -- Change the default icons
       icons = {
@@ -129,7 +129,7 @@ local close_codecompanion = function()
   chat.ui:hide()
 end
 
-require('plugin_conf.fidget-spiner'):init()
+require('plugin_conf.codecompanion-notify').setup()
 
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<leader>at', codecompanion.actions, opts)
