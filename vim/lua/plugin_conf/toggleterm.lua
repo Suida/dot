@@ -29,6 +29,9 @@ local toggle_keys = '<A-%d>'
 local toggle_cmd = '<cmd>ToggleTerm %d<CR>'
 
 local opts = { noremap = true, silent = true }
+vim.keymap.set({ 'v' }, '<leader>dd', '<cmd>ToggleTermSendVisualLines 1<CR>', opts)
+vim.keymap.set({ 'v' }, '<leader>ss', '<cmd>ToggleTermSendVisualSelection 1<CR>', opts)
+
 for i = 1,9 do
   vim.keymap.set({ 'n', 'i', 't' }, string.format(toggle_keys, i), string.format(toggle_cmd, i), opts)
   vim.keymap.set({ 'v' }, string.format('<leader>d%d', i), string.format('<cmd>ToggleTermSendVisualLines %d<CR>', i), opts)

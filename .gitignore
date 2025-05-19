@@ -8,3 +8,4 @@ __pycache__/
 vim/plugin
 
 tags
+vim/undo/
