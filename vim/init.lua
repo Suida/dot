@@ -67,6 +67,7 @@ vim.opt.fillchars:append({
   foldopen = "",
   foldclose = "",
 })
+vim.opt.foldlevel = 1
 
 
 -- Indentation

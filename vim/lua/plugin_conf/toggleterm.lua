@@ -15,7 +15,7 @@ end
 
 toggleterm.setup({
   shell = shell,
-  direction = 'vertical',
+  direction = 'float',
   size = function(term)
     if term.direction == 'horizontal' then
       return math.max(utils.get_tab_height() / 3, 30);

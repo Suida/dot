@@ -68,11 +68,11 @@ codecompanion.setup({
 
       -- Options to customize the UI of the chat buffer
       window = {
-        layout = "vertical", -- float|vertical|horizontal|buffer
+        layout = "float", -- float|vertical|horizontal|buffer
         position = "right", -- left|right|top|bottom (nil will default depending on vim.opt.plitright|vim.opt.splitbelow)
         border = "single",
-        height = 0.6,
-        width = 0.5,
+        height = 0.7,
+        width = 0.7,
         relative = "editor",
         full_height = true, -- when set to false, vsplit will be used to open the chat buffer vs. botright/topleft vsplit
         opts = {
@@ -135,7 +135,7 @@ local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<leader>at', codecompanion.actions, opts)
 vim.keymap.set('n', '<leader>an', codecompanion.chat, opts)
 vim.keymap.set('n', '<leader>ac', close_codecompanion, opts)
-vim.keymap.set({ 'n', 'i', 't' }, '<A-p>', toggle, opts)
+vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', toggle, opts)
 
 vim.api.nvim_create_autocmd({ "User" }, {
   pattern = { "CodeCompanionChatHidden", "CodeCompanionChatClosed", },
