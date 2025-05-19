@@ -12,6 +12,7 @@ set title
 set ruler
 set hidden
 set belloff=all
+set scrolloff=5
 if (has('termguicolors'))
     set termguicolors
 endif
@@ -40,12 +41,10 @@ augroup guidetect
     autocmd VimEnter * call s:guisettings()
 augroup END
 
-" Indentation rules and folding
+" Indentation rules
 set tabstop=4
 set softtabstop=4
 set expandtab
-set foldmethod=marker
-set nofoldenable
 set autoindent
 set backspace=indent,eol,start
 set autoread

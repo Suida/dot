@@ -15,21 +15,24 @@ end
 
 toggleterm.setup({
   shell = shell,
+  direction = 'vertical',
   size = function(term)
     if term.direction == 'horizontal' then
-      return math.max(utils.get_tab_height() / 3, 20);
+      return math.max(utils.get_tab_height() / 3, 30);
     elseif term.direction == 'vertical' then
-      return math.max(utils.get_tab_width() / 5, 50);
+      return math.max(utils.get_tab_width() / 2, 80);
     end
   end,
 });
 
-local toggle_keys = '<A-d>%d'
+local toggle_keys = '<A-%d>'
 local toggle_cmd = '<cmd>ToggleTerm %d<CR>'
 
 local opts = { noremap = true, silent = true }
 for i = 1,9 do
-  vim.keymap.set({ 'n', 't' }, string.format(toggle_keys, i), string.format(toggle_cmd, i), opts)
+  vim.keymap.set({ 'n', 'i', 't' }, string.format(toggle_keys, i), string.format(toggle_cmd, i), opts)
+  vim.keymap.set({ 'v' }, string.format('<leader>d%d', i), string.format('<cmd>ToggleTermSendVisualLines %d<CR>', i), opts)
+  vim.keymap.set({ 'v' }, string.format('<leader>s%d', i), string.format('<cmd>ToggleTermSendVisualSelection %d<CR>', i), opts)
 end
 vim.keymap.set({ 'n', 't' }, '<A-Backspace>',  '<cmd>ToggleTermToggleAll<CR>', opts)
 

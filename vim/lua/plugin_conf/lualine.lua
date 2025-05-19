@@ -34,10 +34,10 @@ lualine.setup {
       {
         'filename',
         symbols = {
-          modified = '[M]',
-          readonly = '[R]',
-          unnamed = '[No Name]',
-          newfile = '[New]',
+          modified = '',
+          readonly = '',
+          unnamed  = '󰑕',
+          newfile  = '',
         },
       },
     },
@@ -51,10 +51,10 @@ lualine.setup {
       {
         'filename',
         symbols = {
-          modified = '[M]',
-          readonly = '[R]',
-          unnamed = '[No Name]',
-          newfile = '[New]',
+          modified = '',
+          readonly = '',
+          unnamed  = '󰑕',
+          newfile  = '',
         },
       },
     },

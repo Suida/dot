@@ -1,3 +1,4 @@
+vim.g.startify_disable_at_vimenter = 1
 vim.g.startify_session_persistence = 1
 vim.g.startify_session_delete_buffers = 1
 vim.g.startify_session_before_save = {
@@ -6,6 +7,7 @@ vim.g.startify_session_before_save = {
   'let g:startify_tmp_winnr = winnr()',
   'echo "Cleaning up before saving.."',
   'silent! tabdo NvimTreeClose',
+  'lua require("codecompanion").close_last_chat()',
   'execute "normal! " . g:startify_tmp_tabpagenr . "gt"',
   'execute g:startify_tmp_winnr . "wincmd w"'
 }
@@ -14,9 +16,9 @@ vim.g.startify_lists = {
   { type='bookmarks', header= {'   Bookmarks'}      },
   { type='commands',  header= {'   Commands'}       },
 }
+-- autocmd VimEnter * call init_startify()
 vim.cmd [[
 augroup startify_stuff
-autocmd VimEnter * call init_startify()
 autocmd BufEnter * let &titlestring=fnamemodify(v:this_session, ':t')
 augroup END
 ]]

@@ -24,7 +24,6 @@ nnoremap <leader>] <C-w><C-]><C-w>T
 nnoremap <silent> XC :w<CR>
 nnoremap <silent> XX :w \| bd<CR>
 nnoremap <silent> <leader>pp :set paste!<CR>
-nmap <leader>gb ysiw}lysiw{
 nnoremap <silent> - :m .+1<CR>
 nnoremap <silent> _ :m .-2<CR>
 
@@ -43,6 +42,8 @@ inoremap <left> <ESC> :tabp <CR>
 inoremap <right> <ESC> :tabn <CR>
 nnoremap <silent> <C-l> :tabn<CR>
 nnoremap <silent> <C-h> :tabp<CR>
+inoremap <silent> <C-l> <Esc>:tabn<CR>
+inoremap <silent> <C-h> <Esc>:tabp<CR>
 nnoremap <silent> <leader>tl :tabs<CR>
 nnoremap <space>h <C-w>h
 nnoremap <space>j <C-w>j
@@ -70,9 +71,6 @@ nnoremap <silent> <leader>sl :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<C
 
 " Command
 nnoremap ! :!
-" Spell check
-nnoremap <leader>sw 1z=
-nnoremap <leader>ss :set spell!<CR>
 " Copy & paste
 noremap <leader>y "*y
 noremap <leader>p "*p
@@ -80,7 +78,7 @@ noremap <leader>p "*p
 nnoremap / /\v
 vnoremap / /\v
 " Abbreviations
-iabbrev @@ suidar@foxmail.com
+iabbrev @@ here_is_yang@outlook.com
 iabbrev ccp Copyright 2020 Hugh Young, all rights reserved.
 " Check color group under cursor
 nnoremap <silent> <leader>cg :echom string(CheckColorGroup())<CR>
