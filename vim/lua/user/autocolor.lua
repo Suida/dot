@@ -3,7 +3,8 @@ local detect_windows_theme = require('user.utils').detect_windows_theme;
 local M = {}
 
 M.previous_mode = ''
-M.worker = function ()
+
+M.inner_worker = function()
   detect_windows_theme(function (mode)
     if M.previous_mode:match(mode) then
       return;
@@ -23,7 +24,11 @@ M.worker = function ()
       print("Color mode not resolved");
     end
   end)
-  vim.defer_fn(M.worker, 10000);
+  vim.defer_fn(M.inner_worker, 10000);
+end
+
+M.worker = function ()
+  vim.defer_fn(M.inner_worker, 1000);
 end
 
 M.setup = function ()

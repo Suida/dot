@@ -206,8 +206,8 @@ require('lazy').setup({
           require("bufferline").setup {
             options = {
               mode = 'tabs',
-              max_name_length = 12,
-              max_prefix_length = 10,
+              max_name_length = 16,
+              max_prefix_length = 12,
               numbers = 'ordinal',
               separator_style = 'slant',
               show_buffer_close_icons = false,
