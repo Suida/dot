@@ -316,9 +316,11 @@ require('lazy').setup({
         -- Input: <Space>
         -- After: { | }
         npairs.add_rules({
-          Rule(" ", " ")
-              :with_pair(cond.after_regex("[%}%]%)]"))
-              :with_pair(cond.before_regex("[%{%[%(]"))
+          Rule(" ", " "):with_pair(function(opts)
+            local after_cond = cond.after_regex("[%}%]%)]")
+            local before_cond = cond.before_regex("[%{%[%(]")
+            return after_cond(opts) and before_cond(opts)
+          end)
         })
       end,
     },
