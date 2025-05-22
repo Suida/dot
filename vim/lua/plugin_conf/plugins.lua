@@ -304,14 +304,12 @@ require('lazy').setup({
       event = "InsertEnter",
       config = function()
         local npairs = require("nvim-autopairs")
-
         npairs.setup {
           check_ts = true,
         }
 
         local Rule = require("nvim-autopairs.rule")
         local cond = require('nvim-autopairs.conds')
-
         -- Before: {|}
         -- Input: <Space>
         -- After: { | }
@@ -322,6 +320,13 @@ require('lazy').setup({
             return after_cond(opts) and before_cond(opts)
           end)
         })
+
+        local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+        local cmp = require('cmp')
+        cmp.event:on(
+          'confirm_done',
+          cmp_autopairs.on_confirm_done()
+        )
       end,
     },
     'tpope/vim-unimpaired',
