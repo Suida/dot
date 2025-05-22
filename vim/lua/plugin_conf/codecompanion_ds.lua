@@ -83,7 +83,7 @@ codecompanion.setup({
           cursorline = false,
           foldcolumn = "0",
           foldenable = true,
-          foldlevel = 1,
+          foldlevel = 2,
           linebreak = true,
           list = false,
           numberwidth = 1,
@@ -129,7 +129,10 @@ local close_codecompanion = function()
   chat.ui:hide()
 end
 
-require('plugin_conf.codecompanion-notify').setup()
+require('plugin_conf.codecompanion-notify').setup{
+  frame_time = 100,
+  spinner_style = "bars",
+}
 
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<leader>at', codecompanion.actions, opts)

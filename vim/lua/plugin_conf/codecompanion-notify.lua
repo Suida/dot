@@ -1,62 +1,70 @@
-local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏", }
-local spinner_index = 1
 local notifier_id = "llm_request_notifier"
 
-local request_timer = nil
+local spinners = {
+  dots = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
+  arrows = { "←", "↖", "↑", "↗", "→", "↘", "↓", "↙" },
+  bars = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "█", "▇", "▆", "▅", "▄", "▃", "▂", "▁", }
+}
 
-local M = {}
+local levels = {
+  success = { lvl = "info", msg = "completed", icon = "" },
+  error = { lvl = "error", msg = "failed", icon = "" },
+  cancelled = { lvl = "info", msg = "cancelled", icon = "󰜺" }
+}
 
-M.requesting_worker = function(model_name, timeout)
+local M = {
+  spinner_index = 1,
+  spinner_style = "bars",
+  frame_time = 80,
+  request_timer = nil,
+  requesting = false,
+}
+
+function M.get_spinner()
+  return spinners[M.spinner_style]
+end
+
+function M.update_spinner_index()
+  M.spinner_index = M.spinner_index == #M.get_spinner() and 1 or M.spinner_index + 1
+end
+
+function M.requesting_worker(model_name)
   vim.notify("Requesting " .. model_name .. "...", "info", {
     id = notifier_id,
     title = "CodeCompanion",
     opts = function(notif)
-      notif.icon = spinner[spinner_index]
+      notif.icon = M.get_spinner()[M.spinner_index]
     end,
   })
-  spinner_index = spinner_index == 10 and 1 or spinner_index + 1
-  request_timer = vim.defer_fn(function() M.requesting_worker(model_name, timeout) end, timeout);
+  M.update_spinner_index()
+  if M.requesting then
+    M.request_timer = vim.defer_fn(function() M.requesting_worker(model_name) end, M.frame_time);
+  end
 end
 
-M.finish_request = function(model_name, status)
-  if request_timer ~= nil then
-    vim.loop.timer_stop(request_timer)
-    request_timer = nil
+function M.finish_request(model_name, status)
+  if M.request_timer ~= nil then
+    vim.loop.timer_stop(M.request_timer)
+    M.request_timer = nil
   end
 
-  local lvl = " "
-  local msg = " "
-  local icon = ""
+  local result = levels[status] or levels.cancelled
 
-  if status == "success" then
-    lvl = lvl .. "info"
-    msg = msg .. "completed"
-    icon = ""
-  elseif status == "error" then
-    lvl = lvl .. "error"
-    msg = msg .. "failed"
-    icon = ""
-  else
-    lvl = lvl .. "info"
-    msg = msg .. "cancelled"
-    icon = "󰜺"
-  end
-
-  vim.notify("Request to " .. model_name .. msg, lvl, {
+  vim.notify("Request to " .. model_name .. " " .. result.msg, result.lvl, {
     id = notifier_id,
     title = "CodeCompanion",
     opts = function(notif)
-      notif.icon = icon
+      notif.icon = result.icon
     end,
   })
 end
 
-M.setup = function(opts)
+function M.setup(opts)
+  opts = opts or {}
+  M.spinner_style = opts.spinner_style or M.spinner_style
+  M.frame_time = opts.frame_time or M.frame_time
+
   local group = vim.api.nvim_create_augroup("llm_request_notify", { clear = true })
-  local timeout = 80
-  if opts and opts.timeout then
-    timeout = opts.timeout
-  end
 
   vim.api.nvim_create_autocmd({ "User" }, {
     group = group,
@@ -66,8 +74,10 @@ M.setup = function(opts)
       local model_name = adapter.model
 
       if req.match == "CodeCompanionRequestStarted" then
-        M.requesting_worker(model_name, timeout)
+        M.requesting = true
+        M.requesting_worker(model_name)
       elseif req.match == "CodeCompanionRequestFinished" then
+        M.requesting = false
         M.finish_request(model_name, req.data.status)
       end
     end,
