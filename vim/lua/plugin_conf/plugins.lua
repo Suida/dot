@@ -86,9 +86,9 @@ require('lazy').setup({
           -- Make sure to set this up properly if you have lazy=true
           'MeanderingProgrammer/render-markdown.nvim',
           opts = {
-            file_types = { "markdown", "Avante" },
+            file_types = { "markdown", "Avante", "codecompanion" },
           },
-          ft = { "markdown", "Avante" },
+          ft = { "markdown", "Avante", "codecompanion" },
         },
       },
       enabled = false,
@@ -374,9 +374,6 @@ require('lazy').setup({
     { 'maxmellon/vim-jsx-pretty',      ft = { 'tsx', 'jsx', } },
     'HerringtonDarkholme/yats.vim',
     'posva/vim-vue',
-    -- Pandoc
-    'vim-pandoc/vim-pandoc',
-    'vim-pandoc/vim-pandoc-syntax',
     -- Html preview
     { 'turbio/bracey.vim', ft = { 'html', } },
     -- Markdown syntax and preview
