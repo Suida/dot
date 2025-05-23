@@ -1,1 +1,1 @@
-vim.keymap.set('n', '<leader>tr', ':Translate<CR>', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 'v' }, '<leader>tr', ':Translate<CR>', { noremap = true, silent = true })

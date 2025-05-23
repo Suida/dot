@@ -139,14 +139,14 @@ vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', toggle, opts)
 
 vim.api.nvim_create_autocmd({ "User" }, {
   pattern = { "CodeCompanionChatHidden", "CodeCompanionChatClosed", },
-  callback = function(ev)
+  callback = function(_)
     vim.api.nvim_input('jk')    -- Enter normal mode
   end,
 })
 
 vim.api.nvim_create_autocmd({ "User" }, {
   pattern = { "CodeCompanionChatOpened" },
-  callback = function(ev)
+  callback = function(_)
     vim.api.nvim_input('jk')    -- Enter insert mode
   end,
 })

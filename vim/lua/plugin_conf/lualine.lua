@@ -12,8 +12,8 @@ lualine.setup {
   options = {
     icons_enabled = true,
     theme = 'auto',
-    section_separators = { left = '', right = '' },
-    component_separators = { left = '', right = '' },
+    component_separators = '',
+    section_separators = { left = '', right = '' },
     disabled_filetypes = {
       statusline = {},
       winbar = {},
@@ -27,23 +27,50 @@ lualine.setup {
       winbar = 100,
     }
   },
+  -- sections = {
+  --   lualine_a = { { 'mode', separator = { left = ' ', right = '' }, right_padding = 2 } },
+  --   lualine_b = {},
+  --   lualine_c = {
+  --     {
+  --       'filename',
+  --       symbols = {
+  --         modified = '',
+  --         readonly = '',
+  --         unnamed  = '󰑕',
+  --         newfile  = '',
+  --       },
+  --     },
+  --   },
+  --   lualine_x = {},
+  --   lualine_y = {},
+  --   lualine_z = {}
+  -- },
   sections = {
-    lualine_a = { 'mode' },
-    lualine_b = {},
+    lualine_a = { { 'mode', separator = { left = ' ' }, right_padding = 2 } },
+    lualine_b = {
+      'branch',
+    },
     lualine_c = {
+      '%=',
       {
         'filename',
         symbols = {
-          modified = '',
+          modified = '',
           readonly = '',
           unnamed  = '󰑕',
           newfile  = '',
         },
       },
+      { 'diagnostics', },
     },
     lualine_x = {},
-    lualine_y = {},
-    lualine_z = { 'branch', }
+    lualine_y = {
+      'filetype',
+      'progress',
+    },
+    lualine_z = {
+      { 'location', separator = { right = ' ' }, left_padding = 2 },
+    },
   },
   inactive_sections = {
     lualine_a = {},
@@ -51,7 +78,7 @@ lualine.setup {
       {
         'filename',
         symbols = {
-          modified = '',
+          modified = '',
           readonly = '',
           unnamed  = '󰑕',
           newfile  = '',

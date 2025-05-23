@@ -82,16 +82,17 @@ require('lazy').setup({
             },
           },
         },
-        {
-          -- Make sure to set this up properly if you have lazy=true
-          'MeanderingProgrammer/render-markdown.nvim',
-          opts = {
-            file_types = { "markdown", "Avante", "codecompanion" },
-          },
-          ft = { "markdown", "Avante", "codecompanion" },
-        },
+        'MeanderingProgrammer/render-markdown.nvim',
       },
       enabled = false,
+    },
+    {
+      -- Make sure to set this up properly if you have lazy=true
+      'MeanderingProgrammer/render-markdown.nvim',
+      opts = {
+        file_types = { "markdown", "Avante", "codecompanion" },
+      },
+      ft = { "markdown", "Avante", "codecompanion" },
     },
     {
       "olimorris/codecompanion.nvim",
@@ -106,17 +107,6 @@ require('lazy').setup({
           },
           ft = { "markdown", "codecompanion" },
         },
-      },
-    },
-    {
-      enabled = false,
-      "Kurama622/llm.nvim",
-      dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim", },
-      cmd = { "LLMSessionToggle", "LLMSelectedTextHandler", "LLMAppHandler", },
-      keys = {
-        { "<leader>ac", mode = "n", "<cmd>LLMSessionToggle<cr>" },
-        { "<leader>ae", mode = "v", "<cmd>LLMSelectedTextHandler 请解释下面这段代码<cr>" },
-        { "<leader>ts", mode = "x", "<cmd>LLMSelectedTextHandler 英译汉<cr>" },
       },
     },
     {
@@ -446,25 +436,25 @@ require('lazy').setup({
             snacks.toggle.diagnostics():map("<leader>ud")
             snacks.toggle.line_number():map("<leader>ul")
             snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
-                :map("<leader>uc")
+            :map("<leader>uc")
             snacks.toggle.treesitter():map("<leader>uT")
             snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map(
               "<leader>ub")
-            snacks.toggle.inlay_hints():map("<leader>uh")
-            snacks.toggle.indent():map("<leader>ug")
-            snacks.toggle.dim():map("<leader>uD")
-          end,
-        })
-      end,
-    }
-  },
+              snacks.toggle.inlay_hints():map("<leader>uh")
+              snacks.toggle.indent():map("<leader>ug")
+              snacks.toggle.dim():map("<leader>uD")
+            end,
+          })
+        end,
+      }
+    },
 
-  install = { colorscheme = { 'onehalflight' } },
-  checker = {
-    enabled = true,
-    concurrency = nil, ---@type number? set to 1 to check for updates very slowly
-    notify = true,             -- get a notification when new updates are found
-    frequency = 3600 * 24 * 7, -- check for updates every hour
-    check_pinned = false,      -- check for pinned packages that can't be updated
-  },
-})
+    install = { colorscheme = { 'onehalflight' } },
+    checker = {
+      enabled = true,
+      concurrency = nil, ---@type number? set to 1 to check for updates very slowly
+      notify = true,             -- get a notification when new updates are found
+      frequency = 3600 * 24 * 7, -- check for updates every hour
+      check_pinned = false,      -- check for pinned packages that can't be updated
+    },
+  })
