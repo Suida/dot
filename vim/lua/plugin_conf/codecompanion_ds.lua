@@ -40,7 +40,7 @@ codecompanion.setup({
           modes = { n = "<C-g>", i = "<C-g>" },
         },
         close = {
-          modes = { n = "q", i = "<C-c><C-c>" },
+          modes = { n = "<C-c>", i = "<C-c><C-c>" },
         },
       },
     },
