@@ -86,9 +86,9 @@ require('lazy').setup({
           -- Make sure to set this up properly if you have lazy=true
           'MeanderingProgrammer/render-markdown.nvim',
           opts = {
-            file_types = { "markdown", "Avante" },
+            file_types = { "markdown", "Avante", "codecompanion" },
           },
-          ft = { "markdown", "Avante" },
+          ft = { "markdown", "Avante", "codecompanion" },
         },
       },
       enabled = false,
@@ -296,7 +296,28 @@ require('lazy').setup({
         require 'hop'.setup {}
       end
     },
-    'tpope/vim-surround',
+    {
+      "kylechui/nvim-surround",
+      version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
+      event = "VeryLazy",
+      config = function()
+        require("nvim-surround").setup({
+          keymaps = {
+            insert = "<C-`>s",
+            insert_line = "<C-`>S",
+            normal = "ys",
+            normal_cur = "yss",
+            normal_line = "yS",
+            normal_cur_line = "ySS",
+            visual = "S",
+            visual_line = "gS",
+            delete = "ds",
+            change = "cs",
+            change_line = "cS",
+          },
+        })
+      end
+    },
     -- Brackets
     {
       'windwp/nvim-autopairs',
@@ -355,9 +376,6 @@ require('lazy').setup({
     { 'maxmellon/vim-jsx-pretty',      ft = { 'tsx', 'jsx', } },
     'HerringtonDarkholme/yats.vim',
     'posva/vim-vue',
-    -- Pandoc
-    'vim-pandoc/vim-pandoc',
-    'vim-pandoc/vim-pandoc-syntax',
     -- Html preview
     { 'turbio/bracey.vim', ft = { 'html', } },
     -- Markdown syntax and preview

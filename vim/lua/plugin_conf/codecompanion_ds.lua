@@ -37,10 +37,10 @@ codecompanion.setup({
       adapter = "deepseek",
       keymaps = {
         send = {
-          modes = { n = "<C-g>", i = "<CR>" },
+          modes = { n = "<C-g>", i = "<C-g>" },
         },
         close = {
-          modes = { n = "<C-c><C-c>", i = "<C-c><C-c>" },
+          modes = { n = "<C-c>", i = "<C-c><C-c>" },
         },
       },
     },
@@ -83,7 +83,7 @@ codecompanion.setup({
           cursorline = false,
           foldcolumn = "0",
           foldenable = true,
-          foldlevel = 1,
+          foldlevel = 3,
           linebreak = true,
           list = false,
           numberwidth = 1,
