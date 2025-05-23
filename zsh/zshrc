@@ -140,8 +140,11 @@ bashcompinit
 eval "$(uv generate-shell-completion zsh)"
 eval "$(uvx --generate-shell-completion zsh)"
 
-alias ll="exa --long --group-directories-first $*"
-alias l="exa --long --group-directories-first -a $*"
+if [ -e "$(which exa)" ]; then
+    alias ll="exa --long --group-directories-first $*"
+    alias l="exa --long --group-directories-first -a $*"
+fi
+[ -e "$(which fdfind)" ] && alias fd="fdfind $*"
 
 export PATH=$HOME/bin:$PATH
 
