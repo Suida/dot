@@ -68,11 +68,11 @@ codecompanion.setup({
 
       -- Options to customize the UI of the chat buffer
       window = {
-        layout = "float", -- float|vertical|horizontal|buffer
+        layout = "vertical", -- float|vertical|horizontal|buffer
         position = "right", -- left|right|top|bottom (nil will default depending on vim.opt.plitright|vim.opt.splitbelow)
         border = "single",
         height = 0.7,
-        width = 0.7,
+        width = 80,
         relative = "editor",
         full_height = true, -- when set to false, vsplit will be used to open the chat buffer vs. botright/topleft vsplit
         opts = {

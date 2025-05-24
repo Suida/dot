@@ -81,7 +81,7 @@ snacks.setup {
     right = { "fold", "git", }, -- priority of signs on the right (high to low)
     folds = {
       open = true,              -- show open fold icons
-      git_hl = false,            -- use Git Signs hl for fold icons
+      git_hl = false,           -- use Git Signs hl for fold icons
     },
     git = {
       -- patterns to match Git signs
@@ -134,6 +134,7 @@ local keymap_tbl = {
   { "<leader>sb",      function() snacks.picker.lines() end,                                   desc = "Buffer Lines" },
   { "<leader>sc",      function() snacks.picker.command_history() end,                         desc = "Command History" },
   { "<leader>sC",      function() snacks.picker.commands() end,                                desc = "Commands" },
+  { "<A-p>",           function() snacks.picker.commands() end,                                desc = "Commands" },
   { "<leader>sd",      function() snacks.picker.diagnostics() end,                             desc = "Diagnostics" },
   { "<leader>sD",      function() snacks.picker.diagnostics_buffer() end,                      desc = "Buffer Diagnostics" },
   { "<leader>sh",      function() snacks.picker.help() end,                                    desc = "Help Pages" },
@@ -151,7 +152,7 @@ local keymap_tbl = {
   -- LSP
   { "gd",              function() snacks.picker.lsp_definitions() end,                         desc = "Goto Definition" },
   { "gD",              function() snacks.picker.lsp_declarations() end,                        desc = "Goto Declaration" },
-  { "gr",              function() snacks.picker.lsp_references() end,                          nowait = true,                     desc = "References" },
+  { "gr",              function() snacks.picker.lsp_references() end,                          desc = "References",               nowait = true, },
   { "gi",              function() snacks.picker.lsp_implementations() end,                     desc = "Goto Implementation" },
   { "gy",              function() snacks.picker.lsp_type_definitions() end,                    desc = "Goto T[y]pe Definition" },
   { "<leader>ss",      function() snacks.picker.lsp_symbols() end,                             desc = "LSP Symbols" },
