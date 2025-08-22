@@ -73,3 +73,8 @@ fnm env --use-on-cd --shell power-shell | Out-String | Invoke-Expression
 $env:PNPM_HOME=$env:FNM_MULTISHELL_PATH
 $env:npm_config_registry="https://registry.npmmirror.com"
 
+# LLM Keys
+$LLM_KEY_PATH="$env:HOMEPATH\.LLM_KEYS.ps1"
+if (Test-Path $LLM_KEY_PATH) {
+    & $LLM_KEY_PATH
+}
