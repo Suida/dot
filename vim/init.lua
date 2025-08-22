@@ -67,6 +67,14 @@ vim.opt.fillchars:append({
   foldclose = "",
 })
 vim.opt.foldlevel = 1
+-- Set GUI options
+vim.opt.guifont = "CaskaydiaCove Nerd Font:h10"
+vim.opt.linespace = 4
+
+if vim.g.neovide then
+  vim.g.neovide_cursor_animation_length = 0.1
+  vim.g.neovide_cursor_trail_size = 0.2
+end
 
 
 -- Indentation
