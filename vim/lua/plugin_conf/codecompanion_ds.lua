@@ -2,7 +2,6 @@ local codecompanion_status_ok, codecompanion = pcall(require, 'codecompanion')
 if not codecompanion_status_ok then
   return
 end
-local context_utils = require("codecompanion.utils.context")
 
 codecompanion.setup({
   adapters = {
@@ -50,7 +49,7 @@ codecompanion.setup({
   display = {
     chat = {
       show_settings = true,
-      start_in_insert_mode = true,
+      start_in_insert_mode = false,
 
       -- Change the default icons
       icons = {
@@ -100,53 +99,9 @@ codecompanion.setup({
   },
 })
 
-local toggle = function()
-  local chat = codecompanion.last_chat()
-
-  if not chat then
-    return codecompanion.chat()
-  end
-
-  if chat.ui:is_visible() then
-    if vim.bo.filetype == 'codecompanion' then
-      return chat.ui:hide()
-    end
-  end
-
-  chat.context = context_utils.get(vim.api.nvim_get_current_buf())
-  codecompanion.close_last_chat()
-  chat.ui:open()
-  vim.api.nvim_command('startinsert!')
-end
-
-local close_codecompanion = function()
-  local chat = codecompanion.last_chat()
-
-  if not chat or not chat.ui:is_visible() then
-    return
-  end
-
-  chat.ui:hide()
-end
-
 require('plugin_conf.codecompanion-notify').setup()
 
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<leader>at', codecompanion.actions, opts)
 vim.keymap.set('n', '<leader>an', codecompanion.chat, opts)
-vim.keymap.set('n', '<leader>ac', close_codecompanion, opts)
-vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', toggle, opts)
-
-vim.api.nvim_create_autocmd({ "User" }, {
-  pattern = { "CodeCompanionChatHidden", "CodeCompanionChatClosed", },
-  callback = function(_)
-    vim.api.nvim_input('jk')    -- Enter normal mode
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "User" }, {
-  pattern = { "CodeCompanionChatOpened" },
-  callback = function(_)
-    vim.api.nvim_input('jk')    -- Enter insert mode
-  end,
-})
+vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', codecompanion.toggle, opts)

@@ -55,6 +55,10 @@ wezterm.on("format-tab-title", function(tab_info)
 
   title = tab_info.tab_index + 1 .. ": " .. (pat0 or pat1 or title)
 
+  if #title > 20 then
+    title = title:sub(1, 19) .. "..."
+  end
+
   return title
 end)
 
