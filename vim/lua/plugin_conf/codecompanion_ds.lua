@@ -55,6 +55,7 @@ codecompanion.setup({
       icons = {
         pinned_buffer = " ",
         watched_buffer = "👀 ",
+        chat_context = "📎️", -- You can also apply an icon to the fold
       },
 
       -- Alter the sizing of the debug window

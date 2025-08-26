@@ -10,6 +10,7 @@ dap_lldb.setup();
 dap_python.setup(dap)
 
 vim.keymap.set('n', '<F17>', function() require('dap').disconnect() end)  -- <F17> is <S-F5> in wezterm
+vim.keymap.set('n', '<S-F5>', function() require('dap').disconnect() end)  -- <F17> is <S-F5> in wezterm
 vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
 vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
 vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)

@@ -69,13 +69,19 @@ vim.opt.fillchars:append({
 })
 vim.opt.foldlevel = 1
 -- Set GUI options
-vim.opt.guifont = "CaskaydiaCove Nerd Font:h10"
+vim.opt.guifont = "CaskaydiaCove Nerd Font:h12"
 vim.opt.linespace = 4
 
-if vim.g.neovide then
-  vim.g.neovide_cursor_animation_length = 0.1
-  vim.g.neovide_cursor_trail_size = 0.2
-end
+local ns_gid = vim.api.nvim_create_augroup("NeovideSettings", { clear = true })
+vim.api.nvim_create_autocmd({ "VimEnter" }, {
+  pattern = { '*' },
+  callback = function(ev)
+    if vim.g.neovide then
+      vim.g.neovide_cursor_animation_length = 0.1
+      vim.g.neovide_cursor_trail_size = 0.4
+    end
+  end
+})
 
 
 -- Indentation
