@@ -1,33 +1,17 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
+    "actions":
     [
         {
-            "command": 
+            "command":
             {
                 "action": "copy"
             },
             "id": "User.copy.644BA8F2"
         },
         {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 0
-            },
-            "id": "User.switchToTab.D3F0B923"
-        },
-        {
-            "command": 
-            {
-                "action": "moveFocus",
-                "direction": "right"
-            },
-            "id": "User.moveFocus.87C324ED"
-        },
-        {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 1
@@ -35,124 +19,34 @@
             "id": "User.switchToTab.2A0DA8E0"
         },
         {
-            "command": "paste",
-            "id": "User.paste"
+            "command":
+            {
+                "action": "moveFocus",
+                "direction": "right"
+            },
+            "id": "User.moveFocus.87C324ED"
         },
         {
-            "command": 
+            "command":
+            {
+                "action": "switchToTab",
+                "index": 0
+            },
+            "id": "User.switchToTab.D3F0B923"
+        },
+        {
+            "command":
             {
                 "action": "newTab"
             },
             "id": "User.newTab.5DEADB41"
         },
         {
-            "command": 
-            {
-                "action": "moveFocus",
-                "direction": "down"
-            },
-            "id": "User.moveFocus.F747588A"
+            "command": "paste",
+            "id": "User.paste"
         },
         {
-            "command": 
-            {
-                "action": "splitPane",
-                "split": "right"
-            },
-            "id": "User.splitPane.864CD510"
-        },
-        {
-            "command": 
-            {
-                "action": "closeTab"
-            },
-            "id": "User.closeTab.0"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 2
-            },
-            "id": "User.switchToTab.87C324ED"
-        },
-        {
-            "command": 
-            {
-                "action": "resizePane",
-                "direction": "down"
-            },
-            "id": "User.resizePane.F747588A"
-        },
-        {
-            "command": 
-            {
-                "action": "prevTab"
-            },
-            "id": "User.prevTab.0"
-        },
-        {
-            "command": 
-            {
-                "action": "resizePane",
-                "direction": "up"
-            },
-            "id": "User.resizePane.6CD791B"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 3
-            },
-            "id": "User.switchToTab.6CD791B"
-        },
-        {
-            "command": 
-            {
-                "action": "splitPane",
-                "split": "down"
-            },
-            "id": "User.splitPane.D5151347"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 5
-            },
-            "id": "User.switchToTab.75247157"
-        },
-        {
-            "command": 
-            {
-                "action": "sendInput",
-                "input": "\u001b"
-            },
-            "id": "User.sendInput.BAB9BCE0"
-        },
-        {
-            "command": "closePane",
-            "id": "User.closePane"
-        },
-        {
-            "command": 
-            {
-                "action": "moveFocus",
-                "direction": "left"
-            },
-            "id": "User.moveFocus.2A0DA8E0"
-        },
-        {
-            "command": 
-            {
-                "action": "moveFocus",
-                "direction": "up"
-            },
-            "id": "User.moveFocus.6CD791B"
-        },
-        {
-            "command": 
+            "command":
             {
                 "action": "resizePane",
                 "direction": "left"
@@ -160,7 +54,113 @@
             "id": "User.resizePane.2A0DA8E0"
         },
         {
-            "command": 
+            "command":
+            {
+                "action": "moveFocus",
+                "direction": "down"
+            },
+            "id": "User.moveFocus.F747588A"
+        },
+        {
+            "command":
+            {
+                "action": "splitPane",
+                "split": "right"
+            },
+            "id": "User.splitPane.864CD510"
+        },
+        {
+            "command":
+            {
+                "action": "closeTab"
+            },
+            "id": "User.closeTab.0"
+        },
+        {
+            "command":
+            {
+                "action": "sendInput",
+                "input": "\u001b"
+            },
+            "id": "User.sendInput.BAB9BCE0"
+        },
+        {
+            "command":
+            {
+                "action": "switchToTab",
+                "index": 5
+            },
+            "id": "User.switchToTab.75247157"
+        },
+        {
+            "command":
+            {
+                "action": "switchToTab",
+                "index": 2
+            },
+            "id": "User.switchToTab.87C324ED"
+        },
+        {
+            "command":
+            {
+                "action": "moveFocus",
+                "direction": "left"
+            },
+            "id": "User.moveFocus.2A0DA8E0"
+        },
+        {
+            "command":
+            {
+                "action": "prevTab"
+            },
+            "id": "User.prevTab.0"
+        },
+        {
+            "command":
+            {
+                "action": "resizePane",
+                "direction": "down"
+            },
+            "id": "User.resizePane.F747588A"
+        },
+        {
+            "command":
+            {
+                "action": "splitPane",
+                "split": "down"
+            },
+            "id": "User.splitPane.D5151347"
+        },
+        {
+            "command":
+            {
+                "action": "resizePane",
+                "direction": "up"
+            },
+            "id": "User.resizePane.6CD791B"
+        },
+        {
+            "command":
+            {
+                "action": "switchToTab",
+                "index": 3
+            },
+            "id": "User.switchToTab.6CD791B"
+        },
+        {
+            "command": "closePane",
+            "id": "User.closePane"
+        },
+        {
+            "command":
+            {
+                "action": "moveFocus",
+                "direction": "up"
+            },
+            "id": "User.moveFocus.6CD791B"
+        },
+        {
+            "command":
             {
                 "action": "resizePane",
                 "direction": "right"
@@ -168,7 +168,7 @@
             "id": "User.resizePane.87C324ED"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "switchToTab",
                 "index": 4
@@ -176,7 +176,7 @@
             "id": "User.switchToTab.F747588A"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "nextTab"
             },
@@ -191,15 +191,15 @@
     "copyOnSelect": true,
     "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
     "initialCols": 100,
-    "keybindings": 
+    "keybindings":
     [
-        {
-            "id": "User.resizePane.F747588A",
-            "keys": "ctrl+shift+u"
-        },
         {
             "id": "User.copy.644BA8F2",
             "keys": "alt+c"
+        },
+        {
+            "id": "User.resizePane.F747588A",
+            "keys": "ctrl+shift+u"
         },
         {
             "id": "User.moveFocus.F747588A",
@@ -210,12 +210,12 @@
             "keys": "alt+t"
         },
         {
-            "id": "User.resizePane.87C324ED",
-            "keys": "ctrl+shift+o"
-        },
-        {
             "id": "User.closeTab.0",
             "keys": "alt+w"
+        },
+        {
+            "id": "User.resizePane.87C324ED",
+            "keys": "ctrl+shift+o"
         },
         {
             "id": "User.prevTab.0",
@@ -226,24 +226,12 @@
             "keys": "ctrl+shift+\\"
         },
         {
-            "id": "User.switchToTab.87C324ED",
-            "keys": "alt+3"
-        },
-        {
-            "id": "User.switchToTab.2A0DA8E0",
-            "keys": "alt+2"
-        },
-        {
             "id": "User.resizePane.6CD791B",
             "keys": "ctrl+shift+i"
         },
         {
             "id": null,
             "keys": "f11"
-        },
-        {
-            "id": "User.switchToTab.6CD791B",
-            "keys": "alt+4"
         },
         {
             "id": "User.paste",
@@ -262,10 +250,6 @@
             "keys": "ctrl+shift+minus"
         },
         {
-            "id": "User.switchToTab.F747588A",
-            "keys": "alt+5"
-        },
-        {
             "id": "User.sendInput.BAB9BCE0",
             "keys": "ctrl+space"
         },
@@ -282,16 +266,8 @@
             "keys": "ctrl+shift+k"
         },
         {
-            "id": "User.switchToTab.75247157",
-            "keys": "alt+6"
-        },
-        {
             "id": "User.resizePane.2A0DA8E0",
             "keys": "ctrl+shift+y"
-        },
-        {
-            "id": "User.switchToTab.D3F0B923",
-            "keys": "alt+1"
         },
         {
             "id": "User.nextTab.0",
@@ -300,30 +276,31 @@
     ],
     "launchMode": "maximized",
     "minimizeToNotificationArea": false,
-    "newTabMenu": 
+    "newTabMenu":
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
             "bellStyle": "none",
-            "colorScheme": 
+            "colorScheme":
             {
                 "dark": "rose-pine-moon",
                 "light": "rose-pine-dawn"
             },
             "cursorShape": "filledBox",
-            "font": 
+            "font":
             {
+                "cellHeight": "1.5",
                 "face": "CaskaydiaCove Nerd Font",
                 "size": 10
             }
         },
-        "list": 
+        "list":
         [
             {
                 "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
@@ -429,10 +406,16 @@
                 "hidden": false,
                 "name": "ubuntu-neo",
                 "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
+                "hidden": false,
+                "name": "Git Bash",
+                "source": "Git"
             }
         ]
     },
-    "schemes": 
+    "schemes":
     [
         {
             "background": "#FAF4ED",
@@ -484,28 +467,28 @@
     "showTabsInTitlebar": true,
     "showTerminalTitleInTitlebar": true,
     "tabWidthMode": "equal",
-    "theme": 
+    "theme":
     {
         "dark": "rose-pine-moon",
         "light": "rose-pine-dawn"
     },
-    "themes": 
+    "themes":
     [
         {
             "name": "rose-pine-dawn",
-            "tab": 
+            "tab":
             {
                 "background": "#FAF4EDFF",
                 "iconStyle": "default",
                 "showCloseButton": "always",
                 "unfocusedBackground": null
             },
-            "tabRow": 
+            "tabRow":
             {
                 "background": "#F2E9E1FF",
                 "unfocusedBackground": "#797593FF"
             },
-            "window": 
+            "window":
             {
                 "applicationTheme": "light",
                 "experimental.rainbowFrame": false,
@@ -516,19 +499,19 @@
         },
         {
             "name": "rose-pine-moon",
-            "tab": 
+            "tab":
             {
                 "background": "#232136FF",
                 "iconStyle": "default",
                 "showCloseButton": "always",
                 "unfocusedBackground": null
             },
-            "tabRow": 
+            "tabRow":
             {
                 "background": "#393552FF",
                 "unfocusedBackground": "#908CAAFF"
             },
-            "window": 
+            "window":
             {
                 "applicationTheme": "dark",
                 "experimental.rainbowFrame": false,
