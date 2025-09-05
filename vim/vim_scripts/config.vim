@@ -37,9 +37,6 @@ set nowritebackup
 set shortmess+=c
 set updatetime=100
 set guicursor=n-v-c-sm:block-blinkwait300-blinkon500-blinkoff500-TermCursor,i:hor20-blinkwait300-blinkon500-blinkoff500-TermCursor
-augroup guidetect
-    autocmd VimEnter * call s:guisettings()
-augroup END
 
 " Indentation rules
 set tabstop=4
@@ -105,9 +102,5 @@ function! SetServerName()
                 \ ? $TEMP . "/curnvimserver.txt"
                 \ : $HOME . "/tmp/curnvimserver.txt"
     call system(printf("echo %s > %s", v:servername, nvim_server_file))
-endfunction
-
-function! s:guisettings()
-    set guifont=CaskaydiaCove\ NFM\ SemiBold:h10.6
 endfunction
 " }}}

@@ -9,5 +9,4 @@ if not mason_lsp_status_ok then
 end
 
 mason.setup{}
-mason_lsp.setup{}
 
