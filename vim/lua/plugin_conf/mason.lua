@@ -4,4 +4,6 @@ if not mason_status_ok then
 end
 
 mason.setup{}
+-- This will cause double starting of the same LSP server
+-- mason_lsp.setup{}
 
