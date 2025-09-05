@@ -39,7 +39,7 @@ end
 local capabilities = cmp_lsp.default_capabilities()
 local language_servers = {
   'verible', 'clangd', 'ts_ls', 'rust_analyzer', 'jsonls',
-  'vimls', 'texlab', 'cmake', -- 'svls',
+  'vimls', 'texlab', 'cmake',
 }
 
 for _, server in ipairs(language_servers) do
@@ -85,7 +85,7 @@ lspconfig.verible.setup {
     '--wrap_spaces',
     '2',
     '--rules',
-    '-explicit-parameter-storage-type,-no-tabs,-unpacked-dimensions-range-ordering',
+    '-explicit-parameter-storage-type,-no-tabs,-unpacked-dimensions-range-ordering,-line-length',
   },
   on_attach = on_attach,
   flags = lsp_flags,

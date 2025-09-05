@@ -259,6 +259,7 @@ local explorer_opts = {
         ["[w"] = "explorer_warn_prev",
         ["]e"] = "explorer_error_next",
         ["[e"] = "explorer_error_prev",
+        ["<C-c>"] = "<Esc>",
       },
     },
   },

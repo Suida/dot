@@ -43,13 +43,13 @@ codecompanion.setup({
   },
   display = {
     chat = {
-      -- show_settings = true,
       start_in_insert_mode = false,
 
       -- Change the default icons
       icons = {
         pinned_buffer = " ",
         watched_buffer = "👀 ",
+        chat_context = "📎️", -- You can also apply an icon to the fold
       },
 
       -- Alter the sizing of the debug window
