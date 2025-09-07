@@ -1,5 +1,8 @@
 local utils = require 'user.utils'
 
+-- Set the locale to English to avoid potential encoding issues
+os.setlocale("English")
+
 
 -- Set leader
 vim.g.mapleader = " "
