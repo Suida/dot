@@ -5,11 +5,38 @@ end
 local dapui, dap_lldb = require('dapui'), require('dap-lldb');
 local dap_python = require('plugin_conf.dap-python');
 
+dap.configurations.c = {}
+dap.configurations.cpp = {}
+
 dapui.setup()
 dap_lldb.setup();
 dap_python.setup(dap)
 
+-- Adapter configuration for GDB
+dap.adapters.gdb_oneapi = {
+  type = "executable",
+  command = "gdb-oneapi",
+  args = { "-i", "dap" }
+}
+
+-- Launch configuration for C
+local oneapi_gdb = {
+  name = "Launch with oneAPI's GDB",
+  type = "gdb_oneapi",
+  request = "launch",
+  program = function()
+    return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+  end,
+  cwd = "${workspaceFolder}",
+  stopAtBeginningOfMainSubprogram = false,
+}
+dap.configurations.c[#dap.configurations.c + 1] = oneapi_gdb
+
+-- Use the same configurations for C++
+dap.configurations.cpp[#dap.configurations.cpp + 1] = oneapi_gdb
+
 vim.keymap.set('n', '<F17>', function() require('dap').disconnect() end)  -- <F17> is <S-F5> in wezterm
+vim.keymap.set('n', '<S-F5>', function() require('dap').disconnect() end)  -- <F17> is <S-F5> in wezterm
 vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
 vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
 vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)

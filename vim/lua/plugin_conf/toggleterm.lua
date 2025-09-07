@@ -63,7 +63,7 @@ vim.keymap.set({ 'v' }, '<leader>ss', '<cmd>ToggleTermSendVisualSelection 1<CR>'
 
 
 for i = 1,9 do
-  vim.keymap.set({ 'n', 'i', 't' }, string.format(toggle_keys, i), function () toggle_selected_term(i) end, opts)
+  vim.keymap.set({ 'n', 'i', 't', }, string.format(toggle_keys, i), function () toggle_selected_term(i) end, opts)
   vim.keymap.set({ 'v' }, string.format('<leader>d%d', i), string.format('<cmd>ToggleTermSendVisualLines %d<CR>', i), opts)
   vim.keymap.set({ 'v' }, string.format('<leader>s%d', i), string.format('<cmd>ToggleTermSendVisualSelection %d<CR>', i), opts)
 end

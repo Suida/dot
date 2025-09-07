@@ -52,6 +52,7 @@ require 'plugin_conf.diagnostic'
 require 'plugin_conf.copilot'
 require 'plugin_conf.codecompanion_ds'
 require 'plugin_conf.snacks-conf'
+require 'ftdetect'
 
 require('user.autocolor').setup()
 
@@ -67,6 +68,20 @@ vim.opt.fillchars:append({
   foldclose = "",
 })
 vim.opt.foldlevel = 1
+-- Set GUI options
+vim.opt.guifont = "CaskaydiaCove Nerd Font:h11"
+vim.opt.linespace = 4
+
+local ns_gid = vim.api.nvim_create_augroup("NeovideSettings", { clear = true })
+vim.api.nvim_create_autocmd({ "VimEnter" }, {
+  pattern = { '*' },
+  callback = function(ev)
+    if vim.g.neovide then
+      vim.g.neovide_cursor_animation_length = 0.1
+      vim.g.neovide_cursor_trail_size = 0.4
+    end
+  end
+})
 
 
 -- Indentation
