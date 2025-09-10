@@ -1,5 +1,8 @@
 local utils = require 'user.utils'
 
+-- Set the locale to English to avoid potential encoding issues
+os.setlocale("English")
+
 
 -- Set leader
 vim.g.mapleader = " "
@@ -69,7 +72,7 @@ vim.opt.fillchars:append({
 })
 vim.opt.foldlevel = 1
 -- Set GUI options
-vim.opt.guifont = "CaskaydiaCove Nerd Font:h12"
+vim.opt.guifont = "CaskaydiaCove Nerd Font:h11"
 vim.opt.linespace = 4
 
 local ns_gid = vim.api.nvim_create_augroup("NeovideSettings", { clear = true })

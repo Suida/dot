@@ -5,31 +5,26 @@ end
 
 codecompanion.setup({
   adapters = {
-    deepseek = function()
-      return require("codecompanion.adapters").extend("deepseek", {
-        url = "https://api.deepseek.com/chat/completions",
-        env = {
-          api_key = os.getenv("DEEPSEEK_API_KEY"),
-        },
-        schema = {
-          model = {
-            default = "deepseek-coder",
-            choices = {
-              ["deepseek-coder"] = { opts = { can_use_tools = true } },
+    http = {
+      opts = {
+        show_model_choices = true,
+      },
+      deepseek = function()
+        return require("codecompanion.adapters").extend("deepseek", {
+          schema = {
+            model = {
+              default = "deepseek-chat",
+            },
+            temperature = {
+              default = 0.1,
+            },
+            max_tokens = {
+              default = 8192,
             },
           },
-          temperature = {
-            default = 0.1,
-          },
-          num_ctx = {
-            default = 16384,
-          },
-          num_predict = {
-            default = -1,
-          },
-        },
-      })
-    end,
+        })
+      end,
+    },
   },
   strategies = {
     chat = {
@@ -39,7 +34,7 @@ codecompanion.setup({
           modes = { n = "<C-g>", i = "<C-g>" },
         },
         close = {
-          modes = { n = "<C-c>", i = "<C-c><C-c>" },
+          modes = { n = "<C-x>x", i = "<C-x>x" },
         },
       },
     },
@@ -48,7 +43,6 @@ codecompanion.setup({
   },
   display = {
     chat = {
-      show_settings = true,
       start_in_insert_mode = false,
 
       -- Change the default icons
@@ -75,6 +69,7 @@ codecompanion.setup({
         width = 80,
         relative = "editor",
         full_height = true, -- when set to false, vsplit will be used to open the chat buffer vs. botright/topleft vsplit
+        sticky = true, -- when set to true and `layout` is not `"buffer"`, the chat buffer will remain opened when switching tabs
         opts = {
           number = false,
           relativenumber = false,
@@ -106,3 +101,4 @@ local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<leader>at', codecompanion.actions, opts)
 vim.keymap.set('n', '<leader>an', codecompanion.chat, opts)
 vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', codecompanion.toggle, opts)
+

@@ -40,7 +40,7 @@ local dashboard_opts = {
     {
       pane = 2,
       section = "terminal",
-      cmd = "colorscript -e square",
+      cmd = vim.fn.has('win32') and "echo Hello!" or "colorscript -e square",
       height = 7,
       padding = 1,
     },

@@ -96,6 +96,25 @@ require('lazy').setup({
         file_types = { "markdown", "Avante", "codecompanion" },
       },
       ft = { "markdown", "Avante", "codecompanion" },
+      config = function ()
+        require('render-markdown').setup({
+          html = {
+            enabled = true,
+            tag = {
+              buf         = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
+              file        = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
+              help        = { icon = '󰘥 ',  highlight = 'CodeCompanionChatVariable' },
+              image       = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
+              symbols     = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
+              url         = { icon = '󰖟 ',  highlight = 'CodeCompanionChatVariable' },
+              var         = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
+              tool        = { icon = ' ',  highlight = 'CodeCompanionChatTool' },
+              user_prompt = { icon = ' ',  highlight = 'CodeCompanionChatTool' },
+              group       = { icon = ' ',  highlight = 'CodeCompanionChatToolGroup' },
+            },
+          },
+        })
+      end
     },
     {
       "olimorris/codecompanion.nvim",
@@ -111,6 +130,24 @@ require('lazy').setup({
           ft = { "markdown", "codecompanion" },
         },
       },
+    },
+    {
+      'milanglacier/minuet-ai.nvim',
+      config = function()
+        require('minuet').setup {
+          provider = 'openai_fim_compatible',
+          provider_options = {
+            openai_fim_compatible = {
+              api_key = "DEEPSEEK_API_KEY",
+              name = 'deepseek',
+              optional = {
+                max_tokens = 8192,
+                top_p = 0.9,
+              },
+            },
+          },
+        }
+      end,
     },
     {
       "scalameta/nvim-metals",
