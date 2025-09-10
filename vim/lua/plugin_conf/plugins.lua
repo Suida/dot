@@ -22,7 +22,10 @@ require('lazy').setup({
       'williamboman/mason.nvim',
       { 'williamboman/mason-lspconfig.nvim', dependencies = { 'williamboman/mason.nvim' } },
       'neovim/nvim-lspconfig',
-      'mfussenegger/nvim-dap',
+      {
+        'mfussenegger/nvim-dap',
+        dependencies = { 'folke/snacks.nvim' },
+      },
       {
         'nvimtools/none-ls.nvim',
         ft = { 'lua', 'python' },
@@ -389,7 +392,7 @@ require('lazy').setup({
     'voldikss/vim-translator',
     'jceb/vim-orgmode',
     'itchyny/calendar.vim',
-    'lilydjwg/fcitx.vim',
+    -- 'lilydjwg/fcitx.vim',
     {
       "folke/persistence.nvim",
       event = "BufReadPre", -- this will only start session saving when an actual file was opened

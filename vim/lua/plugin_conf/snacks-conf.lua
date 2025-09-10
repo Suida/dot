@@ -67,7 +67,10 @@ snacks.setup {
   explorer = { enabled = true },
   image = { enabled = true },
   indent = { enabled = true },
-  input = { enabled = true },
+  input = {
+    width = 100,
+    enabled = true,
+  },
   notifier = {
     enabled = true,
     timeout = 3000,
