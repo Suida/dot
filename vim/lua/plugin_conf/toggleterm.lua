@@ -28,7 +28,7 @@ toggleterm.setup({
   winbar = {
     enabled = true,
     name_formatter = function(term) --  term: Terminal
-      return '    <' .. term.id .. '>   '
+      return '   [' .. term.id .. ']  '
     end
   },
 });
@@ -68,7 +68,6 @@ for i = 1,9 do
   vim.keymap.set({ 'v' }, string.format('<leader>s%d', i), string.format('<cmd>ToggleTermSendVisualSelection %d<CR>', i), opts)
 end
 vim.keymap.set({ 'n', 'i', 't', }, '<A-Backspace>',  '<cmd>ToggleTermToggleAll<CR>', opts)
-
 
 -- Lazygit Integration
 local Terminal = require('toggleterm.terminal').Terminal;
