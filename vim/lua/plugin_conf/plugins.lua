@@ -135,15 +135,25 @@ require('lazy').setup({
       'milanglacier/minuet-ai.nvim',
       config = function()
         require('minuet').setup {
-          provider = 'openai_fim_compatible',
+          provider = 'qwen',
           provider_options = {
-            openai_fim_compatible = {
+            deepseek = {
               api_key = "DEEPSEEK_API_KEY",
               name = 'deepseek',
               optional = {
                 max_tokens = 8192,
                 top_p = 0.9,
               },
+            },
+            qwen = {
+                api_key = 'DASHSCOPE_API_KEY',
+                name = 'Qwen',
+                end_point = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+                model = 'qwen3-coder-flash',
+                optional = {
+                    max_tokens = 8192,
+                    top_p = 0.9,
+                },
             },
           },
         }

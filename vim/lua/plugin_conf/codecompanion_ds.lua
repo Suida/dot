@@ -4,6 +4,9 @@ if not codecompanion_status_ok then
 end
 
 codecompanion.setup({
+  opts = {
+    log_level = "DEBUG",
+  },
   adapters = {
     http = {
       opts = {
@@ -11,12 +14,67 @@ codecompanion.setup({
       },
       deepseek = function()
         return require("codecompanion.adapters").extend("deepseek", {
+          opts = {
+            stream = true,
+            tools = true,
+            vision = true,
+          },
+          features = {
+            text = true,
+            tokens = true,
+          },
           schema = {
             model = {
               default = "deepseek-chat",
+              choices = {
+                "deepseek-chat",
+                ["deepseek-reasoner"] = { can_reason = true, },
+              },
             },
             temperature = {
-              default = 0.1,
+              default = 0.4,
+            },
+            max_tokens = {
+              default = 8192,
+            },
+          },
+        })
+      end,
+      qwen = function()
+        return require("codecompanion.adapters").extend("openai_compatible", {
+          name = "Qwen3",
+          opts = {
+            stream = true,
+            tools = true,
+            vision = true,
+          },
+          features = {
+            text = true,
+            tokens = true,
+          },
+          roles = {
+            llm = "assistant",
+            user = "user",
+          },
+          env = {
+            api_key = "DASHSCOPE_API_KEY",
+            url = "https://dashscope.aliyuncs.com",
+            chat_url = "/compatible-mode/v1/chat/completions",
+            models_endpoint = nil,
+          },
+          schema = {
+            model = {
+              default = "qwen3-coder-flash",
+              choices = {
+                "qwen3-coder-flash",
+                "qwen3-coder-plus",
+                ["qwen-plus"] = {
+                  can_reason = true,
+                },
+              },
+            },
+            temperature = {
+              default = 0.4,
             },
             max_tokens = {
               default = 8192,
