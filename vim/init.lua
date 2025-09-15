@@ -55,6 +55,7 @@ require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
 require 'plugin_conf.copilot'
 require 'plugin_conf.codecompanion_ds'
+require 'plugin_conf.avante_ds'
 require 'ftdetect'
 
 require('user.autocolor').setup()

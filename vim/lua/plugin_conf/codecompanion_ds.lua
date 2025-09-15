@@ -156,7 +156,7 @@ codecompanion.setup({
 require('plugin_conf.codecompanion-notify').setup()
 
 local opts = { noremap = true, silent = true }
-vim.keymap.set('n', '<leader>at', codecompanion.actions, opts)
+vim.keymap.set('n', '<leader>al', codecompanion.actions, opts)
 vim.keymap.set('n', '<leader>an', codecompanion.chat, opts)
 vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', codecompanion.toggle, opts)
 
