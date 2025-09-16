@@ -15,7 +15,7 @@ avante.setup {
     width = 45,
     ask = {
       floating = true, -- Open the 'AvanteAsk' prompt in a floating window
-      start_insert = true, -- Start insert mode when opening the ask window
+      start_insert = false, -- Start insert mode when opening the ask window
       border = "rounded",
       ---@type "ours" | "theirs"
       focus_on_apply = "ours", -- which diff to focus after applying
@@ -35,10 +35,8 @@ avante.setup {
       normal = "<C-g>",
       insert = "<C-g>",
     },
-    cancel = {
-      normal = { "q" },
-      insert = {},
-    },
   },
 }
 
+local opts = { noremap = true, silent = true }
+vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', function() avante.toggle() end, opts)
