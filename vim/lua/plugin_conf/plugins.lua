@@ -22,7 +22,10 @@ require('lazy').setup({
       'williamboman/mason.nvim',
       { 'williamboman/mason-lspconfig.nvim', dependencies = { 'williamboman/mason.nvim' } },
       'neovim/nvim-lspconfig',
-      'mfussenegger/nvim-dap',
+      {
+        'mfussenegger/nvim-dap',
+        dependencies = { 'folke/snacks.nvim' },
+      },
       {
         'nvimtools/none-ls.nvim',
         ft = { 'lua', 'python' },
@@ -43,18 +46,6 @@ require('lazy').setup({
       event = "VeryLazy",
       lazy = false,
       version = false, -- set this if you want to always pull the latest change
-      opts = {
-        provider = "deepseek",
-        vendors = {
-          deepseek = {
-            __inherited_from = "openai",
-            api_key_name = "DEEPSEEK_API_KEY",
-            endpoint = "https://api.deepseek.com",
-            model = "deepseek-coder",
-            timeout = 30000,
-          },
-        },
-      },
       -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
       build = "make",
       -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
@@ -84,7 +75,6 @@ require('lazy').setup({
         },
         'MeanderingProgrammer/render-markdown.nvim',
       },
-      enabled = false,
     },
     {
       -- Make sure to set this up properly if you have lazy=true
@@ -426,7 +416,7 @@ require('lazy').setup({
     'voldikss/vim-translator',
     'jceb/vim-orgmode',
     'itchyny/calendar.vim',
-    'lilydjwg/fcitx.vim',
+    -- 'lilydjwg/fcitx.vim',
     {
       "folke/persistence.nvim",
       event = "BufReadPre", -- this will only start session saving when an actual file was opened

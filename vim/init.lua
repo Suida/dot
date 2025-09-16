@@ -32,6 +32,7 @@ vim.cmd('source ' .. vim_mapping_src)
 
 
 require 'plugin_conf.plugins'
+require 'plugin_conf.snacks-conf'
 require 'plugin_conf.mason'
 require 'plugin_conf.lspconfig'
 require 'plugin_conf.none-ls'
@@ -54,7 +55,7 @@ require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
 require 'plugin_conf.copilot'
 require 'plugin_conf.codecompanion_ds'
-require 'plugin_conf.snacks-conf'
+require 'plugin_conf.avante_ds'
 require 'ftdetect'
 
 require('user.autocolor').setup()
