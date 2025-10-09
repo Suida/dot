@@ -196,7 +196,10 @@ for _, value in ipairs(keymap_tbl) do
   if not value['mode'] then
     value['mode'] = { 'n' }
   end
-  vim.keymap.set(value['mode'], value[1], value[2], keymap_opts)
+  vim.keymap.set(value['mode'], value[1], value[2], {
+    desc = value['desc'],
+    silent = true,
+  })
 end
 
 local explorer_opts = {
