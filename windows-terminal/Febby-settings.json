@@ -11,31 +11,15 @@
             "id": "User.copy.644BA8F2"
         },
         {
-            "command": 
-            {
-                "action": "newTab"
-            },
-            "id": "User.newTab.5DEADB41"
-        },
-        {
             "command": "paste",
             "id": "User.paste"
         },
         {
             "command": 
             {
-                "action": "switchToTab",
-                "index": 1
+                "action": "newTab"
             },
-            "id": "User.switchToTab.2A0DA8E0"
-        },
-        {
-            "command": 
-            {
-                "action": "moveFocus",
-                "direction": "right"
-            },
-            "id": "User.moveFocus.87C324ED"
+            "id": "User.newTab.5DEADB41"
         },
         {
             "command": 
@@ -49,9 +33,17 @@
             "command": 
             {
                 "action": "moveFocus",
-                "direction": "down"
+                "direction": "right"
             },
-            "id": "User.moveFocus.F747588A"
+            "id": "User.moveFocus.87C324ED"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 1
+            },
+            "id": "User.switchToTab.2A0DA8E0"
         },
         {
             "command": 
@@ -60,6 +52,14 @@
                 "direction": "left"
             },
             "id": "User.resizePane.2A0DA8E0"
+        },
+        {
+            "command": 
+            {
+                "action": "moveFocus",
+                "direction": "down"
+            },
+            "id": "User.moveFocus.F747588A"
         },
         {
             "command": 
@@ -80,9 +80,9 @@
             "command": 
             {
                 "action": "switchToTab",
-                "index": 5
+                "index": 2
             },
-            "id": "User.switchToTab.75247157"
+            "id": "User.switchToTab.87C324ED"
         },
         {
             "command": 
@@ -96,9 +96,24 @@
             "command": 
             {
                 "action": "switchToTab",
-                "index": 2
+                "index": 5
             },
-            "id": "User.switchToTab.87C324ED"
+            "id": "User.switchToTab.75247157"
+        },
+        {
+            "command": 
+            {
+                "action": "prevTab"
+            },
+            "id": "User.prevTab.0"
+        },
+        {
+            "command": 
+            {
+                "action": "resizePane",
+                "direction": "down"
+            },
+            "id": "User.resizePane.F747588A"
         },
         {
             "command": 
@@ -112,16 +127,9 @@
             "command": 
             {
                 "action": "resizePane",
-                "direction": "down"
+                "direction": "up"
             },
-            "id": "User.resizePane.F747588A"
-        },
-        {
-            "command": 
-            {
-                "action": "prevTab"
-            },
-            "id": "User.prevTab.0"
+            "id": "User.resizePane.6CD791B"
         },
         {
             "command": 
@@ -130,14 +138,6 @@
                 "split": "down"
             },
             "id": "User.splitPane.D5151347"
-        },
-        {
-            "command": 
-            {
-                "action": "resizePane",
-                "direction": "up"
-            },
-            "id": "User.resizePane.6CD791B"
         },
         {
             "command": 
@@ -194,12 +194,12 @@
     "keybindings": 
     [
         {
-            "id": "User.copy.644BA8F2",
-            "keys": "alt+c"
-        },
-        {
             "id": "User.resizePane.F747588A",
             "keys": "ctrl+shift+u"
+        },
+        {
+            "id": "User.copy.644BA8F2",
+            "keys": "alt+c"
         },
         {
             "id": "User.newTab.5DEADB41",
@@ -210,12 +210,12 @@
             "keys": "ctrl+shift+j"
         },
         {
-            "id": "User.closeTab.0",
-            "keys": "alt+w"
-        },
-        {
             "id": "User.resizePane.87C324ED",
             "keys": "ctrl+shift+o"
+        },
+        {
+            "id": "User.closeTab.0",
+            "keys": "alt+w"
         },
         {
             "id": "User.splitPane.864CD510",
@@ -309,49 +309,17 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -shell zsh",
-                "guid": "{17da3cac-b318-431e-8a3e-7fcdefe6d114}",
-                "icon": "C:/msys64/mingw64.ico",
-                "name": "MINGW64 / MSYS2",
-                "startingDirectory": "C:/msys64/home/%USERNAME%"
+                "guid": "{47302f9c-1ac4-566c-aa3e-8cf29889d6ab}",
+                "hidden": false,
+                "name": "Nushell",
+                "source": "nu"
             },
             {
-                "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw32 -shell zsh",
-                "guid": "{2d51fdc4-a03b-4efe-81bc-722b7f6f3820}",
-                "icon": "C:/msys64/mingw32.ico",
-                "name": "MINGW32 / MSYS2",
-                "startingDirectory": "C:/msys64/home/%USERNAME%"
-            },
-            {
-                "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -msys -shell zsh",
+                "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -msys -shell bash",
                 "guid": "{71160544-14d8-4194-af25-d05feeac7233}",
                 "icon": "C:/msys64/msys2.ico",
                 "name": "MSYS / MSYS2",
                 "startingDirectory": "C:/msys64/home/%USERNAME%"
-            },
-            {
-                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-                "hidden": false,
-                "name": "Windows PowerShell"
-            },
-            {
-                "commandline": "%SystemRoot%\\System32\\cmd.exe",
-                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "hidden": false,
-                "name": "Command Prompt"
-            },
-            {
-                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-                "hidden": false,
-                "name": "Azure Cloud Shell",
-                "source": "Windows.Terminal.Azure"
-            },
-            {
-                "guid": "{ed26c397-cdba-5791-a21d-7a36e271ce52}",
-                "hidden": false,
-                "name": "Developer Command Prompt for VS 2022",
-                "source": "Windows.Terminal.VisualStudio"
             },
             {
                 "guid": "{8d9893a7-8189-51a6-9d2c-987df3ab4ea4}",
@@ -384,6 +352,19 @@
                 "source": "VSDebugConsole"
             },
             {
+                "commandline": "C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw32 -shell bash",
+                "guid": "{2d51fdc4-a03b-4efe-81bc-722b7f6f3820}",
+                "icon": "C:/msys64/mingw32.ico",
+                "name": "MINGW32 / MSYS2",
+                "startingDirectory": "C:/msys64/home/%USERNAME%"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
                 "guid": "{179013d8-27c9-583b-9fcd-c7480ea0f5e9}",
                 "hidden": true,
                 "name": "Developer Command Prompt for VS 2019",
@@ -414,15 +395,33 @@
                 "source": "Git"
             },
             {
-                "guid": "{f7136c8b-28dd-54cd-b2b9-5edabfd6385b}",
-                "hidden": false,
-                "name": "Developer Command Prompt for VS 18 [Preview]",
-                "source": "Windows.Terminal.VisualStudio"
-            },
-            {
                 "guid": "{ac3f06f2-d3c0-5255-9462-dc8f106a7abd}",
                 "hidden": false,
                 "name": "Developer PowerShell for VS 18 [Preview]",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            },
+            {
+                "guid": "{ed26c397-cdba-5791-a21d-7a36e271ce52}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 2022",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{f7136c8b-28dd-54cd-b2b9-5edabfd6385b}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 18 [Preview]",
                 "source": "Windows.Terminal.VisualStudio"
             }
         ]
