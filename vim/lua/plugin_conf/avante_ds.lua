@@ -29,6 +29,13 @@ avante.setup {
       model = "deepseek-chat",
       timeout = 30000,
     },
+    bailian = {
+      __inherited_from = "openai",
+      api_key_name = "DASHSCOPE_API_KEY",
+      endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      model = "qwen3-coder-plus",
+      timeout = 30000,
+    },
   },
   mappings = {
     submit = {
@@ -38,5 +45,4 @@ avante.setup {
   },
 }
 
-local opts = { noremap = true, silent = true }
-vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', function() avante.toggle() end, opts)
+vim.keymap.set({ 'n', 'i', 't' }, '<A-a>', function() avante.toggle() end, { desc = 'Avante toggle', noremap = true, silent = true })

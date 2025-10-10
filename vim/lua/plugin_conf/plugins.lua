@@ -83,21 +83,21 @@ require('lazy').setup({
         file_types = { "markdown", "Avante", "codecompanion" },
       },
       ft = { "markdown", "Avante", "codecompanion" },
-      config = function ()
+      config = function()
         require('render-markdown').setup({
           html = {
             enabled = true,
             tag = {
-              buf         = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
-              file        = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
-              help        = { icon = '󰘥 ',  highlight = 'CodeCompanionChatVariable' },
-              image       = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
-              symbols     = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
-              url         = { icon = '󰖟 ',  highlight = 'CodeCompanionChatVariable' },
-              var         = { icon = ' ',  highlight = 'CodeCompanionChatVariable' },
-              tool        = { icon = ' ',  highlight = 'CodeCompanionChatTool' },
-              user_prompt = { icon = ' ',  highlight = 'CodeCompanionChatTool' },
-              group       = { icon = ' ',  highlight = 'CodeCompanionChatToolGroup' },
+              buf         = { icon = ' ', highlight = 'CodeCompanionChatVariable' },
+              file        = { icon = ' ', highlight = 'CodeCompanionChatVariable' },
+              help        = { icon = '󰘥 ', highlight = 'CodeCompanionChatVariable' },
+              image       = { icon = ' ', highlight = 'CodeCompanionChatVariable' },
+              symbols     = { icon = ' ', highlight = 'CodeCompanionChatVariable' },
+              url         = { icon = '󰖟 ', highlight = 'CodeCompanionChatVariable' },
+              var         = { icon = ' ', highlight = 'CodeCompanionChatVariable' },
+              tool        = { icon = ' ', highlight = 'CodeCompanionChatTool' },
+              user_prompt = { icon = ' ', highlight = 'CodeCompanionChatTool' },
+              group       = { icon = ' ', highlight = 'CodeCompanionChatToolGroup' },
             },
           },
         })
@@ -122,11 +122,21 @@ require('lazy').setup({
       'milanglacier/minuet-ai.nvim',
       config = function()
         require('minuet').setup {
-          provider = 'openai_fim_compatible',
+          provider = 'qwen',
           provider_options = {
-            openai_fim_compatible = {
+            deepseek = {
               api_key = "DEEPSEEK_API_KEY",
               name = 'deepseek',
+              optional = {
+                max_tokens = 8192,
+                top_p = 0.9,
+              },
+            },
+            qwen = {
+              api_key = 'DASHSCOPE_API_KEY',
+              name = 'Qwen',
+              end_point = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+              model = 'qwen3-coder-flash',
               optional = {
                 max_tokens = 8192,
                 top_p = 0.9,
@@ -200,9 +210,20 @@ require('lazy').setup({
       'rose-pine/neovim',
       lazy = false,
       config = function()
+        require("rose-pine").setup {
+          dim_inactive_windows = true,
+        }
         vim.o.background = 'dark'
         vim.cmd('colorscheme rose-pine-moon')
       end
+    },
+    {
+      "catppuccin/nvim",
+      name = "catppuccin",
+      priority = 1000,
+      opts = {
+        dim_inactive = { enabled = true, percentage = 0.25 },
+      },
     },
     {
       'sonph/onehalf',
@@ -250,12 +271,126 @@ require('lazy').setup({
       lazy = false,
       priority = 1001,
     },
-    'tomtom/tcomment_vim',
+    'numtoStr/Comment.nvim',
     {
-      'stevearc/dressing.nvim',
-      opts = {},
+      "folke/todo-comments.nvim",
+      dependencies = { "nvim-lua/plenary.nvim" },
+      config = function()
+        require('todo-comments').setup{}
+
+        vim.keymap.set("n", "]t", function()
+          require("todo-comments").jump_next()
+        end, { desc = "Next todo comment" })
+
+        vim.keymap.set("n", "[t", function()
+          require("todo-comments").jump_prev()
+        end, { desc = "Previous todo comment" })
+
+        vim.keymap.set("n", "<leader>st", "<Cmd>TodoTelescope<CR>", { desc = "Search TODO comments" })
+      end,
     },
-    'rcarriga/nvim-notify',
+    {
+      "folke/noice.nvim",
+      event = "VeryLazy",
+      opts = {
+        -- add any options here
+      },
+      dependencies = {
+        -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+        "MunifTanjim/nui.nvim",
+        -- OPTIONAL:
+        --   `nvim-notify` is only needed, if you want to use the notification view.
+        --   If not available, we use `mini` as the fallback
+        "rcarriga/nvim-notify",
+      }
+    },
+    {
+      'kevinhwang91/nvim-ufo',
+      dependencies = { 'kevinhwang91/promise-async' },
+      config = function ()
+        local handler = function(virtText, lnum, endLnum, width, truncate)
+          local newVirtText = {}
+          local suffix = (' 󰁂 %d '):format(endLnum - lnum)
+          local sufWidth = vim.fn.strdisplaywidth(suffix)
+          local targetWidth = width - sufWidth
+          local curWidth = 0
+          for _, chunk in ipairs(virtText) do
+            local chunkText = chunk[1]
+            local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+            if targetWidth > curWidth + chunkWidth then
+              table.insert(newVirtText, chunk)
+            else
+              chunkText = truncate(chunkText, targetWidth - curWidth)
+              local hlGroup = chunk[2]
+              table.insert(newVirtText, {chunkText, hlGroup})
+              chunkWidth = vim.fn.strdisplaywidth(chunkText)
+              -- str width returned from truncate() may less than 2nd argument, need padding
+              if curWidth + chunkWidth < targetWidth then
+                suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+              end
+              break
+            end
+            curWidth = curWidth + chunkWidth
+          end
+          table.insert(newVirtText, {suffix, 'MoreMsg'})
+          return newVirtText
+        end
+
+        require('ufo').setup({
+            fold_virt_text_handler = handler
+        })
+
+        vim.keymap.set('n', 'K', function()
+          local winid = require('ufo').peekFoldedLinesUnderCursor()
+          if not winid then
+              vim.lsp.buf.hover()
+          end
+        end, { desc = 'ufo: Peek fold under cursor', noremap = true, silent = true, })
+      end
+    },
+    {
+      's1n7ax/nvim-window-picker',
+      name = 'window-picker',
+      event = 'VeryLazy',
+      version = '2.*',
+      config = function()
+        local window_picker = require('window-picker')
+        window_picker.setup {
+          hint = 'floating-big-letter',
+        }
+        local pick = function()
+          local wid = window_picker.pick_window()
+          if wid ~= nil then
+            vim.api.nvim_set_current_win(wid)
+          else
+            vim.notify('Cancelled.', 'info')
+          end
+        end
+        vim.keymap.set({ 'n' }, '<leader>wp', pick, {
+          desc = "Window picker",
+          noremap = true,
+          silent = true,
+        })
+      end,
+    },
+    {
+      "folke/which-key.nvim",
+      event = "VeryLazy",
+      opts = {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      },
+      keys = {
+        {
+          "<leader>?",
+          function()
+            require("which-key").show({ global = false })
+          end,
+          desc = "Buffer Local Keymaps (which-key)",
+        },
+      },
+    },
     {
       'folke/trouble.nvim',
       dependencies = 'nvim-tree/nvim-web-devicons',
@@ -428,8 +563,8 @@ require('lazy').setup({
           need = 1,
           branch = true, -- use git branch to save session
         }
-        -- load the session for the current directory
-        vim.keymap.set("n", "<leader>qs", function() require("persistence").load() end)
+        -- save the current session
+        vim.keymap.set("n", "<leader>qs", function() require("persistence").save() end)
         -- select a session to load
         vim.keymap.set("n", "<leader>qS", function() require("persistence").select() end)
         -- load the last session
@@ -462,26 +597,24 @@ require('lazy').setup({
             snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
             snacks.toggle.diagnostics():map("<leader>ud")
             snacks.toggle.line_number():map("<leader>ul")
-            snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
-            :map("<leader>uc")
+            snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>uc")
             snacks.toggle.treesitter():map("<leader>uT")
-            snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map(
-              "<leader>ub")
-              snacks.toggle.inlay_hints():map("<leader>uh")
-              snacks.toggle.indent():map("<leader>ug")
-              snacks.toggle.dim():map("<leader>uD")
-            end,
-          })
-        end,
-      }
-    },
+            snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
+            snacks.toggle.inlay_hints():map("<leader>uh")
+            snacks.toggle.indent():map("<leader>ug")
+            snacks.toggle.dim():map("<leader>uD")
+          end,
+        })
+      end,
+    }
+  },
 
-    install = { colorscheme = { 'onehalflight' } },
-    checker = {
-      enabled = true,
-      concurrency = nil, ---@type number? set to 1 to check for updates very slowly
-      notify = true,             -- get a notification when new updates are found
-      frequency = 3600 * 24 * 7, -- check for updates every hour
-      check_pinned = false,      -- check for pinned packages that can't be updated
-    },
-  })
+  install = { colorscheme = { 'onehalflight' } },
+  checker = {
+    enabled = true,
+    concurrency = nil, ---@type number? set to 1 to check for updates very slowly
+    notify = true,               -- get a notification when new updates are found
+    frequency = 3600 * 24 * 7,   -- check for updates every hour
+    check_pinned = false,        -- check for pinned packages that can't be updated
+  },
+})
