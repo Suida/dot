@@ -30,7 +30,6 @@ local vim_mapping_src = vim_script_dir .. 'general_mappings.vim'
 vim.cmd('source ' .. vim_config_src)
 vim.cmd('source ' .. vim_mapping_src)
 
-
 require 'plugin_conf.plugins'
 require 'plugin_conf.snacks-conf'
 require 'plugin_conf.mason'
