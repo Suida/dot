@@ -2,6 +2,7 @@ local snacks_status_ok, snacks = pcall(require, 'snacks')
 if not snacks_status_ok then
   return
 end
+local utils = require 'user.utils';
 
 local dashboard_opts = {
   enabled = true,
@@ -97,6 +98,9 @@ snacks.setup {
     notification = {
       wo = { wrap = true } -- Wrap notifications
     }
+  },
+  terminal = {
+    shell = { "pwsh", "-nol" },
   },
 }
 
@@ -220,7 +224,7 @@ local explorer_opts = {
   layout = {
     preset = "sidebar",
     preview = false,
-    layout = { position = "right" },
+    layout = { position = "left" },
   },
   -- to show the explorer to the right, add the below to
   -- your config under `opts.picker.sources.explorer`
@@ -284,3 +288,116 @@ vim.keymap.set('n', '<leader>fF', function()
     supports_live = true,
   }
 end, keymap_opts)
+
+local function contains(arr, str)
+    for _, v in ipairs(arr) do
+        if v == str then
+            return true
+        end
+    end
+    return false
+end
+
+local __agent_cmd = nil;
+
+local __agent_candidates = { 'claude-kimi', 'claude-qwen', 'kimi', 'qwen', }
+local __agent_candidates_str = ""
+
+for _, v in ipairs(__agent_candidates) do
+  __agent_candidates_str = __agent_candidates_str .. "|" .. v
+end
+
+__agent_candidates_str = __agent_candidates_str:sub(2)
+
+vim.fn.agent_candidate_completion = function()
+  return __agent_candidates
+end
+
+local cmd_suffix = ''
+
+if utils.get_os_type() == 'win32' then
+  cmd_suffix = "pwsh -nol -c "
+else
+  cmd_suffix = ""
+end
+
+local function _toggle_agent_terminal(agent)
+  Snacks.terminal.toggle(cmd_suffix .. agent, {
+    win = {
+      ---@field style? string merges with config from `Snacks.config.styles[style]`
+      ---@field show? boolean Show the window immediately (default: true)
+      ---@field footer_keys? boolean|string[] Show keys footer. When string[], only show those keys with lhs (default: false)
+      ---@field height? number|fun(self:snacks.win):number Height of the window. Use <1 for relative height. 0 means full height. (default: 0.9)
+      ---@field width? number|fun(self:snacks.win):number Width of the window. Use <1 for relative width. 0 means full width. (default: 0.9)
+      ---@field min_height? number Minimum height of the window
+      ---@field max_height? number Maximum height of the window
+      ---@field min_width? number Minimum width of the window
+      ---@field max_width? number Maximum width of the window
+      ---@field col? number|fun(self:snacks.win):number Column of the window. Use <1 for relative column. (default: center)
+      ---@field row? number|fun(self:snacks.win):number Row of the window. Use <1 for relative row. (default: center)
+      ---@field minimal? boolean Disable a bunch of options to make the window minimal (default: true)
+      ---@field position? "float"|"bottom"|"top"|"left"|"right"|"current"
+      ---@field border? "none"|"top"|"right"|"bottom"|"left"|"top_bottom"|"hpad"|"vpad"|"rounded"|"single"|"double"|"solid"|"shadow"|"bold"|string[]|false|true
+      ---@field buf? number If set, use this buffer instead of creating a new one
+      ---@field file? string If set, use this file instead of creating a new buffer
+      ---@field enter? boolean Enter the window after opening (default: false)
+      ---@field backdrop? number|false|snacks.win.Backdrop Opacity of the backdrop (default: 60)
+      ---@field wo? vim.wo|{} window options
+      ---@field bo? vim.bo|{} buffer options
+      ---@field b? table<string, any> buffer local variables
+      ---@field w? table<string, any> window local variables
+      ---@field ft? string filetype to use for treesitter/syntax highlighting. Won't override existing filetype
+      ---@field scratch_ft? string filetype to use for scratch buffers
+      ---@field keys? table<string, false|string|fun(self: snacks.win)|snacks.win.Keys> Key mappings
+      ---@field on_buf? fun(self: snacks.win) Callback after opening the buffer
+      ---@field on_win? fun(self: snacks.win) Callback after opening the window
+      ---@field on_close? fun(self: snacks.win) Callback after closing the window
+      ---@field fixbuf? boolean don't allow other buffers to be opened in this window
+      ---@field text? string|string[]|fun():(string[]|string) Initial lines to set in the buffer
+      ---@field actions? table<string, snacks.win.Action.spec> Actions that can be used in key mappings
+      ---@field resize? boolean Automatically resize the window when the editor is resized
+      ---@field stack? boolean When enabled, multiple split windows with the same position will be stacked together (useful for terminals)
+      position = "right",
+      height = 0,
+      width = function()
+        return math.floor(math.max(utils.get_tab_width() * 0.33, 80));
+      end,
+      auto_insert = false,
+      style = {
+        title = " Kimi CLI ",
+        title_pos = "center",
+      },
+    },
+  })
+end
+
+local function toggle_agent_terminal(accept_default)
+  if accept_default and contains(__agent_candidates, __agent_cmd) then
+    _toggle_agent_terminal(__agent_cmd)
+    return
+  end
+  Snacks.input.input({ 
+    prompt = "Select an agent",
+    completion = "customlist,v:lua.vim.fn.agent_candidate_completion",
+  }, function(agent)
+    if (agent == nil) then
+      return
+    end
+
+    if contains(__agent_candidates, agent) then
+      __agent_cmd = agent
+      _toggle_agent_terminal(agent)
+    else
+      Snacks.notify.error("Unsupported agent: [" .. tostring(agent) .. "]. Choose within: " .. __agent_candidates_str)
+    end
+  end)
+end
+
+vim.keymap.set(
+  { 'n', 'i', 't' },
+  '<M-0>',
+  function() toggle_agent_terminal(true) end,
+  { desc = 'Toggle Agent', noremap = true, silent = true }
+)
+
+vim.keymap.set({ 'n', 'i', 't' }, '<M-9>', toggle_agent_terminal, { desc = 'Select and Toggle Agent ', noremap = true, silent = true })

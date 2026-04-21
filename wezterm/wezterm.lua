@@ -209,7 +209,7 @@ end
 
 return {
   font = wezterm.font 'CaskaydiaCove Nerd Font',
-  font_size = 10.0,
+  font_size = 12.0,
   line_height = 1.2,
   color_scheme = scheme_for_appearance(get_appearance()),
   default_prog = default_prog,
