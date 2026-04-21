@@ -1,3 +1,5 @@
+$env:LANG = 'en-US.UTF-8'
+
 Import-Module Get-ChildItemColor
 
 Invoke-Expression (&starship init powershell)
@@ -64,12 +66,14 @@ function showColors {
     }
 }
 
+# Zoxide
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
+
 $wsl_host_ip=(Get-NetIPAddress -InterfaceAlias "*WSL*" | Where-Object { $_.AddressFamily -eq "IPv4" }).IPAddress
-$env:http_proxy="http://${wsl_host_ip}:7890"
-$env:https_proxy="http://${wsl_host_ip}:7890"
 
 # Fnm
 fnm env --use-on-cd --shell power-shell | Out-String | Invoke-Expression
+fnm completions --shell powershell | Out-String | Invoke-Expression
 $env:PNPM_HOME=$env:FNM_MULTISHELL_PATH
 $env:npm_config_registry="https://registry.npmmirror.com"
 
