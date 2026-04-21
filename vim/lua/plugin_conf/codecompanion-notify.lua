@@ -28,8 +28,8 @@ function M.update_spinner_index()
   M.spinner_index = M.spinner_index == #M.get_spinner() and 1 or M.spinner_index + 1
 end
 
-function M.requesting_worker(model_name)
-  vim.notify("Requesting " .. model_name .. "...", "info", {
+function M.requesting_worker()
+  vim.notify("[Requesting ...]", "info", {
     id = notifier_id,
     title = "CodeCompanion",
     opts = function(notif)
@@ -38,11 +38,11 @@ function M.requesting_worker(model_name)
   })
   M.update_spinner_index()
   if M.requesting then
-    M.request_timer = vim.defer_fn(function() M.requesting_worker(model_name) end, M.frame_time);
+    M.request_timer = vim.defer_fn(function() M.requesting_worker() end, M.frame_time);
   end
 end
 
-function M.finish_request(model_name, status)
+function M.finish_request(status)
   if M.request_timer ~= nil then
     vim.loop.timer_stop(M.request_timer)
     M.request_timer = nil
@@ -50,7 +50,7 @@ function M.finish_request(model_name, status)
 
   local result = levels[status] or levels.cancelled
 
-  vim.notify("Request to " .. model_name .. " " .. result.msg, result.lvl, {
+  vim.notify("[Request done]: " .. result.msg, result.lvl, {
     id = notifier_id,
     title = "CodeCompanion",
     opts = function(notif)
@@ -70,15 +70,13 @@ function M.setup(opts)
     group = group,
     pattern = "CodeCompanionRequest*",
     callback = function(req)
-      local adapter = req.data.adapter
-      local model_name = adapter.model
 
       if req.match == "CodeCompanionRequestStarted" then
         M.requesting = true
-        M.requesting_worker(model_name)
+        M.requesting_worker()
       elseif req.match == "CodeCompanionRequestFinished" then
         M.requesting = false
-        M.finish_request(model_name, req.data.status)
+        M.finish_request(req.data.status)
       end
     end,
   })

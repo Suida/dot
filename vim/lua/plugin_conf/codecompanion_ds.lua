@@ -66,27 +66,71 @@ codecompanion.setup({
             model = {
               default = "qwen3-coder-flash",
               choices = {
+                "qwen3.6-plus",
                 "qwen3-coder-flash",
                 "qwen3-coder-plus",
                 ["qwen-plus"] = {
                   can_reason = true,
                 },
+                "glm-5",
+                "kimi/kimi-k2.5",
               },
             },
             temperature = {
               default = 0.4,
             },
             max_tokens = {
-              default = 8192,
+              default = 16384,
             },
           },
         })
       end,
     },
+    acp = {
+      kimi = function()
+        return require("codecompanion.adapters").extend("kimi_cli", {
+          name = "kimi",
+          formatted_name = "Kimi CLI",
+          commands = {
+            default = {
+              "kimi",
+              "acp",
+            },
+          },
+          handlers = {
+            auth = function()
+              return true
+            end,
+          },
+        })
+      end,
+      claude_kimi = function()
+        return require("codecompanion.adapters").extend("claude_code", {
+          name = "claude_kimi",
+          formatted_name = "Claude Code with Kimi",
+          env = {
+            ANTHROPIC_BASE_URL = "https://api.kimi.com/coding/",
+            ANTHROPIC_API_KEY = "sk-kimi-AMhr2745MRjZDHjHOF0w67DTbHtKq2GiOAeTG5OeQVEIcVGBdFGnG0SaCbrwlEqb",
+            ANTHROPIC_MODEL = "kimi-for-coding",
+          }
+        })
+      end,
+      claude_qwen = function()
+        return require("codecompanion.adapters").extend("claude_code", {
+          name = "claude_qwen",
+          formatted_name = "Claude Code with Qwen",
+          env = {
+            ANTHROPIC_BASE_URL = "https://dashscope.aliyuncs.com/apps/anthropic",
+            ANTHROPIC_MODEL = "qwen3.5-plus",
+            ANTHROPIC_API_KEY = "DASHSCOPE_API_KEY",
+          }
+        })
+      end,
+    }
   },
-  strategies = {
+  interactions = {
     chat = {
-      adapter = "deepseek",
+      adapter = "kimi",
       keymaps = {
         send = {
           modes = { n = "<C-g>", i = "<C-g>" },
@@ -96,8 +140,7 @@ codecompanion.setup({
         },
       },
     },
-    inline = { adapter = "deepseek" },
-    agent = { adapter = "deepseek" },
+    inline = { adapter = "claude_kimi" },
   },
   display = {
     chat = {
@@ -158,4 +201,3 @@ require('plugin_conf.codecompanion-notify').setup()
 vim.keymap.set('n', '<leader>al', codecompanion.actions, { desc = "CodeCompanion actions", noremap = true, silent = true })
 vim.keymap.set('n', '<leader>an', codecompanion.chat, { desc = "CodeCompanion chat", noremap = true, silent = true })
 vim.keymap.set('n', '<leader>ap', codecompanion.toggle, { desc = "CodeCompanion toggle", noremap = true, silent = true })
-
