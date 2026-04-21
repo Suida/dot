@@ -54,8 +54,8 @@ require 'plugin_conf.translator'
 require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
 require 'plugin_conf.copilot'
-require 'plugin_conf.codecompanion_ds'
 require 'plugin_conf.avante_ds'
+require 'plugin_conf.codecompanion_ds'
 require 'ftdetect'
 
 require('user.autocolor').setup()
@@ -84,7 +84,8 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
       vim.g.neovide_cursor_animation_length = 0.1
       vim.g.neovide_cursor_trail_size = 0.4
     end
-  end
+  end,
+  group = ns_gid,
 })
 
 
