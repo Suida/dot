@@ -20,9 +20,9 @@ toggleterm.setup({
   direction = 'horizontal',
   size = function(term)
     if term.direction == 'horizontal' then
-      return math.max(utils.get_tab_height() / 3, 16);
+      return math.floor(math.max(utils.get_tab_height() / 3, 16));
     elseif term.direction == 'vertical' then
-      return math.max(utils.get_tab_width() / 2, 120);
+      return math.floor(math.max(utils.get_tab_width() / 4, 80));
     end
   end,
   winbar = {
@@ -62,7 +62,7 @@ vim.keymap.set({ 'v' }, '<leader>dd', '<cmd>ToggleTermSendVisualLines 1<CR>', op
 vim.keymap.set({ 'v' }, '<leader>ss', '<cmd>ToggleTermSendVisualSelection 1<CR>', opts)
 
 
-for i = 1,9 do
+for i = 1,6 do
   vim.keymap.set({ 'n', 'i', 't', }, string.format(toggle_keys, i), function () toggle_selected_term(i) end, opts)
   vim.keymap.set({ 'v' }, string.format('<leader>d%d', i), string.format('<cmd>ToggleTermSendVisualLines %d<CR>', i), opts)
   vim.keymap.set({ 'v' }, string.format('<leader>s%d', i), string.format('<cmd>ToggleTermSendVisualSelection %d<CR>', i), opts)
@@ -74,6 +74,7 @@ local Terminal = require('toggleterm.terminal').Terminal;
 
 local lazygit = Terminal:new({
   cmd = "lazygit",
+  display_name = "Lazygit",
   dir = "git_dir",
   direction = "float",
   float_opts = {
@@ -83,10 +84,7 @@ local lazygit = Terminal:new({
   on_open = function(term)
     vim.cmd("startinsert!")
     vim.keymap.set("n", "q", "<cmd>close<CR>", { noremap = true, silent = true, buffer = term.bufnr, });
-    -- print(term.bufnr)
-    -- vim.defer_fn(function ()
-      vim.keymap.del({ 'i', 't' }, 'jk');
-    -- end, 3000);
+    vim.keymap.del({ 'i', 't' }, 'jk');
   end,
   -- function to run on closing the terminal
   on_close = function(term)
@@ -95,9 +93,6 @@ local lazygit = Terminal:new({
   end,
 })
 
-local function _lazygit_toggle()
-  lazygit:toggle()
-end
+local function _lazygit_toggle() lazygit:toggle() end
 
 vim.keymap.set('n',  "<leader>gl", function() _lazygit_toggle() end)
-
