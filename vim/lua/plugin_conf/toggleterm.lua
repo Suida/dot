@@ -2,8 +2,6 @@ local toggleterm_status_ok, toggleterm = pcall(require, 'toggleterm')
 if not toggleterm_status_ok then
   return
 end
-local terms = require('toggleterm.terminal')
-local ui = require('toggleterm.ui')
 local utils = require 'user.utils';
 
 local shell;
@@ -34,28 +32,7 @@ toggleterm.setup({
 });
 
 
-local function toggle_selected_term(selected_term_id)
-  local has_open, windows = ui.find_open_windows()
-  if has_open then
-    ui.close_and_save_terminal_view(windows)
-  end
-
-  -- If only the selected terminal is opened, close it and return
-  if #windows == 1 and windows[1].term_id == selected_term_id then
-    return
-  end
-
-  -- Open or create selected terminal
-  local term = terms.get_or_create_term(selected_term_id)
-  ui.update_origin_window(term.window)
-  term:toggle()
-  -- Save the terminal in view if it was last closed terminal.
-  if not ui.find_open_windows() then ui.save_terminal_view({ term.id }, term.id) end
-end
-
-
 local toggle_keys = '<A-%d>'
-local toggle_cmd = '<cmd>ToggleTerm %d<CR>'
 
 local opts = { noremap = true, silent = true }
 vim.keymap.set({ 'v' }, '<leader>dd', '<cmd>ToggleTermSendVisualLines 1<CR>', opts)
@@ -63,36 +40,17 @@ vim.keymap.set({ 'v' }, '<leader>ss', '<cmd>ToggleTermSendVisualSelection 1<CR>'
 
 
 for i = 1,6 do
-  vim.keymap.set({ 'n', 'i', 't', }, string.format(toggle_keys, i), function () toggle_selected_term(i) end, opts)
+  vim.keymap.set({ 'n', 'i', 't', }, string.format(toggle_keys, i), function()
+    require('user.agent_layout').main_terminal(i)
+  end, opts)
   vim.keymap.set({ 'v' }, string.format('<leader>d%d', i), string.format('<cmd>ToggleTermSendVisualLines %d<CR>', i), opts)
   vim.keymap.set({ 'v' }, string.format('<leader>s%d', i), string.format('<cmd>ToggleTermSendVisualSelection %d<CR>', i), opts)
 end
-vim.keymap.set({ 'n', 'i', 't', }, '<A-`>',  '<cmd>ToggleTermToggleAll<CR>', opts)
+vim.keymap.set({ 'n', 'i', 't', }, '<A-`>', function()
+  require('user.agent_layout').toggle_all_terminals_normal()
+end, opts)
 
 -- Lazygit Integration
-local Terminal = require('toggleterm.terminal').Terminal;
-
-local lazygit = Terminal:new({
-  cmd = "lazygit",
-  display_name = "Lazygit",
-  dir = "git_dir",
-  direction = "float",
-  float_opts = {
-    border = "double",
-  },
-  -- function to run on opening the terminal
-  on_open = function(term)
-    vim.cmd("startinsert!")
-    vim.keymap.set("n", "q", "<cmd>close<CR>", { noremap = true, silent = true, buffer = term.bufnr, });
-    vim.keymap.del({ 'i', 't' }, 'jk');
-  end,
-  -- function to run on closing the terminal
-  on_close = function(term)
-    vim.keymap.set({ 'i', 't' }, 'jk', [[<C-\><C-n>]], { noremap = true })
-    vim.cmd("startinsert!")
-  end,
-})
-
-local function _lazygit_toggle() lazygit:toggle() end
-
-vim.keymap.set('n',  "<leader>gl", function() _lazygit_toggle() end)
+vim.keymap.set('n', "<leader>gl", function()
+  require('user.agent_layout').main_git()
+end)

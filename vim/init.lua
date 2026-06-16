@@ -44,6 +44,7 @@ require 'plugin_conf.overseer'
 require 'plugin_conf.cmake-tools'
 require 'plugin_conf.lualine'
 require 'plugin_conf.toggleterm'
+require('user.agent_layout').setup()
 require 'plugin_conf.hop_conf'
 require 'plugin_conf.telescope'
 require 'plugin_conf.indentline'
