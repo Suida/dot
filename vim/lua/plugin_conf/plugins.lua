@@ -146,6 +146,13 @@ require('lazy').setup({
     },
     -- Task runner
     'stevearc/overseer.nvim',
+    {
+      'Civitasv/cmake-tools.nvim',
+      dependencies = {
+        'nvim-lua/plenary.nvim',
+        'stevearc/overseer.nvim',
+      },
+    },
 
     -- Outlook
     'nvim-tree/nvim-web-devicons',

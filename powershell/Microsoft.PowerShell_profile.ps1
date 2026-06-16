@@ -38,10 +38,15 @@ function v { nvim-qt.exe $args }
 function Get-GUID { curl https://guid.it/string }
 
 $PSReadLineOptions = @{
-    EditMode         = "Emacs"
-    BellStyle        = "None"
-    PredictionSource = "History"
+    EditMode  = "Emacs"
+    BellStyle = "None"
 }
+
+# History option is not supported in virtual terminals
+if ($Host.Name -eq "ConsoleHost" -and -not [Console]::IsOutputRedirected) {
+    $PSReadLineOptions.PredictionSource = "History"
+}
+
 Set-PSReadLineOption @PSReadLineOptions
  
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete # 设置 Tab 键补全
@@ -71,10 +76,7 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
 $wsl_host_ip=(Get-NetIPAddress -InterfaceAlias "*WSL*" | Where-Object { $_.AddressFamily -eq "IPv4" }).IPAddress
 
-# Fnm
-fnm env --use-on-cd --shell power-shell | Out-String | Invoke-Expression
-fnm completions --shell powershell | Out-String | Invoke-Expression
-$env:PNPM_HOME=$env:FNM_MULTISHELL_PATH
+# Node
 $env:npm_config_registry="https://registry.npmmirror.com"
 
 # LLM Keys

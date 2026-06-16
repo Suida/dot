@@ -34,7 +34,7 @@ end
 local capabilities = cmp_lsp.default_capabilities()
 local language_servers = {
   'verible', 'clangd', 'ts_ls', 'rust_analyzer', 'jsonls',
-  'vimls', 'texlab', 'cmake',
+  'vimls', 'texlab', 'cmake', 'matlab_ls',
 }
 
 for _, server in ipairs(language_servers) do

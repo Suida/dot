@@ -300,8 +300,8 @@ end
 
 local __agent_cmd = nil;
 
-local __agent_candidates = { 'claude-kimi', 'claude-qwen', 'kimi', 'qwen', }
-local __agent_candidates_str = ""
+__agent_candidates = { 'claude', 'codex', 'opencode', 'kimi', }
+__agent_candidates_str = ""
 
 for _, v in ipairs(__agent_candidates) do
   __agent_candidates_str = __agent_candidates_str .. "|" .. v
@@ -322,7 +322,11 @@ else
 end
 
 local function _toggle_agent_terminal(agent)
-  Snacks.terminal.toggle(cmd_suffix .. agent, {
+  -- Snacks.terminal.toggle("pwsh -nol -c " .. agent, {
+  Snacks.terminal.toggle(agent, {
+    env = {
+      TERM = "dumb",
+    },
     win = {
       ---@field style? string merges with config from `Snacks.config.styles[style]`
       ---@field show? boolean Show the window immediately (default: true)
@@ -360,13 +364,24 @@ local function _toggle_agent_terminal(agent)
       position = "right",
       height = 0,
       width = function()
-        return math.floor(math.max(utils.get_tab_width() * 0.33, 80));
+        return math.floor(math.max(utils.get_tab_width() * 0.45, 100));
       end,
       auto_insert = false,
       style = {
         title = " Kimi CLI ",
         title_pos = "center",
       },
+      title = agent,
+      wo = {
+        winbar = agent,
+      },
+      on_buf = function(self)
+        vim.keymap.set("t", "<C-j>", "<A-CR>", {
+          buffer = self.buf,
+          silent = true,
+          desc = "Codex: insert newline",
+        })
+      end,
     },
   })
 end
@@ -395,7 +410,7 @@ end
 
 vim.keymap.set(
   { 'n', 'i', 't' },
-  '<M-0>',
+  '<M-Backspace>',
   function() toggle_agent_terminal(true) end,
   { desc = 'Toggle Agent', noremap = true, silent = true }
 )

@@ -67,7 +67,7 @@ for i = 1,6 do
   vim.keymap.set({ 'v' }, string.format('<leader>d%d', i), string.format('<cmd>ToggleTermSendVisualLines %d<CR>', i), opts)
   vim.keymap.set({ 'v' }, string.format('<leader>s%d', i), string.format('<cmd>ToggleTermSendVisualSelection %d<CR>', i), opts)
 end
-vim.keymap.set({ 'n', 'i', 't', }, '<A-Backspace>',  '<cmd>ToggleTermToggleAll<CR>', opts)
+vim.keymap.set({ 'n', 'i', 't', }, '<A-`>',  '<cmd>ToggleTermToggleAll<CR>', opts)
 
 -- Lazygit Integration
 local Terminal = require('toggleterm.terminal').Terminal;
