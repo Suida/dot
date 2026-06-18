@@ -10,6 +10,15 @@ local function snacks()
   return require('snacks')
 end
 
+local function joinpath(...)
+  if vim.fs and vim.fs.joinpath then
+    return vim.fs.joinpath(...)
+  end
+
+  local sep = package.config:sub(1, 1)
+  return table.concat({ ... }, sep)
+end
+
 local function contains(arr, value)
   for _, item in ipairs(arr) do
     if item == value then
@@ -175,6 +184,38 @@ local function remember_main()
   return st.main.win
 end
 
+local function startup_has_args()
+  return vim.fn.argc(-1) > 0
+end
+
+local function launch_agents_path()
+  local launch_cwd = M.launch_cwd or vim.fn.getcwd(-1, -1)
+  local path = joinpath(launch_cwd, 'AGENTS.md')
+  if vim.fn.filereadable(path) == 1 then
+    return path
+  end
+end
+
+local function seed_main_from_launch_file()
+  local st = state()
+  if st.main.seeded_launch_file or startup_has_args() then
+    return
+  end
+
+  st.main.seeded_launch_file = true
+  local path = launch_agents_path()
+  if not path then
+    return
+  end
+
+  local win = remember_main()
+  if valid_win(win) then
+    vim.api.nvim_set_current_win(win)
+  end
+  vim.cmd.edit(vim.fn.fnameescape(path))
+  remember_main()
+end
+
 local function focus_win(win)
   if valid_win(win) then
     vim.api.nvim_set_current_win(win)
@@ -338,7 +379,7 @@ function M.agent_terminal_opts(agent)
       position = 'right',
       height = 0,
       width = function()
-        return math.floor(math.max(utils.get_tab_width() * 0.45, 100))
+        return math.floor(math.max(utils.get_tab_width() * 0.35, 100))
       end,
       enter = false,
       title = agent,
@@ -635,6 +676,7 @@ function M.open()
 
   vim.t.agent_layout = true
   remember_main()
+  seed_main_from_launch_file()
   M.open_explorer()
   M.open_agent(state().agent or M.default_agent)
   focus_main()
@@ -673,6 +715,8 @@ function M.close()
 end
 
 function M.setup()
+  M.launch_cwd = M.launch_cwd or vim.fn.getcwd(-1, -1)
+
   vim.fn.agent_candidate_completion = function()
     return M.agent_candidates
   end
