@@ -3,7 +3,7 @@ local M = {}
 local utils = require 'user.utils'
 
 M.default_agent = 'codex'
-M.agent_candidates = { 'claude', 'codex', 'opencode', 'kimi' }
+M.agent_candidates = { 'claude', 'codex', 'omp', 'pi', 'hermes', 'opencode', 'kimi' }
 M._tab_states = M._tab_states or {}
 
 local function snacks()
@@ -369,7 +369,8 @@ function M.agent_terminal_opts(agent)
   return {
     count = 9001,
     env = {
-      TERM = 'dumb',
+      TERM = agent == 'codex' and 'dumb' or 'xterm-256color',
+      OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS = 'true',
     },
     interactive = true,
     auto_close = false,

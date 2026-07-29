@@ -40,3 +40,7 @@
 	provider = generic
 [credential "http://127.0.0.1:13000"]
 	provider = generic
+[windows]
+	appendAtomically = false
+[credential "http://localhost:13000"]
+	provider = generic

@@ -2,7 +2,10 @@ $env:LANG = 'en-US.UTF-8'
 
 Import-Module Get-ChildItemColor
 
-Invoke-Expression (&starship init powershell)
+# Starship emits an error and installs only a fallback prompt under TERM=dumb.
+if ($env:TERM -ne 'dumb') {
+    Invoke-Expression (&starship init powershell)
+}
 
 New-Alias ~ $HOME
 function .. { Set-Location .. }
