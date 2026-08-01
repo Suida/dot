@@ -31,9 +31,15 @@ require('lazy').setup({
         ft = { 'lua', 'python' },
       }
     },
-    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+    {
+      'nvim-treesitter/nvim-treesitter',
+      branch = 'main',
+      lazy = false,
+      build = ':TSUpdate'
+    },
     {
       'nvim-treesitter/nvim-treesitter-textobjects',
+      branch = "main",
       dependencies = {
         'nvim-treesitter/nvim-treesitter',
       },
@@ -41,41 +47,6 @@ require('lazy').setup({
     { 'rcarriga/nvim-dap-ui',            dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
     { 'suida/nvim-dap-lldb',             dependencies = { "mfussenegger/nvim-dap" } },
     { 'mfussenegger/nvim-dap-python',    dependencies = { "mfussenegger/nvim-dap" } },
-    {
-      "yetone/avante.nvim",
-      event = "VeryLazy",
-      lazy = false,
-      version = false, -- set this if you want to always pull the latest change
-      -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-      build = "make",
-      -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-      dependencies = {
-        "nvim-treesitter/nvim-treesitter",
-        "stevearc/dressing.nvim",
-        "nvim-lua/plenary.nvim",
-        "MunifTanjim/nui.nvim",
-        --- The below dependencies are optional,
-        "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-        {
-          -- support for image pasting
-          "HakonHarnes/img-clip.nvim",
-          event = "VeryLazy",
-          opts = {
-            -- recommended settings
-            default = {
-              embed_image_as_base64 = false,
-              prompt_for_file_name = false,
-              drag_and_drop = {
-                insert_mode = true,
-              },
-              -- required for Windows users
-              use_absolute_path = true,
-            },
-          },
-        },
-        'MeanderingProgrammer/render-markdown.nvim',
-      },
-    },
     {
       -- Make sure to set this up properly if you have lazy=true
       'MeanderingProgrammer/render-markdown.nvim',
@@ -117,34 +88,6 @@ require('lazy').setup({
           ft = { "markdown", "codecompanion" },
         },
       },
-    },
-    {
-      'milanglacier/minuet-ai.nvim',
-      config = function()
-        require('minuet').setup {
-          provider = 'qwen',
-          provider_options = {
-            deepseek = {
-              api_key = "DEEPSEEK_API_KEY",
-              name = 'deepseek',
-              optional = {
-                max_tokens = 8192,
-                top_p = 0.9,
-              },
-            },
-            qwen = {
-              api_key = 'DASHSCOPE_API_KEY',
-              name = 'Qwen',
-              end_point = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
-              model = 'qwen3-coder-flash',
-              optional = {
-                max_tokens = 8192,
-                top_p = 0.9,
-              },
-            },
-          },
-        }
-      end,
     },
     {
       "scalameta/nvim-metals",
@@ -203,6 +146,13 @@ require('lazy').setup({
     },
     -- Task runner
     'stevearc/overseer.nvim',
+    {
+      'Civitasv/cmake-tools.nvim',
+      dependencies = {
+        'nvim-lua/plenary.nvim',
+        'stevearc/overseer.nvim',
+      },
+    },
 
     -- Outlook
     'nvim-tree/nvim-web-devicons',
@@ -210,9 +160,9 @@ require('lazy').setup({
       'rose-pine/neovim',
       lazy = false,
       config = function()
-        require("rose-pine").setup {
-          dim_inactive_windows = true,
-        }
+        -- require("rose-pine").setup {
+        --   dim_inactive_windows = true,
+        -- }
         vim.o.background = 'dark'
         vim.cmd('colorscheme rose-pine-moon')
       end
@@ -363,7 +313,7 @@ require('lazy').setup({
           if wid ~= nil then
             vim.api.nvim_set_current_win(wid)
           else
-            vim.notify('Cancelled.', 'info')
+            vim.notify('Window pick cancelled.', 'info')
           end
         end
         vim.keymap.set({ 'n' }, '<leader>wp', pick, {

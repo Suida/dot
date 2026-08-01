@@ -1,13 +1,9 @@
-local treesitter_status_ok, _ = pcall(require, 'nvim-treesitter')
+local treesitter_status_ok, treesitter = pcall(require, 'nvim-treesitter')
 if not treesitter_status_ok then
   return
 end
 
-require('nvim-treesitter.configs').setup {
-  ensure_installed = {
-    "c", "cpp", "lua", "vim", "vimdoc", "query",
-    "python", "verilog", "markdown", "yaml"
-  },
+treesitter.setup {
   highlight = {
     enable = true,
   },
@@ -53,6 +49,11 @@ require('nvim-treesitter.configs').setup {
       include_surrounding_whitespace = true,
     },
   },
+}
+
+treesitter.install {
+  "c", "cpp", "lua", "vim", "vimdoc", "query",
+  "python", "verilog", "markdown", "yaml"
 }
 
 vim.wo.foldcolumn = '1'

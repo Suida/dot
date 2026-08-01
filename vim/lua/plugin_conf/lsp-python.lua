@@ -1,7 +1,7 @@
 local M = {}
 
-M.setup = function(lspconfig, on_attach, lsp_flags, capabilities)
-  lspconfig.pyright.setup {
+M.setup = function(on_attach, lsp_flags, capabilities)
+  vim.lsp.config("pyright", {
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
@@ -10,9 +10,10 @@ M.setup = function(lspconfig, on_attach, lsp_flags, capabilities)
         disableOrganizeImports = true,
       },
     },
-  }
+  })
+  vim.lsp.enable("pyright")
 
-  lspconfig.ruff.setup {
+  vim.lsp.config("ruff", {
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
@@ -21,7 +22,8 @@ M.setup = function(lspconfig, on_attach, lsp_flags, capabilities)
         showSyntaxErrors = false
       },
     },
-  }
+  })
+  vim.lsp.enable("ruff")
 
   vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),

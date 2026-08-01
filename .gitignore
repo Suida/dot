@@ -9,4 +9,7 @@ vim/plugin
 
 tags
 vim/undo/
+
+# Agent-related
+.claude/
 .bitfun/

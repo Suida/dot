@@ -1,6 +1,6 @@
 [user]
-    email = suidar@foxmail.com
-    name = harass
+	email = suidar@foxmail.com
+	name = harass
 [core]
     editor = nvim-qt
     autocrlf = input
@@ -22,6 +22,8 @@
     trustExitCode = true
 [difftool "nvimqtdiff"]
     cmd = "nvim-qt -- -d -R \"$LOCAL\" \"$REMOTE\""
+[difftool "nvimdiff"]
+    cmd = "nvim -d -R \"$LOCAL\" \"$REMOTE\""
 [merge]
     tool = nvimqtdiff
 [mergetool]
@@ -32,3 +34,13 @@
 	directory = *
 [init]
 	defaultBranch = master
+[credential "http://localhost:3000"]
+	provider = generic
+[credential "http://127.0.0.1:3000"]
+	provider = generic
+[credential "http://127.0.0.1:13000"]
+	provider = generic
+[windows]
+	appendAtomically = false
+[credential "http://localhost:13000"]
+	provider = generic

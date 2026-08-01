@@ -98,6 +98,9 @@ snacks.setup {
       wo = { wrap = true } -- Wrap notifications
     }
   },
+  terminal = {
+    shell = { "pwsh", "-nol" },
+  },
 }
 
 local keymap_opts = {
@@ -111,7 +114,7 @@ local keymap_tbl = {
   { "<leader>/",       function() snacks.picker.grep() end,                                    desc = "Grep" },
   { "<leader>:",       function() snacks.picker.command_history() end,                         desc = "Command History" },
   { "<leader>n",       function() snacks.picker.notifications() end,                           desc = "Notification History" },
-  { "<leader>e",       function() snacks.explorer() end,                                       desc = "File Explorer" },
+  { "<leader>e",       function() require('user.agent_layout').toggle_explorer() end,           desc = "File Explorer" },
   -- find
   { "<leader>fb",      function() snacks.picker.buffers() end,                                 desc = "Buffers" },
   { "<leader>fc",      function() snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
@@ -121,7 +124,7 @@ local keymap_tbl = {
   { "<leader>fr",      function() snacks.picker.recent() end,                                  desc = "Recent" },
   -- git
   { "<leader>gc",      function() snacks.picker.git_branches() end,                            desc = "Git Branches" },
-  { "<leader>gl",      function() snacks.picker.git_log() end,                                 desc = "Git Log" },
+  { "<leader>gl",      function() require('user.agent_layout').main_git() end,                  desc = "Git UI" },
   { "<leader>gL",      function() snacks.picker.git_log_line() end,                            desc = "Git Log Line" },
   { "<leader>gs",      function() snacks.picker.git_status() end,                              desc = "Git Status" },
   { "<leader>gf",      function() snacks.picker.git_log_file() end,                            desc = "Git Log File" },
@@ -202,77 +205,6 @@ for _, value in ipairs(keymap_tbl) do
   })
 end
 
-local explorer_opts = {
-  finder = "explorer",
-  sort = { fields = { "sort" } },
-  supports_live = true,
-  tree = true,
-  watch = true,
-  diagnostics = true,
-  diagnostics_open = false,
-  git_status = true,
-  git_status_open = false,
-  git_untracked = true,
-  follow_file = true,
-  focus = "list",
-  auto_close = false,
-  jump = { close = false },
-  layout = {
-    preset = "sidebar",
-    preview = false,
-    layout = { position = "right" },
-  },
-  -- to show the explorer to the right, add the below to
-  -- your config under `opts.picker.sources.explorer`
-  -- layout = { layout = { position = "right" } },
-  formatters = {
-    file = { filename_only = true },
-    severity = { pos = "right" },
-  },
-  matcher = { sort_empty = false, fuzzy = false },
-  config = function(opts)
-    return require("snacks.picker.source.explorer").setup(opts)
-  end,
-  win = {
-    list = {
-      keys = {
-        ["<BS>"] = "explorer_up",
-        ["l"] = "confirm",
-        ["h"] = "explorer_close", -- close directory
-        ["a"] = "explorer_add",
-        ["d"] = "explorer_del",
-        ["r"] = "explorer_rename",
-        ["c"] = "explorer_copy",
-        ["m"] = "explorer_move",
-        ["o"] = "confirm",
-        ["s"] = "explorer_open", -- open with system application
-        ["P"] = "toggle_preview",
-        ["y"] = { "explorer_yank", mode = { "n", "x" } },
-        ["p"] = "explorer_paste",
-        ["u"] = "explorer_update",
-        ["<leader>/"] = "picker_grep",
-        ["t"] = "tab",
-        ["<C-t>"] = "tab",
-        ["."] = "tcd",
-        ["I"] = "toggle_ignored",
-        ["H"] = "toggle_hidden",
-        ["Z"] = "explorer_close_all",
-        ["]c"] = "explorer_git_next",
-        ["[c"] = "explorer_git_prev",
-        ["]d"] = "explorer_diagnostic_next",
-        ["[d"] = "explorer_diagnostic_prev",
-        ["]w"] = "explorer_warn_next",
-        ["[w"] = "explorer_warn_prev",
-        ["]e"] = "explorer_error_next",
-        ["[e"] = "explorer_error_prev",
-        ["<C-c>"] = "<Esc>",
-      },
-    },
-  },
-}
-
-vim.keymap.set('n', '<leader>e', function() snacks.picker.explorer(explorer_opts) end, keymap_opts)
-
 vim.keymap.set('n', '<leader>fF', function()
   snacks.picker.files {
     finder = "files",
@@ -284,3 +216,11 @@ vim.keymap.set('n', '<leader>fF', function()
     supports_live = true,
   }
 end, keymap_opts)
+
+vim.keymap.set({ 'n', 'i', 't' }, '<M-Backspace>', function()
+  require('user.agent_layout').toggle_agent(true)
+end, { desc = 'Toggle Agent', noremap = true, silent = true })
+
+vim.keymap.set({ 'n', 'i', 't' }, '<M-9>', function()
+  require('user.agent_layout').select_agent()
+end, { desc = 'Select and Toggle Agent', noremap = true, silent = true })

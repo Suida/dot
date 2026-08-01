@@ -1,7 +1,3 @@
-local lspconfig_status_ok, lspconfig = pcall(require, 'lspconfig')
-if not lspconfig_status_ok then
-  return
-end
 
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -38,26 +34,27 @@ end
 local capabilities = cmp_lsp.default_capabilities()
 local language_servers = {
   'verible', 'clangd', 'ts_ls', 'rust_analyzer', 'jsonls',
-  'vimls', 'texlab', 'cmake',
+  'vimls', 'texlab', 'cmake', 'matlab_ls',
 }
 
 for _, server in ipairs(language_servers) do
-  lspconfig[server].setup {
+  vim.lsp.config(server, {
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
-  }
+  })
+vim.lsp.enable(server)
 end
 
-lspconfig.clangd.setup {
+vim.lsp.config("clangd", {
   cmd = { 'clangd', '--header-insertion=never' },
   on_attach = on_attach,
   flags = lsp_flags,
   capabilities = capabilities,
-}
+})
+vim.lsp.enable("clangd")
 
-
-lspconfig.lua_ls.setup {
+vim.lsp.config("lua_ls", {
   cmd = { "lua-language-server", "--metapath", "~/.cache/lua-language-server/meta/" },
   on_attach = on_attach,
   flags = lsp_flags,
@@ -76,9 +73,10 @@ lspconfig.lua_ls.setup {
       }
     }
   },
-}
+})
+vim.lsp.enable("lua_ls")
 
-lspconfig.verible.setup {
+vim.lsp.config("verible", {
   cmd = {
     'verible-verilog-ls',
     '--wrap_spaces',
@@ -89,9 +87,10 @@ lspconfig.verible.setup {
   on_attach = on_attach,
   flags = lsp_flags,
   capabilities = capabilities,
-}
+})
+vim.lsp.enable("verible")
 
-lspconfig.texlab.setup {
+vim.lsp.config("texlab", {
   on_attach = on_attach,
   flags = lsp_flags,
   capabilities = capabilities,
@@ -116,6 +115,7 @@ lspconfig.texlab.setup {
       },
     },
   },
-}
+})
+vim.lsp.enable("texlab")
 
-require("plugin_conf.lsp-python").setup(lspconfig, on_attach, lsp_flags, capabilities)
+require("plugin_conf.lsp-python").setup(on_attach, lsp_flags, capabilities)

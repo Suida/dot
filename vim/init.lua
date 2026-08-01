@@ -30,7 +30,6 @@ local vim_mapping_src = vim_script_dir .. 'general_mappings.vim'
 vim.cmd('source ' .. vim_config_src)
 vim.cmd('source ' .. vim_mapping_src)
 
-
 require 'plugin_conf.plugins'
 require 'plugin_conf.snacks-conf'
 require 'plugin_conf.mason'
@@ -42,8 +41,10 @@ require 'plugin_conf.cmp-conf'
 require 'plugin_conf.telekasten'
 require 'plugin_conf.gitsigns'
 require 'plugin_conf.overseer'
+require 'plugin_conf.cmake-tools'
 require 'plugin_conf.lualine'
 require 'plugin_conf.toggleterm'
+require('user.agent_layout').setup()
 require 'plugin_conf.hop_conf'
 require 'plugin_conf.telescope'
 require 'plugin_conf.indentline'
@@ -55,7 +56,6 @@ require 'plugin_conf.fcitx'
 require 'plugin_conf.diagnostic'
 require 'plugin_conf.copilot'
 require 'plugin_conf.codecompanion_ds'
-require 'plugin_conf.avante_ds'
 require 'ftdetect'
 
 require('user.autocolor').setup()
@@ -84,7 +84,8 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
       vim.g.neovide_cursor_animation_length = 0.1
       vim.g.neovide_cursor_trail_size = 0.4
     end
-  end
+  end,
+  group = ns_gid,
 })
 
 
