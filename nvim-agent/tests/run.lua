@@ -163,6 +163,49 @@ os.remove('.agent/status/s3.md')
 agent2.kill('s1')
 agent2.kill('s3')
 
+section('ctl dispatch')
+local ctl = require('agent.ctl')
+local function call(...)
+  local args = { ... }
+  local lines = {}
+  for _, a in ipairs(args) do lines[#lines + 1] = vim.base64.encode(a) end
+  return vim.json.decode(ctl.run(table.concat(lines, '\n')))
+end
+
+local r = call('spawn', 'c1', '--cmd', 'cat')
+T.eq(r.ok, true, 'ctl spawn ok')
+T.ok(r.data.buf > 0, 'ctl spawn returns buf')
+
+r = call('spawn', 'c1', '--cmd', 'cat')
+T.eq(r.ok, false, 'ctl duplicate spawn errors')
+
+r = call('list')
+T.eq(r.ok, true, 'ctl list ok')
+T.eq(#r.data, 1, 'ctl list one worker')
+T.eq(r.data[1].id, 'c1', 'ctl list id')
+
+r = call('send', 'c1', 'line one\nline two') -- newline survives double-base64
+T.eq(r.ok, true, 'ctl send with embedded newline')
+
+r = call('op', 'c1', 'newline')
+T.eq(r.ok, true, 'ctl op')
+
+r = call('spawn', 'c2', '--cmd', 'cat', '--op', 'newline=<F6>')
+T.eq(r.ok, true, 'ctl spawn with --op')
+r = call('ops', 'c2')
+T.eq(r.ok, true, 'ctl ops ok')
+T.ok(vim.tbl_contains(r.data, 'newline'), 'ctl ops includes newline')
+
+r = call('bogus-command')
+T.eq(r.ok, false, 'unknown command errors')
+T.ok(r.error:match('unknown command') ~= nil, 'unknown command message')
+
+r = call('focus', 'missing')
+T.eq(r.ok, false, 'focus unknown id errors')
+
+call('kill', 'c1')
+call('kill', 'c2')
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')
