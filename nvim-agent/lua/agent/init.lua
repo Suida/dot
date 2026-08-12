@@ -12,7 +12,11 @@ end
 
 function M.setup(opts)
   opts = opts or {}
-  M._config = { auto_recover = opts.auto_recover or 'ask' }
+  M._config = {
+    auto_recover = opts.auto_recover or 'ask',
+    -- Agent CLI to run as the cockpit's main agent on launch; false disables.
+    main_agent = opts.main_agent == nil and 'kimi' or opts.main_agent,
+  }
   presets.user = opts.presets or {}
   M._root = vim.fn.getcwd()
 
@@ -56,7 +60,25 @@ function M.setup(opts)
     end,
   })
 
-  M._maybe_recover()
+  if not M._maybe_recover() then M._open_main_agent() end
+end
+
+--- Spawn the main agent (worker id 'main') and foreground it, unless the
+--- registry already has workers (e.g. crash recovery ran first).
+function M._open_main_agent()
+  local cmd = M._config and M._config.main_agent
+  if not cmd then return end
+  if #reg.list() > 0 then return end
+  vim.schedule(function()
+    if #reg.list() > 0 then return end -- recovery may have beaten the schedule
+    local res, serr = M.spawn('main', { cmd = cmd })
+    if not res then
+      vim.notify('nvim-agent: main agent failed to start: ' .. tostring(serr),
+        vim.log.levels.WARN)
+      return
+    end
+    M.focus('main')
+  end)
 end
 
 function M._crash_prompt(id, task_file)
@@ -68,18 +90,19 @@ end
 function M._maybe_recover()
   local persist = require('agent.persist')
   local m = persist.load()
-  if not m or m.clean_exit then return end
+  if not m or m.clean_exit then return nil end
   local mode = (M._config and M._config.auto_recover) or 'ask'
-  if mode == 'never' then return end
+  if mode == 'never' then return nil end
   local function go() M._recover(m) end
-  if mode == 'always' then return go() end
+  if mode == 'always' then go() return true end
   vim.schedule(function()
     vim.ui.select({ 'yes', 'no' }, {
       prompt = 'nvim-agent: previous session crashed. Recover workers?',
     }, function(choice)
-      if choice == 'yes' then go() end
+      if choice == 'yes' then go() else M._open_main_agent() end
     end)
   end)
+  return true
 end
 
 function M._recover(m)

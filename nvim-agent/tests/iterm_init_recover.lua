@@ -47,4 +47,4 @@ local function start_server()
 end
 vim.schedule(start_server)
 
-require('agent').setup({ auto_recover = 'always' })
+require('agent').setup({ auto_recover = 'always', main_agent = false })

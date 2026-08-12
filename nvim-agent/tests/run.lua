@@ -84,7 +84,7 @@ reg.remove('w2')
 
 section('core api')
 local agent = require('agent')
-agent.setup({})  -- registers keymaps; harmless headless
+agent.setup({ main_agent = false })  -- keymaps only; no auto-spawn in tests
 
 local res, err = agent.spawn('t1', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa' })
 T.ok(res and res.buf and res.job, 'spawn returns buf/job')
@@ -268,6 +268,17 @@ require('agent.presets').user = {}
 
 agent3.kill('r1')
 os.remove('.agent/session.json')
+
+section('main agent auto-open')
+local agent4 = require('agent')
+agent4.setup({ main_agent = 'cat' })
+vim.wait(500, function() return require('agent.registry').get('main') ~= nil end)
+local mw = require('agent.registry').get('main')
+T.ok(mw ~= nil, 'main agent spawned on setup')
+T.ok(mw and require('agent.registry').alive(mw), 'main agent alive')
+T.eq(agent4._foreground, 'main', 'main agent foregrounded')
+agent4.kill('main')
+T.eq(require('agent.registry').get('main'), nil, 'main agent killed')
 
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end

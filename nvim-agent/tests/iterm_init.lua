@@ -44,4 +44,4 @@ local function start_server()
 end
 vim.schedule(start_server)
 
-require('agent').setup({})
+require('agent').setup({ main_agent = false })

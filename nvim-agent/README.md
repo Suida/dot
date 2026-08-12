@@ -10,6 +10,12 @@ agent orchestrates worker CLI agents living in terminal buffers, via the
 NVIM_APPNAME=nvim-agent nvim
 ```
 
+On launch the cockpit spawns the **main agent** (`kimi` by default) as worker
+`main` and foregrounds it in the right pane — skip with
+`require('agent').setup({ main_agent = false })` or pick another CLI with
+`main_agent = 'codex'`. After a crash, recovery takes precedence: the main
+agent only auto-opens when no recovery is engaged (or you decline it).
+
 First launch clones lazy.nvim + snacks.nvim. The config listens on
 `<cwd>/.agent/nvim.sock`; put `nvim-agent/bin` on PATH (or symlink `agent-ctl`)
 so agents can drive it from any subdirectory. On Windows, `agent-ctl.cmd` sits
