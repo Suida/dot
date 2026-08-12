@@ -12,3 +12,6 @@ vim/undo/
 
 # Agent-related
 .claude/
+
+# nvim-agent cockpit runtime state
+.agent/
