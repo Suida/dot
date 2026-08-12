@@ -42,10 +42,12 @@ decide from its status file whether to respawn it or continue its work yourself.
 - Pointers: <relevant files/docs>
 ```
 
-3. Spawn the worker (hidden, runs in background):
+3. Spawn the worker (hidden, runs in background). Always give workers their
+   CLI's autonomous/auto-approve flag — a hidden worker cannot ask the human
+   for tool approvals and will silently stall on a permission prompt:
 
 ```bash
-agent-ctl spawn <id> --cmd kimi   --task .agent/tasks/<id>.md
+agent-ctl spawn <id> --cmd 'kimi --auto'   --task .agent/tasks/<id>.md
 agent-ctl spawn <id> --cmd codex  --task .agent/tasks/<id>.md
 ```
 
