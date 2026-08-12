@@ -124,6 +124,45 @@ os.remove('.agent/status/t1.md')
 T.eq(agent.kill('t1'), true, 'kill ok')
 T.eq(require('agent.registry').get('t1'), nil, 'unregistered after kill')
 
+section('steering')
+local agent2 = require('agent')
+local reg2 = require('agent.registry')
+
+-- long-lived cat job echoes what we send; we assert on job liveness + no errors
+local sp = agent2.spawn('s1', { cmd = 'cat' })
+T.ok(sp ~= nil, 'spawn cat')
+T.eq(agent2.send('s1', 'hello'), true, 'send literal')
+T.eq(agent2.op('s1', 'newline'), true, 'op newline (kimi default preset)')
+T.eq(agent2.prompt('s1', 'do thing'), true, 'prompt = send+submit')
+T.eq(agent2.send_keys('s1', '<C-c>'), true, 'raw send-keys')
+local oplist = agent2.ops('s1')
+T.ok(vim.tbl_contains(oplist, 'interrupt'), 'ops lists interrupt')
+
+-- spawn-override lands in resolution: agent name is 'cat' -> default preset,
+-- override replaces interrupt
+local sp2 = agent2.spawn('s2', { cmd = 'cat', op_overrides = { interrupt = '<C-x>' } })
+T.ok(sp2 ~= nil, 'spawn s2')
+T.eq(agent2.op('s2', 'interrupt'), true, 'op with spawn override resolves')
+
+-- unknown op error lists available ops
+local okbad, errbad = agent2.op('s1', 'nonexistent_op')
+T.eq(okbad, nil, 'unknown op fails')
+T.ok(errbad:match('available') ~= nil and errbad:match('interrupt') ~= nil,
+  'unknown op error lists ops')
+
+-- dead job rejection includes state
+agent2.kill('s2') -- kill removes entry; use a killed job differently:
+local sp3 = agent2.spawn('s3', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa' })
+vim.fn.jobwait({ sp3.job }, 2000) -- let it exit
+vim.fn.mkdir('.agent/status', 'p')
+local f3 = io.open('.agent/status/s3.md', 'w'); f3:write('state: working\nmid-task\n'); f3:close()
+local oks, errs = agent2.send('s3', 'x')
+T.eq(oks, nil, 'send to dead job fails')
+T.ok(errs:match('working') ~= nil, 'dead-job error includes last state')
+os.remove('.agent/status/s3.md')
+agent2.kill('s1')
+agent2.kill('s3')
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')

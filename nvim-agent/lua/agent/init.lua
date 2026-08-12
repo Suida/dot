@@ -131,6 +131,59 @@ local function read_status(id)
   return state, vim.trim(rest)
 end
 
+local function live_job(id)
+  local e, eerr = live_entry(id)
+  if not e then return nil, eerr end
+  if not reg.alive(e) then
+    local state = read_status(id)
+    return nil, ('worker %s job is dead (last state: %s)'):format(id, state)
+  end
+  return e
+end
+
+function M.send(id, text)
+  local e, eerr = live_job(id)
+  if not e then return err(eerr) end
+  vim.fn.chansend(e.job, text)
+  return true
+end
+
+local function resolve_preset(e)
+  return presets.resolve(e.agent, root(), e.op_overrides)
+end
+
+function M.op(id, name)
+  local e, eerr = live_job(id)
+  if not e then return err(eerr) end
+  local preset = resolve_preset(e)
+  local key = preset[name]
+  if not key then
+    return err(('unknown op %q for %s; available: %s')
+      :format(tostring(name), e.agent, table.concat(presets.ops(preset), ', ')))
+  end
+  vim.fn.chansend(e.job, vim.api.nvim_replace_termcodes(key, true, true, true))
+  return true
+end
+
+function M.prompt(id, text)
+  local ok1, e1 = M.send(id, text)
+  if not ok1 then return err(e1) end
+  return M.op(id, 'submit')
+end
+
+function M.send_keys(id, keys)
+  local e, eerr = live_job(id)
+  if not e then return err(eerr) end
+  vim.fn.chansend(e.job, vim.api.nvim_replace_termcodes(keys, true, true, true))
+  return true
+end
+
+function M.ops(id)
+  local e, eerr = live_entry(id)
+  if not e then return err(eerr) end
+  return presets.ops(resolve_preset(e))
+end
+
 local function describe(e)
   local state, summary = read_status(e.id)
   return {
