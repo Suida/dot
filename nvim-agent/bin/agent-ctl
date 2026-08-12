@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# agent-ctl: drive an nvim-agent cockpit over its RPC socket.
+set -euo pipefail
+
+find_sock() {
+  if [ -n "${NVIM_AGENT_SOCK:-}" ]; then printf '%s' "$NVIM_AGENT_SOCK"; return 0; fi
+  local dir="$PWD"
+  while :; do
+    local p="$dir/.agent/nvim.sock"
+    # Unix: a real socket file — the path itself is the address.
+    if [ -S "$p" ]; then printf '%s' "$p"; return 0; fi
+    # Windows: a regular pointer file whose contents are the named-pipe address.
+    if [ -f "$p" ]; then cat "$p"; return 0; fi
+    [ "$dir" = "/" ] && break
+    dir=$(dirname "$dir")
+  done
+  if [ -n "${NVIM_LISTEN_ADDRESS:-}" ]; then printf '%s' "$NVIM_LISTEN_ADDRESS"; return 0; fi
+  return 1
+}
+
+if [ $# -lt 1 ]; then
+  echo "usage: agent-ctl <command> [args...]" >&2; exit 2
+fi
+
+SOCK=$(find_sock) || {
+  echo "no nvim-agent instance found for this project (looked for .agent/nvim.sock upward from $PWD)" >&2
+  exit 1
+}
+
+# Per-arg base64 lines (newlines inside args survive), then one outer base64
+# so the payload can be embedded in a single-line --remote-expr.
+INNER=$(for a in "$@"; do printf '%s' "$a" | base64 | tr -d '\n'; printf '\n'; done)
+PAYLOAD=$(printf '%s' "$INNER" | base64 | tr -d '\n')
+
+# --headless on the client: without it the nvim client starts a TUI and its
+# terminal probe sequences pollute stdout instead of the expression result.
+OUT=$(nvim --headless --server "$SOCK" --remote-expr \
+  "luaeval(\"require('agent.ctl').run(vim.base64.decode('$PAYLOAD'))\")") || {
+  echo "agent-ctl: failed to reach nvim at $SOCK" >&2; exit 1
+}
+
+printf '%s\n' "$OUT"
+case "$OUT" in *'"ok":false'*) exit 1 ;; esac
