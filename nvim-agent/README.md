@@ -36,6 +36,11 @@ agent-ctl kill w1
 
 With real agents: `agent-ctl spawn w1 --cmd kimi --task .agent/tasks/w1.md`.
 
+Windows note: a bare `bash` in `--cmd` may resolve to WSL's bash (which can't see
+`/c/...` MSYS paths) when the cockpit was launched from PowerShell/cmd. Use the
+full Git Bash path instead:
+`agent-ctl spawn w1 --cmd '"C:\Program Files\Git\bin\bash.exe" <repo>/nvim-agent/tests/fake-agent.sh .agent/status/w1.md'`
+
 ## Crash recovery
 
 State lives in `.agent/session.json`. After a crash, relaunching offers to

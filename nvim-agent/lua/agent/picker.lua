@@ -19,6 +19,21 @@ function M.open()
         (w.state or 'unknown') .. (w.summary ~= '' and (' — ' .. w.summary:gsub('\n', ' ')) or '')
       ) } }
     end,
+    -- Items carry no `file`, so give the previewer custom content:
+    -- the worker's status file, falling back to its registry fields.
+    preview = function(ctx)
+      local w = ctx.item.worker
+      local root = require('agent')._root or vim.fn.getcwd()
+      local status_path = root .. '/.agent/status/' .. w.id .. '.md'
+      local lines = vim.fn.filereadable(status_path) == 1
+        and vim.fn.readfile(status_path) or {}
+      if #lines == 0 then
+        lines = vim.split(vim.inspect(w), '\n', { plain = true })
+      end
+      vim.bo[ctx.buf].modifiable = true
+      vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, lines)
+      vim.bo[ctx.buf].modifiable = false
+    end,
     confirm = function(p, item)
       p:close()
       if item then agent.focus(item.worker.id) end
