@@ -71,7 +71,15 @@ function M._open_main_agent()
   if #reg.list() > 0 then return end
   vim.schedule(function()
     if #reg.list() > 0 then return end -- recovery may have beaten the schedule
-    local res, serr = M.spawn('main', { cmd = cmd })
+    local prime = table.concat({
+      'You are the main agent of an nvim-agent cockpit; you are running inside',
+      'a terminal buffer of the Neovim instance you will orchestrate.',
+      'First read the skill file ~/.agents/skills/nvim-agent-orchestration/SKILL.md',
+      'and follow it from now on. The `agent-ctl` command is on your PATH and',
+      'controls this Neovim (spawn/focus/hide/steer workers); NVIM_AGENT_SOCK',
+      'points at its RPC socket. Project state lives under .agent/.',
+    }, ' ')
+    local res, serr = M.spawn('main', { cmd = cmd, prompt = prime })
     if not res then
       vim.notify('nvim-agent: main agent failed to start: ' .. tostring(serr),
         vim.log.levels.WARN)
@@ -145,16 +153,15 @@ function M.spawn(id, o)
     return err('command not found on PATH: ' .. tostring(head))
   end
   local prompt = o.prompt or (o.task_file and default_prompt(id, o.task_file))
-  local cmdline = prompt and (cmd .. ' ' .. vim.fn.shellescape(prompt)) or cmd
 
   local buf = vim.api.nvim_create_buf(false, true)
   local job
   vim.api.nvim_buf_call(buf, function()
-    job = vim.fn.termopen(cmdline, { cwd = o.cwd or root() })
+    job = vim.fn.termopen(cmd, { cwd = o.cwd or root() })
   end)
   if job <= 0 then
     pcall(vim.api.nvim_buf_delete, buf, { force = true })
-    return err('termopen failed for: ' .. cmdline)
+    return err('termopen failed for: ' .. cmd)
   end
   -- Name AFTER termopen: termopen renames the buffer to term://...
   vim.api.nvim_buf_set_name(buf, 'agent://worker/' .. id)
@@ -164,6 +171,15 @@ function M.spawn(id, o)
     task_file = o.task_file, op_overrides = o.op_overrides or {},
   })
   require('agent.persist').save()
+  if prompt then
+    -- Deliver the initial prompt through the terminal, not the command line:
+    -- kimi rejects positional prompt args, and a deferred chansend works for
+    -- every CLI (the pty queues input until the program reads it).
+    vim.defer_fn(function()
+      local e = reg.get(id)
+      if e and reg.alive(e) then M.prompt(id, prompt) end
+    end, 1500)
+  end
   return { buf = buf, job = job }
 end
 

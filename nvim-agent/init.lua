@@ -51,6 +51,7 @@ local function start_server()
         vim.notify('nvim-agent: failed to write pointer file ' .. sock, vim.log.levels.WARN)
       end
     end
+    vim.env.NVIM_AGENT_SOCK = addr -- terminal jobs (agents) inherit this
     return true
   end
   local ok = pcall(vim.fn.serverstart, addr)
@@ -71,6 +72,12 @@ local function start_server()
   return false
 end
 vim.schedule(start_server)
+
+-- Put agent-ctl on PATH for everything spawned from this instance (worker
+-- agent CLIs inherit nvim's environment), so the bridge works regardless of
+-- the user's shell PATH setup.
+local cfg_dir = vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':h')
+vim.env.PATH = cfg_dir .. '/bin' .. (is_windows and ';' or ':') .. vim.env.PATH
 
 -- Agent core (registry, bridge dispatch, recovery) -------------------------
 require('agent').setup({})
