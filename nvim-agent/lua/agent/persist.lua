@@ -29,10 +29,15 @@ function M.save()
   }
   local tmp = path() .. '.tmp'
   local f = io.open(tmp, 'w')
-  if not f then return end
+  if not f then
+    vim.notify('nvim-agent: failed to write ' .. tmp, vim.log.levels.WARN)
+    return
+  end
   f:write(vim.json.encode(data))
   f:close()
-  vim.uv.fs_rename(tmp, path())
+  if not vim.uv.fs_rename(tmp, path()) then
+    vim.notify('nvim-agent: failed to rename ' .. tmp .. ' -> ' .. path(), vim.log.levels.WARN)
+  end
 end
 
 function M.load()
@@ -54,10 +59,15 @@ function M.mark_clean_exit()
   data.clean_exit = true
   local tmp = path() .. '.tmp'
   local f = io.open(tmp, 'w')
-  if not f then return end
+  if not f then
+    vim.notify('nvim-agent: failed to write ' .. tmp, vim.log.levels.WARN)
+    return
+  end
   f:write(vim.json.encode(data))
   f:close()
-  vim.uv.fs_rename(tmp, path())
+  if not vim.uv.fs_rename(tmp, path()) then
+    vim.notify('nvim-agent: failed to rename ' .. tmp .. ' -> ' .. path(), vim.log.levels.WARN)
+  end
 end
 
 return M

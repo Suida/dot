@@ -247,6 +247,25 @@ T.ok(z ~= nil, 'recovered worker registered')
 T.ok(require('agent.registry').alive(z), 'recovered worker alive')
 T.eq(agent3._foreground, 'z1', 'foreground restored')
 agent3.kill('z1')
+
+-- recovery via resume template: preset with `resume` spawns the resume cmd.
+-- No shipped preset resumes into a harmless command, so inject a fake one.
+require('agent.presets').user = { fakecat = { resume = 'cat' } }
+local cf3 = io.open('.agent/session.json', 'w')
+cf3:write(vim.json.encode({
+  version = 1, clean_exit = false,
+  workers = { { id = 'z9', agent = 'fakecat', cmd = 'fakecat', cwd = vim.fn.getcwd(),
+                op_overrides = {}, visible = false } },
+}))
+cf3:close()
+agent3._config.auto_recover = 'always'
+agent3._maybe_recover()
+local z9 = require('agent.registry').get('z9')
+T.ok(z9 ~= nil, 'resume-template worker registered')
+T.ok(require('agent.registry').alive(z9), 'resume-template worker alive (resume cmd spawned)')
+agent3.kill('z9')
+require('agent.presets').user = {}
+
 agent3.kill('r1')
 os.remove('.agent/session.json')
 

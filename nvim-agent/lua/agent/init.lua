@@ -44,6 +44,18 @@ function M.setup(opts)
     callback = function() require('agent.persist').mark_clean_exit() end,
   })
 
+  -- Deliberately wiped worker buffers leave the registry, so crash recovery
+  -- never respawns them and focus/status report a clean 'unknown worker'.
+  vim.api.nvim_create_autocmd('BufWipeout', {
+    callback = function(args)
+      local id = args.match:match('agent://worker/(.+)$')
+      if not id or not reg.get(id) then return end
+      reg.remove(id)
+      if M._foreground == id then M._foreground = nil end
+      require('agent.persist').save()
+    end,
+  })
+
   M._maybe_recover()
 end
 
@@ -73,18 +85,23 @@ end
 function M._recover(m)
   for _, w in ipairs(m.workers or {}) do
     local preset = presets.resolve(w.agent, root(), w.op_overrides)
+    local res, serr
     if preset.resume then
-      M.spawn(w.id, { cmd = preset.resume, cwd = w.cwd,
+      res, serr = M.spawn(w.id, { cmd = preset.resume, cwd = w.cwd,
         op_overrides = w.op_overrides })
     else
       -- No resume template: respawn the original cmd. The crash-note prompt
       -- is only appended when the worker had a task file; a bare cmd like
       -- `cat` would treat the prompt text as a filename and exit.
-      M.spawn(w.id, { cmd = w.cmd, cwd = w.cwd, task_file = w.task_file,
+      res, serr = M.spawn(w.id, { cmd = w.cmd, cwd = w.cwd, task_file = w.task_file,
         prompt = w.task_file and M._crash_prompt(w.id, w.task_file) or nil,
         op_overrides = w.op_overrides })
     end
-    if w.visible then M.focus(w.id) end
+    if not res then
+      vim.notify(('nvim-agent: recovery failed for worker %s: %s')
+        :format(w.id, tostring(serr)), vim.log.levels.WARN)
+    end
+    if res and w.visible then M.focus(w.id) end
   end
   if m.main_file then M.edit(m.main_file) end
   if m.foreground and reg.get(m.foreground) then M.focus(m.foreground) end

@@ -38,8 +38,14 @@ With real agents: `agent-ctl spawn w1 --cmd kimi --task .agent/tasks/w1.md`.
 
 State lives in `.agent/session.json`. After a crash, relaunching offers to
 respawn workers — with the preset's `resume` command when defined
-(`kimi --continue`, `codex resume --last`), otherwise fresh with a crash note.
+(`kimi --continue`, `codex resume --last`), otherwise fresh; the crash note is
+only passed when the worker had a task file (a bare cmd like `cat` would treat
+the prompt text as a filename and exit).
 Configure: `require('agent').setup({ auto_recover = 'always' })` (or `'never'`).
+
+Known limitation: if nvim crashes again mid-recovery, workers not yet respawned
+drop out of the manifest (each respawn rewrites `session.json` via
+`persist.save()`), so they are not recovered on the next launch either.
 
 ## Windows notes
 

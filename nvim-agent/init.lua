@@ -11,6 +11,16 @@ vim.opt.undofile = true
 vim.opt.updatetime = 250
 vim.opt.termguicolors = true
 
+-- Windows: when nvim is launched from Git Bash, SHELL leaks into 'shell' while
+-- 'shellcmdflag' stays at the cmd.exe default (/s /c). String-form termopen
+-- then fails to launch, and a failed terminal launch can crash nvim once the
+-- terminal buffer has been shown in a window. Reset to the standard Windows
+-- shell so worker spawns work from Git Bash.
+if vim.fn.has('win32') == 1 and vim.o.shellcmdflag == '/s /c'
+  and vim.o.shell:lower():match('[\\/][a-z]*sh%.exe') then
+  vim.o.shell = 'cmd.exe'
+end
+
 -- lazy.nvim bootstrap ------------------------------------------------------
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -36,7 +46,10 @@ local addr = is_windows
 local function start_server()
   local function on_started()
     if is_windows then
-      pcall(vim.fn.writefile, { addr }, sock, 'b') -- pointer file (no trailing NL)
+      local wok = pcall(vim.fn.writefile, { addr }, sock, 'b') -- pointer file (no trailing NL)
+      if not wok then
+        vim.notify('nvim-agent: failed to write pointer file ' .. sock, vim.log.levels.WARN)
+      end
     end
     return true
   end
