@@ -278,7 +278,14 @@ end
 function M.prompt(id, text)
   local ok1, e1 = M.send(id, text)
   if not ok1 then return err(e1) end
-  return M.op(id, 'submit')
+  -- Submit separately and slightly later: agent TUIs (kimi) treat a CR
+  -- arriving in the same input burst as the text as a literal newline
+  -- instead of submit. A short delay lets the editor settle first.
+  vim.defer_fn(function()
+    local e = reg.get(id)
+    if e and reg.alive(e) then M.op(id, 'submit') end
+  end, 300)
+  return true
 end
 
 function M.send_keys(id, keys)

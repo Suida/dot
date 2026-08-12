@@ -29,7 +29,7 @@ fi
 cleanup() {
   stop_nvim
   cd / 2>/dev/null || true # $WORK is our cwd; Windows cannot remove a busy dir
-  sleep 0.3
+  sleep 0.8
   rm -rf "$WORK" 2>/dev/null || true
 }
 trap cleanup EXIT
@@ -49,12 +49,12 @@ OUT=$("$CTL" send w1 "hello world")
 check "send" '"ok":true' "$OUT"
 OUT=$("$CTL" op w1 newline) # send only types; submit the line
 check "op newline" '"ok":true' "$OUT"
-sleep 0.3
+sleep 0.8
 check "fake agent heard" 'hello world' "$(cat .agent/status/w1.md)"
 
 OUT=$("$CTL" prompt w1 "please mark DONE")
 check "prompt" '"ok":true' "$OUT"
-sleep 0.3
+sleep 0.8
 check "state done" 'state: done' "$(cat .agent/status/w1.md)"
 
 OUT=$("$CTL" op w1 interrupt)
