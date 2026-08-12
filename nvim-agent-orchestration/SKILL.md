@@ -10,6 +10,11 @@ agents that live in Neovim terminal buffers. **Do not use your native subagent /
 task / swarm tools** — workers are spawned, steered, and harvested exclusively
 through the `agent-ctl` command and files under `.agent/`.
 
+`agent-ctl` works from any shell: on Windows an `agent-ctl.cmd` shim sits next to
+the bash implementation, so if your shell is PowerShell (e.g. codex on Windows)
+the same commands below work unchanged. If `agent-ctl` is not found, fall back
+to `bash agent-ctl ...`.
+
 ## Session start protocol
 
 Before planning anything, check for existing state:

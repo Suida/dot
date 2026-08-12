@@ -12,7 +12,9 @@ NVIM_APPNAME=nvim-agent nvim
 
 First launch clones lazy.nvim + snacks.nvim. The config listens on
 `<cwd>/.agent/nvim.sock`; put `nvim-agent/bin` on PATH (or symlink `agent-ctl`)
-so agents can drive it from any subdirectory.
+so agents can drive it from any subdirectory. On Windows, `agent-ctl.cmd` sits
+next to the bash script so PowerShell/cmd users (e.g. codex's default shell)
+resolve the same command — both forward to the same implementation.
 
 ## Human keymaps
 
