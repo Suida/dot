@@ -2,7 +2,7 @@ local M = { user = {} }
 
 M.shipped = {
   default = { interrupt = '<C-c>', submit = '<CR>', newline = '<C-j>' },
-  kimi = { resume = 'kimi --continue' },
+  kimi = { resume = 'kimi --continue', resume_suffix = '--session {session}' },
   codex = { newline = '<A-CR>', resume = 'codex resume --last' },
 }
 
@@ -43,7 +43,7 @@ end
 function M.ops(preset)
   local names = {}
   for k in pairs(preset) do
-    if k ~= 'resume' then names[#names + 1] = k end
+    if k ~= 'resume' and k ~= 'resume_suffix' then names[#names + 1] = k end
   end
   table.sort(names)
   return names

@@ -46,6 +46,7 @@ function M.serialize()
     out[#out + 1] = {
       id = e.id, agent = e.agent, cmd = e.cmd, cwd = e.cwd,
       task_file = e.task_file, op_overrides = e.op_overrides or {},
+      session_id = e.session_id,
       visible = M.visible(e),
     }
   end

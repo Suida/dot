@@ -117,7 +117,13 @@ function M._recover(m)
   for _, w in ipairs(m.workers or {}) do
     local preset = presets.resolve(w.agent, root(), w.op_overrides)
     local res, serr
-    if preset.resume then
+    if preset.resume_suffix and w.session_id then
+      -- Best path: resume the worker's OWN session (keeps original args,
+      -- e.g. --auto) instead of a cwd-scoped "most recent" resume.
+      res, serr = M.spawn(w.id, {
+        cmd = w.cmd .. ' ' .. preset.resume_suffix:gsub('{session}', w.session_id),
+        cwd = w.cwd, op_overrides = w.op_overrides })
+    elseif preset.resume then
       res, serr = M.spawn(w.id, { cmd = preset.resume, cwd = w.cwd,
         op_overrides = w.op_overrides })
     else
@@ -154,10 +160,16 @@ function M.spawn(id, o)
   end
   local prompt = o.prompt or (o.task_file and default_prompt(id, o.task_file))
 
+  -- Snapshot kimi's session index BEFORE spawning so the worker's own
+  -- session id can be captured afterwards (kimi creates it on first message).
+  local sessions = require('agent.sessions')
+  local cwd = o.cwd or root()
+  local before = head == 'kimi' and sessions.kimi_session_ids(cwd) or nil
+
   local buf = vim.api.nvim_create_buf(false, true)
   local job
   vim.api.nvim_buf_call(buf, function()
-    job = vim.fn.termopen(cmd, { cwd = o.cwd or root() })
+    job = vim.fn.termopen(cmd, { cwd = cwd })
   end)
   if job <= 0 then
     pcall(vim.api.nvim_buf_delete, buf, { force = true })
@@ -167,9 +179,17 @@ function M.spawn(id, o)
   vim.api.nvim_buf_set_name(buf, 'agent://worker/' .. id)
   reg.add(id, {
     id = id, buf = buf, job = job,
-    agent = head, cmd = cmd, cwd = o.cwd or root(),
+    agent = head, cmd = cmd, cwd = cwd,
     task_file = o.task_file, op_overrides = o.op_overrides or {},
   })
+  if before then
+    sessions.capture_kimi(cwd, before, function(session_id)
+      local e = reg.get(id)
+      if not e then return end
+      e.session_id = session_id
+      require('agent.persist').save()
+    end)
+  end
   require('agent.persist').save()
   if prompt then
     -- Deliver the initial prompt through the terminal, not the command line:

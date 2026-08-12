@@ -269,6 +269,43 @@ require('agent.presets').user = {}
 agent3.kill('r1')
 os.remove('.agent/session.json')
 
+section('sessions')
+local sessions = require('agent.sessions')
+local idx = vim.fn.tempname()
+local idxf = io.open(idx, 'w')
+idxf:write(vim.json.encode({ sessionId = 's1', workDir = 'C:/Foo/Bar' }) .. '\n')
+idxf:close()
+T.ok(sessions.kimi_session_ids('c:\\foo\\bar', idx)['s1'], 'index parsed, slash/case normalized')
+T.eq(sessions.kimi_session_ids('/elsewhere', idx)['s1'], nil, 'other cwd excluded')
+local before = sessions.kimi_session_ids('c:\\foo\\bar', idx)
+local got
+sessions.capture_kimi('c:\\foo\\bar', before, function(id) got = id end, idx, 5)
+idxf = io.open(idx, 'a')
+idxf:write(vim.json.encode({ sessionId = 's2', workDir = 'C:/foo/bar' }) .. '\n')
+idxf:close()
+vim.wait(3000, function() return got ~= nil end, 100)
+T.eq(got, 's2', 'capture finds session created after snapshot')
+os.remove(idx)
+
+-- recovery prefers session-targeted resume, keeping the worker's original args
+require('agent.presets').user = { fakecat = { resume = 'bogus-fallback', resume_suffix = '--session {session}' } }
+local cf4 = io.open('.agent/session.json', 'w')
+cf4:write(vim.json.encode({
+  version = 1, clean_exit = false,
+  workers = { { id = 'z7', agent = 'fakecat', cmd = 'cat', cwd = vim.fn.getcwd(),
+                session_id = 'abc123', op_overrides = {}, visible = false } },
+}))
+cf4:close()
+agent3._config.auto_recover = 'always'
+agent3._maybe_recover()
+local z7 = require('agent.registry').get('z7')
+T.ok(z7 ~= nil, 'session-resume worker registered')
+T.eq(z7 and z7.cmd, 'cat --session abc123', 'resume_suffix applied to original cmd')
+T.ok(z7 and require('agent.registry').alive(z7), 'session-resume worker alive')
+agent3.kill('z7')
+require('agent.presets').user = {}
+os.remove('.agent/session.json')
+
 section('main agent auto-open')
 local agent4 = require('agent')
 agent4.setup({ main_agent = 'cat' })
