@@ -40,10 +40,55 @@ function M.setup(opts)
     end
   end, { desc = 'Toggle last worker pane' })
 
-  M._maybe_recover() -- stub until Task 9
+  vim.api.nvim_create_autocmd('VimLeavePre', {
+    callback = function() require('agent.persist').mark_clean_exit() end,
+  })
+
+  M._maybe_recover()
 end
 
-function M._maybe_recover() end -- replaced in Task 9
+function M._crash_prompt(id, task_file)
+  local base = task_file and ('Read ' .. task_file .. ' and follow it. ') or ''
+  return base .. ('The previous session crashed. Read your status file '
+    .. '.agent/status/' .. id .. '.md and continue from where it left off.')
+end
+
+function M._maybe_recover()
+  local persist = require('agent.persist')
+  local m = persist.load()
+  if not m or m.clean_exit then return end
+  local mode = (M._config and M._config.auto_recover) or 'ask'
+  if mode == 'never' then return end
+  local function go() M._recover(m) end
+  if mode == 'always' then return go() end
+  vim.schedule(function()
+    vim.ui.select({ 'yes', 'no' }, {
+      prompt = 'nvim-agent: previous session crashed. Recover workers?',
+    }, function(choice)
+      if choice == 'yes' then go() end
+    end)
+  end)
+end
+
+function M._recover(m)
+  for _, w in ipairs(m.workers or {}) do
+    local preset = presets.resolve(w.agent, root(), w.op_overrides)
+    if preset.resume then
+      M.spawn(w.id, { cmd = preset.resume, cwd = w.cwd,
+        op_overrides = w.op_overrides })
+    else
+      -- No resume template: respawn the original cmd. The crash-note prompt
+      -- is only appended when the worker had a task file; a bare cmd like
+      -- `cat` would treat the prompt text as a filename and exit.
+      M.spawn(w.id, { cmd = w.cmd, cwd = w.cwd, task_file = w.task_file,
+        prompt = w.task_file and M._crash_prompt(w.id, w.task_file) or nil,
+        op_overrides = w.op_overrides })
+    end
+    if w.visible then M.focus(w.id) end
+  end
+  if m.main_file then M.edit(m.main_file) end
+  if m.foreground and reg.get(m.foreground) then M.focus(m.foreground) end
+end
 
 local function default_prompt(id, task_file)
   return ('Read %s and follow it. Keep the status file .agent/status/%s.md current.')
@@ -78,6 +123,7 @@ function M.spawn(id, o)
     agent = head, cmd = cmd, cwd = o.cwd or root(),
     task_file = o.task_file, op_overrides = o.op_overrides or {},
   })
+  require('agent.persist').save()
   return { buf = buf, job = job }
 end
 
@@ -92,6 +138,7 @@ function M.focus(id)
   if not e then return err(eerr) end
   layout.show(e.buf)
   M._foreground = id
+  require('agent.persist').save()
   return true
 end
 
@@ -99,23 +146,30 @@ function M.hide(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end
   layout.hide(e.buf)
+  require('agent.persist').save()
   return true
 end
 
 function M.kill(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end
-  pcall(vim.fn.jobstop, e.job)
+  -- Delete the buffer BEFORE stopping the job: on Windows, headless nvim
+  -- segfaults when a terminal job's exit event fires for a buffer that is
+  -- (or was) shown in a window; force-deleting the term buffer first kills
+  -- the job through channel teardown instead.
   if vim.api.nvim_buf_is_valid(e.buf) then
     pcall(vim.api.nvim_buf_delete, e.buf, { force = true })
   end
+  pcall(vim.fn.jobstop, e.job)
   reg.remove(id)
   if M._foreground == id then M._foreground = nil end
+  require('agent.persist').save()
   return true
 end
 
 function M.edit(path)
   layout.open_main(path)
+  require('agent.persist').save()
   return true
 end
 

@@ -79,5 +79,42 @@ check "empty after kill" '"data":[]' "$OUT"
 OUT=$(cd / && "$CTL" list 2>&1 || true)
 check "no socket error" 'no nvim-agent instance found' "$OUT"
 
+# --- crash recovery ---
+OUT=$("$CTL" spawn r1 --cmd "bash $REPO/nvim-agent/tests/fake-agent.sh $WORK/.agent/status/r1.md")
+check "spawn r1" '"ok":true' "$OUT"
+"$CTL" focus r1 >/dev/null
+
+# Simulate crash: force-kill the server so no VimLeavePre runs and the
+# manifest stays dirty (clean_exit=false).
+if [[ "${OSTYPE:-}" == msys || "${OSTYPE:-}" == cygwin ]]; then
+  taskkill //PID "$NVIM_PID" //F //T >/dev/null 2>&1 || true
+else
+  kill -9 "$NVIM_PID" 2>/dev/null || true
+  wait "$NVIM_PID" 2>/dev/null || true
+fi
+
+# Reboot with the recovery init (auto_recover=always). Same hidden-console
+# Start-Process path on Windows as the initial boot.
+if [[ "${OSTYPE:-}" == msys || "${OSTYPE:-}" == cygwin ]]; then
+  INIT_WIN=$(cygpath -w "$REPO/nvim-agent/tests/iterm_init_recover.lua")
+  NVIM_PID=$(powershell.exe -NoProfile -Command \
+    "\$env:NVIM_APPNAME='nvim-agent'; (Start-Process -PassThru -WindowStyle Hidden -FilePath (Get-Command nvim.exe).Source -ArgumentList '--headless','-u','$INIT_WIN').Id" \
+    | tr -d '\r')
+else
+  NVIM_APPNAME=nvim-agent nvim --headless -u "$REPO/nvim-agent/tests/iterm_init_recover.lua" &
+  NVIM_PID=$!
+fi
+# Wait for the new server: on Windows .agent/nvim.sock is a stale pointer file
+# until the new server rewrites it, so poll the RPC instead of the file.
+OUT=""
+for _ in $(seq 1 100); do
+  OUT=$("$CTL" list 2>/dev/null || true)
+  [[ "$OUT" == *'"ok":true'* ]] && break
+  sleep 0.2
+done
+check "recovery re-registers worker" '"id":"r1"' "$OUT"
+check "recovered worker visible" '"visible":true' "$OUT"
+"$CTL" kill r1 >/dev/null || true
+
 echo "$PASS passed, $FAIL failed"
 [ $FAIL -eq 0 ]

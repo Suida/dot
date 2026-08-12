@@ -206,6 +206,50 @@ T.eq(r.ok, false, 'focus unknown id errors')
 call('kill', 'c1')
 call('kill', 'c2')
 
+section('persist + recovery')
+local agent3 = require('agent')
+local persist = require('agent.persist')
+agent3._root = vim.fn.getcwd()
+
+agent3.spawn('r1', { cmd = 'cat' })
+persist.save()
+local m = persist.load()
+T.eq(m.version, 1, 'manifest version')
+T.eq(m.clean_exit, false, 'clean_exit false after save')
+T.eq(#m.workers, 1, 'manifest has worker')
+T.eq(m.workers[1].id, 'r1', 'manifest worker id')
+
+persist.mark_clean_exit()
+T.eq(persist.load().clean_exit, true, 'mark_clean_exit works')
+
+-- corrupt manifest -> nil + no crash
+local cf = io.open('.agent/session.json', 'w'); cf:write('{not json'); cf:close()
+T.eq(persist.load(), nil, 'corrupt manifest returns nil')
+
+-- crash-note prompt builder
+T.ok(agent3._crash_prompt('z1', '.agent/tasks/z1.md'):match('crashed') ~= nil,
+  'crash prompt mentions crash')
+
+-- recovery: worker without resume template (agent 'cat') respawns fresh.
+-- task_file = nil so no prompt arg is appended to the `cat` cmdline.
+local cf2 = io.open('.agent/session.json', 'w')
+cf2:write(vim.json.encode({
+  version = 1, clean_exit = false,
+  workers = { { id = 'z1', agent = 'cat', cmd = 'cat', cwd = vim.fn.getcwd(),
+                task_file = nil, op_overrides = {}, visible = false } },
+  foreground = 'z1',
+}))
+cf2:close()
+agent3._config.auto_recover = 'always'
+agent3._maybe_recover()
+local z = require('agent.registry').get('z1')
+T.ok(z ~= nil, 'recovered worker registered')
+T.ok(require('agent.registry').alive(z), 'recovered worker alive')
+T.eq(agent3._foreground, 'z1', 'foreground restored')
+agent3.kill('z1')
+agent3.kill('r1')
+os.remove('.agent/session.json')
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')
