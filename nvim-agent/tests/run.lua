@@ -1,4 +1,6 @@
-dofile('nvim-agent/tests/test_init.lua')
+-- Resolve this script's dir so tests can run from any cwd.
+local run_src = debug.getinfo(1, 'S').source:sub(2):gsub('\\', '/')
+dofile(vim.fn.fnamemodify(run_src, ':h') .. '/test_init.lua')
 
 local T = { pass = 0, fail = 0 }
 function T.eq(got, want, msg)
@@ -79,6 +81,48 @@ reg.remove('w1')
 T.eq(reg.get('w1'), nil, 'remove works')
 T.eq(#reg.list(), 1, 'list after remove')
 reg.remove('w2')
+
+section('core api')
+local agent = require('agent')
+agent.setup({})  -- registers keymaps; harmless headless
+
+local res, err = agent.spawn('t1', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa' })
+T.ok(res and res.buf and res.job, 'spawn returns buf/job')
+T.ok(vim.api.nvim_buf_is_valid(res.buf), 'worker buffer valid')
+T.eq(vim.api.nvim_buf_get_name(res.buf):match('agent://worker/t1$') ~= nil, true, 'buffer named agent://worker/t1')
+
+local dupres, duperr = agent.spawn('t1', { cmd = 'kimi' })
+T.eq(dupres, nil, 'duplicate spawn fails')
+T.ok(duperr:match('duplicate') ~= nil, 'duplicate error message')
+
+local badres, baderr = agent.spawn('t2', { cmd = 'definitely-not-a-real-cmd-xyz' })
+T.eq(badres, nil, 'non-executable spawn fails')
+T.ok(baderr:match('not found') ~= nil, 'PATH error message')
+
+-- Let the test job exit BEFORE any window ops: on Windows, headless nvim
+-- segfaults when a terminal job exits after the window showing its buffer
+-- has been closed (core bug); exiting first avoids it.
+vim.fn.jobwait({ res.job }, 2000)
+
+T.eq(agent.focus('t1'), true, 'focus ok')
+T.ok(require('agent.registry').visible(require('agent.registry').get('t1')), 'visible after focus')
+T.eq(agent.hide('t1'), true, 'hide ok')
+T.eq(require('agent.registry').visible(require('agent.registry').get('t1')), false, 'hidden after hide')
+
+-- status file parsing
+vim.fn.mkdir('.agent/status', 'p')
+local sf = io.open('.agent/status/t1.md', 'w')
+sf:write('state: blocked\nneed input on X\n')
+sf:close()
+local st = agent.status('t1')
+T.eq(st.state, 'blocked', 'status state parsed')
+T.ok(st.summary:match('need input') ~= nil, 'status summary parsed')
+T.eq(agent.status('t1').alive, false, 'dead job reported (nvim +qa exited)')
+T.eq(agent.status('nope'), nil, 'status of unknown id errors')
+os.remove('.agent/status/t1.md')
+
+T.eq(agent.kill('t1'), true, 'kill ok')
+T.eq(require('agent.registry').get('t1'), nil, 'unregistered after kill')
 
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
