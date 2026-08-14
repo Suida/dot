@@ -142,10 +142,22 @@ function M._recover(m)
       vim.notify(('agent-cockpit: recovery failed for worker %s: %s')
         :format(w.id, tostring(serr)), vim.log.levels.WARN)
     end
-    if res and w.visible then M.focus(w.id) end
+    if res and w.hidden then
+      local e = reg.get(w.id)
+      if e then e.hidden = true end
+    end
   end
   if m.main_file then M.edit(m.main_file) end
   if m.foreground and reg.get(m.foreground) then M.focus(m.foreground) end
+  -- Layout state: mode + focused slot + review area. Runs after the
+  -- foreground restore so the recorded mode wins over focus side effects.
+  if m.layout_mode == 'B' then
+    zones._focused = m.focused
+    zones.set_mode('B')
+  else
+    zones.set_mode('A')
+  end
+  zones.restore_review(m.review)
 end
 
 local function default_prompt(id, task_file)

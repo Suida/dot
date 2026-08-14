@@ -439,6 +439,55 @@ T.eq(#vim.api.nvim_tabpage_list_wins(0), n_before, 'agent area got the width bac
 cleanup_workers('main', 'coder')
 zones.arrange()
 
+section('persist layout state')
+local agent5 = require('agent-cockpit')
+local persist2 = require('agent-cockpit.persist')
+agent5._root = vim.fn.getcwd()
+agent5._config = agent5._config or { auto_recover = 'ask' }
+
+-- layout state roundtrip
+zones.mode = 'B'
+zones._focused = 'r1'
+persist2.save()
+local m2 = persist2.load()
+T.eq(m2.layout_mode, 'B', 'manifest layout_mode')
+T.eq(m2.focused, 'r1', 'manifest focused')
+T.eq(type(m2.review), 'table', 'manifest review table')
+T.eq(m2.review.open, false, 'review closed by default')
+zones.mode = 'A'; zones._focused = nil
+persist2.save()
+
+-- recovery restores layout_mode + focused
+local cf5 = io.open('.agent/session.json', 'w')
+cf5:write(vim.json.encode({
+  version = 1, clean_exit = false, layout_mode = 'B', focused = 'z5',
+  workers = { { id = 'z5', agent = 'cat', cmd = 'cat', cwd = vim.fn.getcwd(),
+                op_overrides = {}, hidden = false, visible = false } },
+}))
+cf5:close()
+agent5._config.auto_recover = 'always'
+agent5._maybe_recover()
+T.eq(zones.mode, 'B', 'recovery restores layout_mode')
+T.eq(zones._focused, 'z5', 'recovery restores focused')
+T.eq(agent_win_ids(), { 'z5' }, 'recovered topology is mode B focused')
+agent5.kill('z5')
+zones.mode = 'A'; zones._focused = nil
+os.remove('.agent/session.json')
+
+-- recovery restores the hidden flag: hidden workers respawn but stay off screen
+local cf6 = io.open('.agent/session.json', 'w')
+cf6:write(vim.json.encode({
+  version = 1, clean_exit = false,
+  workers = { { id = 'z6', agent = 'cat', cmd = 'cat', cwd = vim.fn.getcwd(),
+                op_overrides = {}, hidden = true, visible = false } },
+}))
+cf6:close()
+agent5._maybe_recover()
+T.eq(reg.get('z6') ~= nil and reg.get('z6').hidden, true, 'recovery restores hidden flag')
+T.eq(zones.is_visible('z6'), false, 'hidden recovered worker not shown')
+agent5.kill('z6')
+os.remove('.agent/session.json')
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')

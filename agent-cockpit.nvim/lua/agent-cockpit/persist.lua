@@ -25,12 +25,18 @@ function M.save()
       end
     end
   end
+  local zones = require('agent-cockpit.zones')
+  local has_team, team = pcall(require, 'agent-cockpit.team') -- optional module
   local data = {
     version = 1,
     clean_exit = false,
     workers = reg.serialize(),
     main_file = main_file,
     foreground = agent._foreground,
+    layout_mode = zones.mode,
+    focused = zones._focused,
+    review = zones.review_state(),
+    roster = has_team and team.has_roster(root()) or false,
   }
   local tmp = path() .. '.tmp'
   local f = io.open(tmp, 'w')
