@@ -114,7 +114,9 @@ function M.arrange()
   local main_win
   if survivor and worker_id_of(survivor) then
     main_win = survivor
-  elseif survivor and absorbable(survivor) then
+  elseif survivor and survivor ~= M._review_win and absorbable(survivor) then
+    -- never absorb the review window: nameless faces (dashboard, diff) would
+    -- otherwise be swallowed into the agent area
     main_win = survivor
   else
     vim.api.nvim_set_current_win(survivor)
@@ -250,16 +252,84 @@ function M.is_visible(id)
   return false
 end
 
--- Task 3 replaces this shim with the full review-area implementation.
-function M.open_main(path)
+-- Review area: one window left of the agent area (right of the explorer if
+-- present), hidden by default, two faces: 'file' (code inspection) and
+-- 'dashboard'. Opening compresses the agent area; closing returns the width.
+-- Agents are never covered.
+
+local function review_width()
+  return math.max(30, math.floor(vim.o.columns * 0.3))
+end
+
+function M.open_review()
+  if valid(M._review_win) then return M._review_win end
+  -- Reference: leftmost non-float window that is not the explorer.
+  local ref
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if not is_float(win) and not worker_id_of(win) and not is_snacks(win) then
-      vim.api.nvim_set_current_win(win)
-      vim.cmd.edit(vim.fn.fnameescape(path))
-      return
+    if not is_float(win) and not is_snacks(win) then
+      if not ref or vim.api.nvim_win_get_position(win)[2]
+        < vim.api.nvim_win_get_position(ref)[2] then
+        ref = win
+      end
     end
   end
+  ref = ref or vim.api.nvim_get_current_win()
+  vim.api.nvim_set_current_win(ref)
+  vim.cmd('leftabove vsplit')
+  M._review_win = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_width(M._review_win, review_width())
+  return M._review_win
+end
+
+function M.close_review()
+  if valid(M._review_win) and #vim.api.nvim_tabpage_list_wins(0) > 1 then
+    pcall(vim.api.nvim_win_close, M._review_win, true)
+  end
+  M._review_win = nil
+  M._face = nil
+  M._review_file = nil
+  M.arrange() -- rebalance agent area into the freed width
+end
+
+function M.toggle_review()
+  if valid(M._review_win) then M.close_review() else M.open_review() end
+end
+
+function M.edit(path)
+  local win = M.open_review()
+  vim.api.nvim_set_current_win(win)
   vim.cmd.edit(vim.fn.fnameescape(path))
+  M._face = 'file'
+  M._review_file = path
+  M.arrange()
+  return true
+end
+
+function M.show_in_review(buf, face)
+  local win = M.open_review()
+  vim.api.nvim_win_set_buf(win, buf)
+  M._face = face
+  if face ~= 'file' then M._review_file = nil end
+  M.arrange()
+end
+
+function M.review_state()
+  return {
+    open = M._review_win ~= nil and vim.api.nvim_win_is_valid(M._review_win),
+    face = M._face,
+    file = M._review_file,
+  }
+end
+
+function M.restore_review(state)
+  if not state or not state.open then return end
+  if state.face == 'file' and state.file then
+    M.edit(state.file)
+  elseif state.face == 'dashboard' then
+    require('agent-cockpit.dashboard').open() -- dashboard lands in a later task
+  else
+    M.open_review()
+  end
 end
 
 function M.setup(_) end

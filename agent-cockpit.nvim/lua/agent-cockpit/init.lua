@@ -30,6 +30,9 @@ function M.setup(opts)
     local ok, snacks = pcall(require, 'snacks')
     if ok then snacks.picker.explorer() end
   end, { desc = 'Explorer' })
+  map('n', '<leader>r', function()
+    require('agent-cockpit.zones').toggle_review()
+  end, { desc = 'Toggle review area' })
   for i = 1, 9 do
     map({ 'n', 'i', 't' }, '<A-' .. i .. '>', function()
       local e = reg.by_index(i)
@@ -261,7 +264,7 @@ function M.kill(id)
 end
 
 function M.edit(path)
-  zones.open_main(path)
+  zones.edit(path)
   require('agent-cockpit.persist').save()
   return true
 end

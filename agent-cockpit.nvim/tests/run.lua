@@ -400,6 +400,45 @@ cleanup_workers('main', 'coder', 'reviewer', 'w3', 'w4')
 zones.mode = 'A'; zones._focused = nil
 zones.arrange()
 
+section('review area')
+fake_worker('main'); fake_worker('coder')
+zones.mode = 'A'
+zones.arrange()
+local n_before = #vim.api.nvim_tabpage_list_wins(0)
+
+-- the test cwd is a fresh mktemp -d; create the file to open
+local rf = io.open('notes.md', 'w'); rf:write('# notes\n'); rf:close()
+zones.edit('notes.md')
+T.eq(#vim.api.nvim_tabpage_list_wins(0), n_before + 1, 'review window opens')
+local st = zones.review_state()
+T.eq(st.open, true, 'review state open')
+T.eq(st.face, 'file', 'review face file')
+T.eq(st.file, 'notes.md', 'review file tracked')
+-- review window is LEFT of every agent window
+local review_pos = vim.api.nvim_win_get_position(zones._review_win)[2]
+local leftmost_agent
+for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+  local name = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win))
+  if name:match('agent://worker/') then
+    local c = vim.api.nvim_win_get_position(win)[2]
+    if not leftmost_agent or c < leftmost_agent then leftmost_agent = c end
+  end
+end
+T.eq(review_pos < leftmost_agent, true, 'review area left of agent area')
+
+-- show_in_review swaps the face
+local dbuf = vim.api.nvim_create_buf(false, true)
+zones.show_in_review(dbuf, 'dashboard')
+T.eq(zones.review_state().face, 'dashboard', 'face switched to dashboard')
+T.eq(vim.api.nvim_win_get_buf(zones._review_win), dbuf, 'review shows the given buffer')
+
+zones.close_review()
+T.eq(zones.review_state().open, false, 'review closed')
+T.eq(#vim.api.nvim_tabpage_list_wins(0), n_before, 'agent area got the width back')
+
+cleanup_workers('main', 'coder')
+zones.arrange()
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')
