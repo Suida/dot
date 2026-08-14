@@ -80,4 +80,52 @@ function M.apply(root)
   return spawned
 end
 
+-- Templates ---------------------------------------------------------------
+
+function M.template_dir()
+  return vim.fn.stdpath('data') .. '/agent-cockpit/templates'
+end
+
+local function cp(src, dst)
+  local f = io.open(src, 'r')
+  if not f then return false end
+  local body = f:read('a')
+  f:close()
+  local g = io.open(dst, 'w')
+  if not g then return false end
+  g:write(body)
+  g:close()
+  return true
+end
+
+function M.dump(root, name)
+  if not name or name == '' then return nil, 'template name required' end
+  if not M.has_roster(root) then return nil, 'no roster to dump' end
+  local dest = M.template_dir() .. '/' .. name
+  vim.fn.mkdir(dest .. '/roles', 'p')
+  cp(M.roster_path(root), dest .. '/roster.md')
+  for _, m in ipairs(M.read_roster(root) or {}) do
+    cp(M.brief_path(root, m.role), dest .. '/roles/' .. m.role .. '.md')
+  end
+  return dest
+end
+
+function M.raise(root, name)
+  local src = M.template_dir() .. '/' .. name
+  if vim.fn.filereadable(src .. '/roster.md') == 0 then
+    return nil, 'no such template: ' .. tostring(name)
+  end
+  vim.fn.mkdir(root .. '/.agent/roles', 'p')
+  cp(src .. '/roster.md', M.roster_path(root))
+  local fs = vim.uv.fs_scandir(src .. '/roles')
+  if fs then
+    while true do
+      local fname = vim.uv.fs_scandir_next(fs)
+      if not fname then break end
+      cp(src .. '/roles/' .. fname, root .. '/.agent/roles/' .. fname)
+    end
+  end
+  return M.apply(root)
+end
+
 return M

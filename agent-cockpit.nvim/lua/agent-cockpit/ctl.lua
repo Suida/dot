@@ -43,6 +43,14 @@ M.commands = {
     local res, e = agent.team_apply()
     return res and ok(res) or fail(e)
   end,
+  ['team-dump'] = function(pos)
+    local res, e = agent.team_dump(pos[1])
+    return res and ok(res) or fail(e)
+  end,
+  ['team-raise'] = function(pos)
+    local res, e = agent.team_raise(pos[1])
+    return res and ok(res) or fail(e)
+  end,
   focus = function(pos) return M._simple(agent.focus, pos[1]) end,
   hide = function(pos) return M._simple(agent.hide, pos[1]) end,
   kill = function(pos) return M._simple(agent.kill, pos[1]) end,

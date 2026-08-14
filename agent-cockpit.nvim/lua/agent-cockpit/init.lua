@@ -255,6 +255,18 @@ function M.team_apply()
   return res
 end
 
+function M.team_dump(name)
+  local res, terr = require('agent-cockpit.team').dump(root(), name)
+  if not res then return err(terr) end
+  return res
+end
+
+function M.team_raise(name)
+  local res, terr = require('agent-cockpit.team').raise(root(), name)
+  if not res then return err(terr) end
+  return res
+end
+
 function M.hide(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end

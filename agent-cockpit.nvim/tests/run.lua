@@ -525,7 +525,26 @@ T.ok(brief_body:match('Feature implementation') ~= nil, 'brief includes responsi
 -- second apply is a no-op
 T.eq(#team.apply(troot), 0, 're-apply spawns nothing')
 agent.kill('coder'); agent.kill('reviewer')
+
+-- templates: dump then raise in a fresh project root
+local dest, derr = team.dump(troot, 'demo-team')
+T.ok(dest ~= nil, 'dump ok: ' .. tostring(derr))
+T.eq(vim.fn.filereadable(dest .. '/roster.md'), 1, 'template has roster')
+T.eq(vim.fn.filereadable(dest .. '/roles/coder.md'), 1, 'template has coder brief')
+
+local proj2 = vim.fn.tempname()
+vim.fn.mkdir(proj2, 'p')
+local spawned2, rerr = team.raise(proj2, 'demo-team')
+T.ok(spawned2 ~= nil, 'raise ok: ' .. tostring(rerr))
+T.eq(#spawned2, 2, 'raise spawned both roles')
+T.eq(reg.get('reviewer') ~= nil, true, 'raise registered reviewer')
+T.eq(vim.fn.filereadable(proj2 .. '/.agent/roles/reviewer.md'), 1, 'raise restored brief')
+agent.kill('coder'); agent.kill('reviewer')
+vim.fn.delete(dest, 'rf')
 os.remove(team.roster_path(troot))
+
+T.eq(team.dump(troot, 'nope'), nil, 'dump without roster errors')
+T.eq(team.raise(proj2, 'missing-template'), nil, 'raise of missing template errors')
 
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
