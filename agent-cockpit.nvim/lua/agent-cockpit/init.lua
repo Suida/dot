@@ -188,7 +188,16 @@ function M.spawn(id, o)
   local buf = vim.api.nvim_create_buf(false, true)
   local job
   vim.api.nvim_buf_call(buf, function()
-    job = vim.fn.termopen(cmd, { cwd = cwd })
+    job = vim.fn.termopen(cmd, {
+      cwd = cwd,
+      on_exit = function()
+        vim.schedule(function()
+          local e = reg.get(id)
+          if not e then return end -- killed deliberately: no alarm
+          require('agent-cockpit.dashboard').note_death(id)
+        end)
+      end,
+    })
   end)
   if job <= 0 then
     pcall(vim.api.nvim_buf_delete, buf, { force = true })

@@ -586,6 +586,34 @@ os.remove('.agent/status/coder.md')
 cleanup_workers('main', 'coder')
 zones.arrange()
 
+section('notifications')
+-- death notification: short-lived job exits while still registered.
+-- Mode B with no main/focused keeps the visible set empty so the short-lived
+-- worker's buffer is never shown (Windows headless segfault gotcha).
+zones.mode = 'B'; zones._focused = nil
+local notes = {}
+local orig_notify = vim.notify
+vim.notify = function(msg, lvl) notes[#notes + 1] = { msg = msg, lvl = lvl } end
+local sp9 = agent.spawn('d9', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa', hidden = true })
+T.ok(sp9 ~= nil, 'spawn short-lived worker')
+vim.fn.jobwait({ sp9.job }, 5000)
+vim.wait(2000, function()
+  for _, n in ipairs(notes) do
+    if n.msg:match('d9') then return true end
+  end
+  return false
+end, 100)
+vim.notify = orig_notify
+zones.mode = 'A'
+local death_note
+for _, n in ipairs(notes) do
+  if n.msg:match('d9') then death_note = n break end
+end
+T.ok(death_note ~= nil, 'death notified, names the worker')
+T.eq(death_note and death_note.lvl, vim.log.levels.WARN, 'death is a warning')
+agent.kill('d9')
+zones.arrange()
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')

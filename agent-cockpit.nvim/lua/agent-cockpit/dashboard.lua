@@ -82,6 +82,18 @@ function M._check(_root)
   if changed and st.open and st.face == 'dashboard' then M.render() end
 end
 
+--- A member's job exited while still registered. Warn unless it reported done.
+function M.note_death(id)
+  local agent = require('agent-cockpit')
+  local st = agent.status(id)
+  local state = st and st.state or 'unknown'
+  if state ~= 'done' then
+    vim.notify(('agent %s exited (last state: %s)'):format(id, state),
+      vim.log.levels.WARN)
+  end
+  M.render()
+end
+
 --- Start the fs_event watcher on <root>/.agent/status/. Idempotent.
 function M.watch(root)
   if M._watcher then return end
