@@ -195,7 +195,7 @@ function M.spawn(id, o)
   vim.api.nvim_buf_set_name(buf, 'agent://worker/' .. id)
   reg.add(id, {
     id = id, buf = buf, job = job,
-    agent = head, cmd = cmd, cwd = cwd,
+    agent = head, cmd = cmd, cwd = cwd, role = o.role,
     task_file = o.task_file, op_overrides = o.op_overrides or {},
     hidden = o.hidden or false,
   })
@@ -247,6 +247,12 @@ end
 function M.layout(mode)
   if mode then zones.set_mode(mode) end
   return { mode = zones.mode, focused = zones._focused }
+end
+
+function M.team_apply()
+  local res, terr = require('agent-cockpit.team').apply(root())
+  if not res then return err(terr) end
+  return res
 end
 
 function M.hide(id)

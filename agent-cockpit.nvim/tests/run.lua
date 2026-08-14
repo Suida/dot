@@ -488,6 +488,45 @@ T.eq(zones.is_visible('z6'), false, 'hidden recovered worker not shown')
 agent5.kill('z6')
 os.remove('.agent/session.json')
 
+section('team')
+local team = require('agent-cockpit.team')
+local roster_text = table.concat({
+  '# Team Roster', '',
+  '| role | cli | responsibilities |',
+  '| --- | --- | --- |',
+  '| coder | cat | Feature implementation |',
+  '| reviewer | cat | Code review |',
+  '',
+}, '\n')
+local parsed = team.parse_roster(roster_text)
+T.eq(#parsed, 2, 'roster parses 2 roles')
+T.eq(parsed[1].role, 'coder', 'role name')
+T.eq(parsed[1].cli, 'cat', 'role cli')
+T.eq(parsed[1].responsibilities, 'Feature implementation', 'role responsibilities')
+T.eq(team.parse_roster('# empty\n'), {}, 'no table -> empty roster')
+
+-- apply: spawns roster members with role + brief, skips existing
+local troot = vim.fn.getcwd()
+vim.fn.mkdir(troot .. '/.agent', 'p')
+local rf2 = io.open(team.roster_path(troot), 'w'); rf2:write(roster_text); rf2:close()
+T.eq(team.has_roster(troot), true, 'has_roster')
+local spawned, terr = team.apply(troot)
+T.ok(spawned ~= nil, 'apply ok: ' .. tostring(terr))
+table.sort(spawned)
+T.eq(spawned, { 'coder', 'reviewer' }, 'apply spawned both roles')
+T.eq(reg.get('coder').role, 'coder', 'registry entry carries role')
+T.eq(reg.get('coder').task_file, team.brief_path(troot, 'coder'), 'task_file is the role brief')
+T.eq(vim.fn.filereadable(team.brief_path(troot, 'coder')), 1, 'brief scaffolded')
+local brief_body = (function()
+  local f = io.open(team.brief_path(troot, 'coder'), 'r')
+  local b = f:read('a'); f:close(); return b
+end)()
+T.ok(brief_body:match('Feature implementation') ~= nil, 'brief includes responsibilities')
+-- second apply is a no-op
+T.eq(#team.apply(troot), 0, 're-apply spawns nothing')
+agent.kill('coder'); agent.kill('reviewer')
+os.remove(team.roster_path(troot))
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')

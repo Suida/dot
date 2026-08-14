@@ -33,11 +33,15 @@ end
 M.commands = {
   spawn = function(pos, o)
     local res, e = agent.spawn(pos[1], {
-      cmd = o.cmd, cwd = o.cwd, task_file = o.task,
+      cmd = o.cmd, cwd = o.cwd, task_file = o.task, role = o.role,
       prompt = o.prompt, op_overrides = o.op_overrides,
     })
     if not res then return fail(e) end
     return ok(res)
+  end,
+  ['team-apply'] = function()
+    local res, e = agent.team_apply()
+    return res and ok(res) or fail(e)
   end,
   focus = function(pos) return M._simple(agent.focus, pos[1]) end,
   hide = function(pos) return M._simple(agent.hide, pos[1]) end,
