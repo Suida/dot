@@ -55,3 +55,5 @@ simple('AgentDiff', function(id) return agent().diff(id) end,
 simple('AgentTeamApply', function() return agent().team_apply() end, {})
 simple('AgentTeamDump', function(name) return agent().team_dump(name) end, { nargs = 1 })
 simple('AgentTeamRaise', function(name) return agent().team_raise(name) end, { nargs = 1 })
+simple('AgentInstall', function(dir) return agent().install(dir) end,
+  { nargs = '?', desc = 'Install agent-ctl shim into a PATH dir' })

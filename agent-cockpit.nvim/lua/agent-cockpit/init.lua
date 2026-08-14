@@ -307,6 +307,33 @@ function M.diff(id)
   return true
 end
 
+--- Install an agent-ctl shim into a PATH directory so cmd.exe/PowerShell
+--- users (e.g. codex on Windows) can call the bridge without knowing the
+--- plugin path. Returns the directory used.
+function M.install(dir)
+  dir = dir or (vim.fn.has('win32') == 1
+    and ((vim.env.USERPROFILE or vim.env.HOME) .. '\\bin')
+    or ((vim.env.HOME or '~') .. '/.local/bin'))
+  vim.fn.mkdir(dir, 'p')
+  local src = debug.getinfo(1, 'S').source:sub(2):gsub('\\', '/')
+  local bin = vim.fn.fnamemodify(src, ':h:h:h') .. '/bin'
+  if vim.fn.has('win32') == 1 then
+    local shim = dir .. '\\agent-ctl.cmd'
+    local f = io.open(shim, 'w')
+    if not f then return err('cannot write ' .. shim) end
+    f:write('@echo off\r\npowershell.exe -NoProfile -ExecutionPolicy Bypass -File "'
+      .. bin:gsub('/', '\\') .. '\\agent-ctl.ps1" %*\r\n')
+    f:close()
+  else
+    local target = dir .. '/agent-ctl'
+    pcall(vim.uv.fs_unlink, target)
+    if not vim.uv.fs_symlink(bin .. '/agent-ctl', target) then
+      return err('cannot symlink into ' .. dir)
+    end
+  end
+  return dir
+end
+
 function M.hide(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end

@@ -79,6 +79,22 @@ check "empty after kill" '"data":[]' "$OUT"
 OUT=$(cd / && "$CTL" list 2>&1 || true)
 check "no socket error" 'no agent-cockpit instance found' "$OUT"
 
+# --- PowerShell bridge (Windows only) ---
+if [[ "${OSTYPE:-}" == msys || "${OSTYPE:-}" == cygwin ]]; then
+  OUT=$("$CTL" spawn p1 --cmd "bash $REPO/agent-cockpit.nvim/tests/fake-agent.sh $WORK/.agent/status/p1.md")
+  check "spawn for ps1 test" '"ok":true' "$OUT"
+  OUT=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \
+    "$(cygpath -w "$REPO/agent-cockpit.nvim/bin/agent-ctl.ps1")" list 2>&1 || true)
+  check "ps1 list works" '"id":"p1"' "$OUT"
+  OUT=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \
+    "$(cygpath -w "$REPO/agent-cockpit.nvim/bin/agent-ctl.ps1")" status p1 2>&1 || true)
+  check "ps1 status works" '"state":"working"' "$OUT"
+  # cmd shim resolves the ps1 relative to itself (//c: Git Bash mangles /c)
+  OUT=$(cmd.exe //c "$(cygpath -w "$REPO/agent-cockpit.nvim/bin/agent-ctl.cmd")" list 2>&1 || true)
+  check "cmd shim works" '"id":"p1"' "$OUT"
+  "$CTL" kill p1 >/dev/null
+fi
+
 # --- crash recovery ---
 OUT=$("$CTL" spawn r1 --cmd "bash $REPO/agent-cockpit.nvim/tests/fake-agent.sh $WORK/.agent/status/r1.md")
 check "spawn r1" '"ok":true' "$OUT"
