@@ -83,12 +83,13 @@ function M._open_main_agent()
   vim.schedule(function()
     if #reg.list() > 0 then return end -- recovery may have beaten the schedule
     local prime = table.concat({
-      'You are the main agent of an nvim-agent cockpit; you are running inside',
-      'a terminal buffer of the Neovim instance you will orchestrate.',
+      'You are the main agent of an agent-cockpit Neovim instance; you are',
+      'running inside a terminal buffer of the instance you orchestrate.',
       'First read the skill file ~/.agents/skills/nvim-agent-orchestration/SKILL.md',
       'and follow it from now on. The `agent-ctl` command is on your PATH and',
-      'controls this Neovim (spawn/focus/hide/steer workers); NVIM_AGENT_SOCK',
-      'points at its RPC socket. Project state lives under .agent/.',
+      'controls this Neovim (team rosters, spawn/focus/steer members, layout,',
+      'dashboard); NVIM_AGENT_SOCK points at its RPC socket. Team state lives',
+      'under .agent/ (roster.md, roles/, status/, session.json).',
     }, ' ')
     local res, serr = M.spawn('main', { cmd = cmd, prompt = prime })
     if not res then

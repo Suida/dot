@@ -1,79 +1,8 @@
-# nvim-agent
+# nvim-agent (profile)
 
-A minimal Neovim config that turns the editor into an agent cockpit: a main CLI
-agent orchestrates worker CLI agents living in terminal buffers, via the
-`agent-ctl` bridge. See `docs/superpowers/specs/2026-08-12-nvim-agent-cockpit-design.md`.
+A thin standalone Neovim profile that launches the agent cockpit:
+`NVIM_APPNAME=nvim-agent nvim`.
 
-## Launch
-
-```bash
-NVIM_APPNAME=nvim-agent nvim
-```
-
-On launch the cockpit spawns the **main agent** (`kimi` by default) as worker
-`main` and foregrounds it in the right pane — skip with
-`require('agent').setup({ main_agent = false })` or pick another CLI with
-`main_agent = 'codex'`. After a crash, recovery takes precedence: the main
-agent only auto-opens when no recovery is engaged (or you decline it).
-
-First launch clones lazy.nvim + snacks.nvim. The config listens on
-`<cwd>/.agent/nvim.sock`; put `nvim-agent/bin` on PATH (or symlink `agent-ctl`)
-so agents can drive it from any subdirectory. On Windows, `agent-ctl.cmd` sits
-next to the bash script so PowerShell/cmd users (e.g. codex's default shell)
-resolve the same command — both forward to the same implementation.
-
-## Human keymaps
-
-- `<leader>a` — worker picker (focus / `<M-h>` hide / `<M-k>` kill)
-- `<M-Backspace>` — toggle last worker pane
-- `<A-1..9>` — focus worker by index
-- `<leader>E` — file explorer
-
-## Demo (no real agents needed)
-
-```bash
-NVIM_APPNAME=nvim-agent nvim          # in a scratch dir, then in another shell:
-agent-ctl spawn w1 --cmd "bash <repo>/nvim-agent/tests/fake-agent.sh .agent/status/w1.md"
-agent-ctl focus w1
-agent-ctl prompt w1 "mark DONE when ready"
-agent-ctl status w1                   # -> state: done
-agent-ctl kill w1
-```
-
-With real agents: `agent-ctl spawn w1 --cmd kimi --task .agent/tasks/w1.md`.
-
-Windows note: a bare `bash` in `--cmd` may resolve to WSL's bash (which can't see
-`/c/...` MSYS paths) when the cockpit was launched from PowerShell/cmd. Use the
-full Git Bash path instead:
-`agent-ctl spawn w1 --cmd '"C:\Program Files\Git\bin\bash.exe" <repo>/nvim-agent/tests/fake-agent.sh .agent/status/w1.md'`
-
-## Crash recovery
-
-State lives in `.agent/session.json`. After a crash, relaunching offers to
-respawn workers — with the preset's `resume` command when defined
-(`kimi --continue`, `codex resume --last`), otherwise fresh; the crash note is
-only passed when the worker had a task file (a bare cmd like `cat` would treat
-the prompt text as a filename and exit).
-Configure: `require('agent').setup({ auto_recover = 'always' })` (or `'never'`).
-
-Known limitation: if nvim crashes again mid-recovery, workers not yet respawned
-drop out of the manifest (each respawn rewrites `session.json` via
-`persist.save()`), so they are not recovered on the next launch either.
-
-## Windows notes
-
-- On Windows, `.agent/nvim.sock` is not a socket: it is a plain-text pointer
-  file containing the named-pipe address the instance actually listens on.
-  Clients (including `agent-ctl`) read it to discover the address — do not
-  treat it as a socket file.
-- Headless/background Neovim instances on Windows need a console attached:
-  ConPTY gives terminal jobs instant EOF without one, so worker terminals die
-  immediately. Real TUI usage (launching nvim in a terminal window) is
-  unaffected.
-
-## Tests
-
-```bash
-cd $(mktemp -d) && nvim --headless -u NONE -l <repo>/nvim-agent/tests/run.lua
-bash <repo>/nvim-agent/tests/integration.sh
-```
+It only sets options, bootstraps lazy.nvim + snacks.nvim, and loads the
+`agent-cockpit.nvim` plugin from the sibling directory. All functionality
+lives in the plugin — see `../agent-cockpit.nvim/README.md`.

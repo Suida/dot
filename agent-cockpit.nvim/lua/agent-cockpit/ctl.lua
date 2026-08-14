@@ -65,6 +65,14 @@ M.commands = {
   edit = function(pos) return M._simple(agent.edit, pos[1]) end,
   diff = function(pos) return M._simple(agent.diff, pos[1]) end,
   list = function() return ok(agent.list()) end,
+  layout = function(pos)
+    if pos[1] then
+      local pok, e = pcall(agent.layout, pos[1])
+      if not pok then return fail(tostring(e)) end
+    end
+    return ok(agent.layout())
+  end,
+  dashboard = function() return M._simple(agent.dashboard) end,
   status = function(pos)
     local res, e = agent.status(pos[1])
     return res and ok(res) or fail(e)

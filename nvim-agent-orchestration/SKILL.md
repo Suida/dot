@@ -3,95 +3,72 @@ name: nvim-agent-orchestration
 description: Orchestrate worker CLI agents inside a Neovim cockpit. Use when running as the main agent in a project where Neovim was launched with the nvim-agent config (a `.agent/nvim.sock` exists or `agent-ctl` is on PATH) and work should be delegated to parallel CLI agents instead of native subagent tools.
 ---
 
-# nvim-agent Orchestration
+# Agent Cockpit Orchestration
 
-You are the **main agent** in a Neovim agent cockpit. Delegate work to worker CLI
-agents that live in Neovim terminal buffers. **Do not use your native subagent /
-task / swarm tools** — workers are spawned, steered, and harvested exclusively
-through the `agent-ctl` command and files under `.agent/`.
+You hold the main-agent session of an agent-cockpit Neovim instance. You
+orchestrate a persistent, role-based TEAM of CLI agents that live in terminal
+buffers of this Neovim. The human operator watches the dashboard and can jump
+into any member's terminal at any time.
 
-`agent-ctl` works from any shell: on Windows an `agent-ctl.cmd` shim sits next to
-the bash implementation, so if your shell is PowerShell (e.g. codex on Windows)
-the same commands below work unchanged. If `agent-ctl` is not found, fall back
-to `bash agent-ctl ...`.
+`agent-ctl` works from any shell: a bash implementation, a native PowerShell
+implementation (`agent-ctl.ps1`), and an `agent-ctl.cmd` shim all expose the
+same commands, so if your shell is PowerShell (e.g. codex on Windows) the same
+commands below work unchanged.
 
-## Session start protocol
+## Hard rules
 
-Before planning anything, check for existing state:
+- NEVER use native subagent / agent-swarm / Task tools. Delegate by spawning
+  team members with `agent-ctl`.
+- All coordination flows through you + files. There is no worker-to-worker
+  channel. Artifacts go to the repo (`docs/`, code); state goes to
+  `.agent/status/<role>.md`; assignments go to `.agent/roles/<role>.md`.
+- On ANY new session, read `.agent/` first (roster.md, roles/, status/,
+  session.json) before planning — a previous session's team may be on disk.
 
-```bash
-ls .agent/tasks/ .agent/status/ 2>/dev/null
-agent-ctl list
-```
+## Building the team
 
-If tasks/status exist, read them first. A worker whose status file says
-`state: working` but which `agent-ctl list` reports as not alive was interrupted —
-decide from its status file whether to respawn it or continue its work yourself.
+1. Understand the operator's goal and analyze the project.
+2. Propose a roster: write `.agent/roster.md` as a markdown table
+   (`| role | cli | responsibilities |`, one row per member; `main` is you —
+   do not list it) and show it with `agent-ctl edit .agent/roster.md` so the
+   operator can approve/edit it in the review area.
+3. Once approved: `agent-ctl team-apply`. This scaffolds any missing role
+   brief at `.agent/roles/<role>.md` and spawns each member with a prompt
+   pointing at its brief. Flesh out each brief (scope, conventions, current
+   assignment) before or right after applying.
+4. Hidden/background members must run with autonomy flags
+   (e.g. `kimi --auto`) or they stall on permission prompts — pass them via
+   `--cmd`.
 
-## Delegating a task
+## Operating the team
 
-1. Pick a short worker id (e.g. `w1`, `docs`, `fix-auth`).
-2. Write `.agent/tasks/<id>.md`:
+- Poll `agent-ctl status <role>` or `agent-ctl list`; the operator sees the
+  same states on the dashboard.
+- Steer: `agent-ctl prompt <role> <text>`, `agent-ctl op <role> interrupt`.
+- Reassign: edit `.agent/roles/<role>.md` (Current assignment) and prompt the
+  member to re-read it.
+- Layout: `agent-ctl layout A|B`, `agent-ctl focus <role>` (Mode B slot),
+  `agent-ctl hide <role>`.
+- A member showing `state: working` with no live process was interrupted —
+  decide redo vs. continue from its status file, then respawn it
+  (`agent-ctl spawn <role> --cmd <cli> --task .agent/roles/<role>.md`).
 
-```markdown
-# Task: <short title>
-- Worker: <id>
-- Goal: <what to achieve>
-- Scope: <files/dirs in scope; what NOT to touch>
-- Done criteria: <verifiable end state>
-- Pointers: <relevant files/docs>
-```
+## Review flow
 
-3. Spawn the worker (hidden, runs in background). Always give workers their
-   CLI's autonomous/auto-approve flag — a hidden worker cannot ask the human
-   for tool approvals and will silently stall on a permission prompt:
+- When a member reports `state: done`: read its status file and artifacts,
+  verify the work yourself, then post the operator a digest — what changed,
+  where, what to check.
+- Offer `agent-ctl diff <role>` when the operator wants the raw changes.
 
-```bash
-agent-ctl spawn <id> --cmd 'kimi --auto'   --task .agent/tasks/<id>.md
-agent-ctl spawn <id> --cmd codex  --task .agent/tasks/<id>.md
-```
+## Templates
 
-4. Show it to the human when useful: `agent-ctl focus <id>`; put it back with
-   `agent-ctl hide <id>`.
-5. Open files in the main editor pane for the human: `agent-ctl edit <file>`.
+- A roster worth keeping: `agent-ctl team-dump <name>`.
+- New project, known shape: `agent-ctl team-raise <name>` (copies roster +
+  briefs into `.agent/` and applies).
 
-## Monitoring
+## agent-ctl reference
 
-Workers maintain `.agent/status/<id>.md`:
-
-```markdown
-state: working | blocked | done
-<summary line — shown in picker and `agent-ctl list`>
-
-<running notes; final result and pointers to produced files when done>
-```
-
-Poll with `agent-ctl status <id>` (or `agent-ctl list` for all). Never scrape
-terminal output — the status file is the contract.
-
-## Steering a live worker
-
-Use semantic operations — never raw key sequences:
-
-```bash
-agent-ctl prompt <id> "clarification or new instruction"   # text + submit
-agent-ctl op <id> interrupt                                # stop current action
-agent-ctl op <id> newline                                  # insert newline
-agent-ctl ops <id>                                         # list available ops
-agent-ctl send <id> "literal text, no submit"
-```
-
-`send-keys` exists as an escape hatch but prefer `op`/`prompt`.
-
-## Finishing
-
-When a worker reports `state: done`, read its status file and result docs, verify
-the done criteria, then `agent-ctl kill <id>`.
-
-## If you are a worker
-
-If your initial prompt points at `.agent/tasks/<id>.md`, you are a worker:
-read the task file, keep `.agent/status/<id>.md` current (first line
-`state: working|blocked|done`), write results to the files the task names, and
-finish with `state: done` plus a summary and file pointers. If a crash-recovery
-note says to continue, read your status file before doing anything else.
+spawn <id> [--cmd cli] [--role r] [--task file] [--op k=v]... | focus <id> |
+hide <id> | kill <id> | send <id> <text> | prompt <id> <text> | op <id> <name> |
+ops <id> | send-keys <id> <keys> | edit <file> | diff <id> | list | status <id> |
+layout [A|B] | dashboard | team-apply | team-dump <name> | team-raise <name>

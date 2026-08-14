@@ -132,5 +132,36 @@ check "recovery re-registers worker" '"id":"r1"' "$OUT"
 check "recovered worker visible" '"visible":true' "$OUT"
 "$CTL" kill r1 >/dev/null || true
 
+# --- team scenario ---
+mkdir -p .agent
+cat > .agent/roster.md <<'EOF'
+# Team Roster
+
+| role | cli | responsibilities |
+| --- | --- | --- |
+| coder | bash REPO_PLACEHOLDER/agent-cockpit.nvim/tests/fake-agent.sh WORK_PLACEHOLDER/.agent/status/coder.md | Implement features |
+| reviewer | bash REPO_PLACEHOLDER/agent-cockpit.nvim/tests/fake-agent.sh WORK_PLACEHOLDER/.agent/status/reviewer.md | Review code |
+EOF
+sed -i "s|REPO_PLACEHOLDER|$REPO|g; s|WORK_PLACEHOLDER|$WORK|g" .agent/roster.md
+
+OUT=$("$CTL" team-apply)
+check "team-apply" '"ok":true' "$OUT"
+OUT=$("$CTL" list)
+check "team member coder" '"id":"coder"' "$OUT"
+check "team member reviewer" '"id":"reviewer"' "$OUT"
+check "role surfaced" '"role":"coder"' "$OUT"
+sleep 0.5
+check "brief scaffolded" 'Responsibilities' "$(cat .agent/roles/coder.md)"
+
+OUT=$("$CTL" layout B)
+check "layout B" '"mode":"B"' "$OUT"
+OUT=$("$CTL" layout A)
+check "layout A" '"mode":"A"' "$OUT"
+
+OUT=$("$CTL" team-dump e2e-team)
+check "team-dump" '"ok":true' "$OUT"
+
+"$CTL" kill coder >/dev/null; "$CTL" kill reviewer >/dev/null
+
 echo "$PASS passed, $FAIL failed"
 [ $FAIL -eq 0 ]
