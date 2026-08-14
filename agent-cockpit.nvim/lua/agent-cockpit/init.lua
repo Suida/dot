@@ -1,6 +1,6 @@
 local reg = require('agent-cockpit.registry')
 local presets = require('agent-cockpit.presets')
-local layout = require('agent-cockpit.layout')
+local zones = require('agent-cockpit.zones')
 
 local M = { _foreground = nil }
 
@@ -33,7 +33,7 @@ function M.setup(opts)
   for i = 1, 9 do
     map({ 'n', 'i', 't' }, '<A-' .. i .. '>', function()
       local e = reg.by_index(i)
-      if e then M.focus(e.id) end
+      if e then M.jump(e.id) end
     end, { desc = 'Focus worker ' .. i })
   end
   map({ 'n', 'i', 't' }, '<M-Backspace>', function()
@@ -41,7 +41,7 @@ function M.setup(opts)
       and reg.visible(reg.get(M._foreground)) then
       M.hide(M._foreground)
     elseif M._foreground and reg.get(M._foreground) then
-      M.focus(M._foreground)
+      M.jump(M._foreground)
     end
   end, { desc = 'Toggle last worker pane' })
 
@@ -182,6 +182,7 @@ function M.spawn(id, o)
     id = id, buf = buf, job = job,
     agent = head, cmd = cmd, cwd = cwd,
     task_file = o.task_file, op_overrides = o.op_overrides or {},
+    hidden = o.hidden or false,
   })
   if before then
     sessions.capture_kimi(cwd, before, function(session_id)
@@ -201,6 +202,7 @@ function M.spawn(id, o)
       if e and reg.alive(e) then M.prompt(id, prompt) end
     end, 1500)
   end
+  zones.arrange()
   return { buf = buf, job = job }
 end
 
@@ -213,16 +215,29 @@ end
 function M.focus(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end
-  layout.show(e.buf)
+  local ok, zerr = zones.focus(id)
+  if not ok then return err(zerr) end
   M._foreground = id
   require('agent-cockpit.persist').save()
   return true
 end
 
+function M.jump(id)
+  local e, eerr = live_entry(id)
+  if not e then return err(eerr) end
+  zones.jump(id)
+  return true
+end
+
+function M.layout(mode)
+  if mode then zones.set_mode(mode) end
+  return { mode = zones.mode, focused = zones._focused }
+end
+
 function M.hide(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end
-  layout.hide(e.buf)
+  zones.hide(id)
   require('agent-cockpit.persist').save()
   return true
 end
@@ -240,12 +255,13 @@ function M.kill(id)
   pcall(vim.fn.jobstop, e.job)
   reg.remove(id)
   if M._foreground == id then M._foreground = nil end
+  zones.arrange()
   require('agent-cockpit.persist').save()
   return true
 end
 
 function M.edit(path)
-  layout.open_main(path)
+  zones.open_main(path)
   require('agent-cockpit.persist').save()
   return true
 end

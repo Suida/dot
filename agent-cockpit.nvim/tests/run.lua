@@ -86,7 +86,9 @@ section('core api')
 local agent = require('agent-cockpit')
 agent.setup({ main_agent = false })  -- keymaps only; no auto-spawn in tests
 
-local res, err = agent.spawn('t1', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa' })
+-- hidden: a short-lived job must never be shown in a window before it exits
+-- (Windows headless segfault gotcha); hidden workers skip zones.arrange display.
+local res, err = agent.spawn('t1', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa', hidden = true })
 T.ok(res and res.buf and res.job, 'spawn returns buf/job')
 T.ok(vim.api.nvim_buf_is_valid(res.buf), 'worker buffer valid')
 T.eq(vim.api.nvim_buf_get_name(res.buf):match('agent://worker/t1$') ~= nil, true, 'buffer named agent://worker/t1')
@@ -152,7 +154,7 @@ T.ok(errbad:match('available') ~= nil and errbad:match('interrupt') ~= nil,
 
 -- dead job rejection includes state
 agent2.kill('s2') -- kill removes entry; use a killed job differently:
-local sp3 = agent2.spawn('s3', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa' })
+local sp3 = agent2.spawn('s3', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa', hidden = true })
 vim.fn.jobwait({ sp3.job }, 2000) -- let it exit
 vim.fn.mkdir('.agent/status', 'p')
 local f3 = io.open('.agent/status/s3.md', 'w'); f3:write('state: working\nmid-task\n'); f3:close()
@@ -316,6 +318,87 @@ T.ok(mw and require('agent-cockpit.registry').alive(mw), 'main agent alive')
 T.eq(agent4._foreground, 'main', 'main agent foregrounded')
 agent4.kill('main')
 T.eq(require('agent-cockpit.registry').get('main'), nil, 'main agent killed')
+
+section('zones')
+local zones = require('agent-cockpit.zones')
+local regz = require('agent-cockpit.registry')
+
+local function fake_worker(id)
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_name(buf, 'agent://worker/' .. id)
+  regz.add(id, { id = id, buf = buf, job = -1, agent = 'cat', cmd = 'cat',
+                 cwd = vim.fn.getcwd(), op_overrides = {} })
+end
+local function agent_win_ids()
+  local ids = {}
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local name = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win))
+    local id = name:match('agent://worker/(.+)$')
+    if id then ids[#ids + 1] = id end
+  end
+  table.sort(ids)
+  return ids
+end
+local function cleanup_workers(...)
+  for _, id in ipairs({ ... }) do
+    local e = regz.get(id)
+    if e then
+      if vim.api.nvim_buf_is_valid(e.buf) then
+        pcall(vim.api.nvim_buf_delete, e.buf, { force = true })
+      end
+      regz.remove(id)
+    end
+  end
+end
+
+-- Mode A, team of 2 (<=3): main 50% + two stacked rows
+fake_worker('main'); fake_worker('coder'); fake_worker('reviewer')
+zones.mode = 'A'
+zones.arrange()
+T.eq(agent_win_ids(), { 'coder', 'main', 'reviewer' }, 'mode A shows all members')
+local main_win
+for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+  if vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win)):match('agent://worker/main$') then
+    main_win = win
+  end
+end
+T.ok(main_win ~= nil, 'main window exists')
+-- main holds ~half the total width (+-2 cols for separators/rounding)
+T.eq(math.abs(vim.api.nvim_win_get_width(main_win) - math.floor(vim.o.columns / 2)) <= 2,
+  true, 'main is 50% width in mode A')
+
+-- Mode B: only main + focused, 50:50
+zones.focus('coder')
+T.eq(zones.mode, 'B', 'focus enters mode B')
+T.eq(agent_win_ids(), { 'coder', 'main' }, 'mode B shows main + focused only')
+
+-- back to A, hide one member
+zones.set_mode('A')
+zones.hide('reviewer')
+T.eq(agent_win_ids(), { 'coder', 'main' }, 'hidden member leaves mode A')
+T.eq(zones.is_visible('reviewer'), false, 'is_visible false for hidden')
+T.eq(regz.get('reviewer').hidden, true, 'registry entry marked hidden')
+
+-- grid: 4 team members -> 2x2 (main + 4 = 5 agent windows)
+fake_worker('w3'); fake_worker('w4')
+regz.get('reviewer').hidden = false
+zones.set_mode('A')
+zones.arrange()
+T.eq(agent_win_ids(), { 'coder', 'main', 'reviewer', 'w3', 'w4' }, 'grid shows all 5')
+local team_cols = {}
+for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+  local name = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win))
+  if name:match('agent://worker/') and not name:match('main$') then
+    team_cols[vim.api.nvim_win_get_position(win)[2]] = true
+  end
+end
+local ncols = 0
+for _ in pairs(team_cols) do ncols = ncols + 1 end
+T.eq(ncols, 2, 'grid with 4 members has 2 team columns')
+
+cleanup_workers('main', 'coder', 'reviewer', 'w3', 'w4')
+zones.mode = 'A'; zones._focused = nil
+zones.arrange()
 
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end

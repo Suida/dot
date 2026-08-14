@@ -10,14 +10,19 @@ local function path() return root() .. '/.agent/session.json' end
 function M.save()
   local agent = require('agent-cockpit')
   local reg = require('agent-cockpit.registry')
-  local layout = require('agent-cockpit.layout')
+  -- The "main file" is the first ordinary file buffer in a non-agent,
+  -- non-snacks window (the review area or a plain editing window).
   local main_file
-  local win = layout.main_win()
-  if win and vim.api.nvim_win_is_valid(win) then
-    local buf = vim.api.nvim_win_get_buf(win)
-    if vim.bo[buf].buftype == '' then
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.api.nvim_win_get_config(win).zindex == nil then
+      local buf = vim.api.nvim_win_get_buf(win)
       local name = vim.api.nvim_buf_get_name(buf)
-      if name ~= '' then main_file = name end
+      if vim.bo[buf].buftype == '' and name ~= ''
+        and not name:match('agent://worker/')
+        and not vim.bo[buf].filetype:match('^snacks_') then
+        main_file = name
+        break
+      end
     end
   end
   local data = {
