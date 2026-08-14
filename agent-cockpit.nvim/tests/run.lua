@@ -546,6 +546,46 @@ os.remove(team.roster_path(troot))
 T.eq(team.dump(troot, 'nope'), nil, 'dump without roster errors')
 T.eq(team.raise(proj2, 'missing-template'), nil, 'raise of missing template errors')
 
+section('dashboard')
+local dash = require('agent-cockpit.dashboard')
+fake_worker('main'); fake_worker('coder')
+reg.get('coder').role = 'coder'
+vim.fn.mkdir('.agent/status', 'p')
+local ds = io.open('.agent/status/coder.md', 'w')
+ds:write('state: blocked\nneed the API key\n'); ds:close()
+
+local b = dash.buf()
+T.ok(vim.api.nvim_buf_is_valid(b), 'dashboard buffer valid')
+local lines = vim.api.nvim_buf_get_lines(b, 0, -1, false)
+local joined = table.concat(lines, '\n')
+T.ok(joined:match('coder') ~= nil, 'dashboard lists member')
+T.ok(joined:match('blocked') ~= nil, 'dashboard shows state')
+T.ok(joined:match('need the API key') ~= nil, 'dashboard shows summary')
+
+-- open: review area shows the dashboard face
+zones.mode = 'A'
+zones.arrange()
+dash.open()
+T.eq(zones.review_state().face, 'dashboard', 'dashboard face in review area')
+T.eq(vim.api.nvim_win_get_buf(zones._review_win), b, 'review shows dashboard buffer')
+
+-- <CR> row mapping: line 1 = header, line 2 = rule, members start at line 3
+T.eq(dash._row_id(3), 'main', 'line 3 is first member')
+T.eq(dash._row_id(4), 'coder', 'line 4 is second member')
+
+-- transition scan: blocked -> done is detected
+dash._states['coder'] = 'blocked'
+ds = io.open('.agent/status/coder.md', 'w')
+ds:write('state: done\nshipped\n'); ds:close()
+dash._check(vim.fn.getcwd())
+T.eq(dash._states['coder'], 'done', 'transition scan updates state cache')
+
+dash.toggle() -- closes review (dashboard face was open)
+T.eq(zones.review_state().open, false, 'toggle closes dashboard')
+os.remove('.agent/status/coder.md')
+cleanup_workers('main', 'coder')
+zones.arrange()
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')

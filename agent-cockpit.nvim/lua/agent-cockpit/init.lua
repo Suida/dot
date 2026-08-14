@@ -33,6 +33,7 @@ function M.setup(opts)
   map('n', '<leader>r', function()
     require('agent-cockpit.zones').toggle_review()
   end, { desc = 'Toggle review area' })
+  map('n', '<leader>d', function() M.dashboard() end, { desc = 'Agent dashboard' })
   for i = 1, 9 do
     map({ 'n', 'i', 't' }, '<A-' .. i .. '>', function()
       local e = reg.by_index(i)
@@ -65,6 +66,8 @@ function M.setup(opts)
   })
 
   if not M._maybe_recover() then M._open_main_agent() end
+
+  require('agent-cockpit.dashboard').watch(M._root)
 end
 
 --- Spawn the main agent (worker id 'main') and foreground it, unless the
@@ -218,6 +221,7 @@ function M.spawn(id, o)
     end, 1500)
   end
   zones.arrange()
+  pcall(function() require('agent-cockpit.dashboard').render() end)
   return { buf = buf, job = job }
 end
 
@@ -267,6 +271,11 @@ function M.team_raise(name)
   return res
 end
 
+function M.dashboard()
+  require('agent-cockpit.dashboard').toggle()
+  return true
+end
+
 function M.hide(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end
@@ -289,6 +298,7 @@ function M.kill(id)
   reg.remove(id)
   if M._foreground == id then M._foreground = nil end
   zones.arrange()
+  pcall(function() require('agent-cockpit.dashboard').render() end)
   require('agent-cockpit.persist').save()
   return true
 end
@@ -375,6 +385,7 @@ local function describe(e)
   local state, summary = read_status(e.id)
   return {
     id = e.id, cmd = e.cmd, cwd = e.cwd, task_file = e.task_file,
+    role = e.role,
     alive = reg.alive(e), visible = reg.visible(e),
     state = state, summary = summary,
   }
