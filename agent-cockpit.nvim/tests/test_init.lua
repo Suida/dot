@@ -6,7 +6,7 @@ local tests = vim.fn.fnamemodify(src, ':h')           -- nvim-agent/tests
 local dir = vim.fn.fnamemodify(tests, ':h'):gsub('[\\/]$', '')  -- nvim-agent
 vim.opt.rtp:prepend(dir)
 -- With '-u NONE' the rtp lua loader (vim.loader) is not enabled by default,
--- so require('agent.*') would not search the runtimepath without this.
+-- so require('agent-cockpit.*') would not search the runtimepath without this.
 if vim.loader then vim.loader.enable() end
 -- Windows: when nvim is launched from Git Bash, SHELL leaks into 'shell' while
 -- 'shellcmdflag' stays at the cmd.exe default (/s /c). String-form termopen

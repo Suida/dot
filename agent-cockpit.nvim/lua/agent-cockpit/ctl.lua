@@ -1,4 +1,4 @@
-local agent = require('agent')
+local agent = require('agent-cockpit')
 
 local M = {}
 

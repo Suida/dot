@@ -1,6 +1,6 @@
-local reg = require('agent.registry')
-local presets = require('agent.presets')
-local layout = require('agent.layout')
+local reg = require('agent-cockpit.registry')
+local presets = require('agent-cockpit.presets')
+local layout = require('agent-cockpit.layout')
 
 local M = { _foreground = nil }
 
@@ -19,10 +19,11 @@ function M.setup(opts)
   }
   presets.user = opts.presets or {}
   M._root = vim.fn.getcwd()
+  require('agent-cockpit.socket').ensure(M._root)
 
   local map = vim.keymap.set
   map('n', '<leader>a', function()
-    local ok, picker = pcall(require, 'agent.picker')
+    local ok, picker = pcall(require, 'agent-cockpit.picker')
     if ok then picker.open() else vim.notify('agent picker unavailable', vim.log.levels.WARN) end
   end, { desc = 'Agent workers' })
   map('n', '<leader>E', function()
@@ -45,7 +46,7 @@ function M.setup(opts)
   end, { desc = 'Toggle last worker pane' })
 
   vim.api.nvim_create_autocmd('VimLeavePre', {
-    callback = function() require('agent.persist').mark_clean_exit() end,
+    callback = function() require('agent-cockpit.persist').mark_clean_exit() end,
   })
 
   -- Deliberately wiped worker buffers leave the registry, so crash recovery
@@ -56,7 +57,7 @@ function M.setup(opts)
       if not id or not reg.get(id) then return end
       reg.remove(id)
       if M._foreground == id then M._foreground = nil end
-      require('agent.persist').save()
+      require('agent-cockpit.persist').save()
     end,
   })
 
@@ -81,7 +82,7 @@ function M._open_main_agent()
     }, ' ')
     local res, serr = M.spawn('main', { cmd = cmd, prompt = prime })
     if not res then
-      vim.notify('nvim-agent: main agent failed to start: ' .. tostring(serr),
+      vim.notify('agent-cockpit: main agent failed to start: ' .. tostring(serr),
         vim.log.levels.WARN)
       return
     end
@@ -96,7 +97,7 @@ function M._crash_prompt(id, task_file)
 end
 
 function M._maybe_recover()
-  local persist = require('agent.persist')
+  local persist = require('agent-cockpit.persist')
   local m = persist.load()
   if not m or m.clean_exit then return nil end
   local mode = (M._config and M._config.auto_recover) or 'ask'
@@ -105,7 +106,7 @@ function M._maybe_recover()
   if mode == 'always' then go() return true end
   vim.schedule(function()
     vim.ui.select({ 'yes', 'no' }, {
-      prompt = 'nvim-agent: previous session crashed. Recover workers?',
+      prompt = 'agent-cockpit: previous session crashed. Recover workers?',
     }, function(choice)
       if choice == 'yes' then go() else M._open_main_agent() end
     end)
@@ -135,7 +136,7 @@ function M._recover(m)
         op_overrides = w.op_overrides })
     end
     if not res then
-      vim.notify(('nvim-agent: recovery failed for worker %s: %s')
+      vim.notify(('agent-cockpit: recovery failed for worker %s: %s')
         :format(w.id, tostring(serr)), vim.log.levels.WARN)
     end
     if res and w.visible then M.focus(w.id) end
@@ -162,7 +163,7 @@ function M.spawn(id, o)
 
   -- Snapshot kimi's session index BEFORE spawning so the worker's own
   -- session id can be captured afterwards (kimi creates it on first message).
-  local sessions = require('agent.sessions')
+  local sessions = require('agent-cockpit.sessions')
   local cwd = o.cwd or root()
   local before = head == 'kimi' and sessions.kimi_session_ids(cwd) or nil
 
@@ -187,10 +188,10 @@ function M.spawn(id, o)
       local e = reg.get(id)
       if not e then return end
       e.session_id = session_id
-      require('agent.persist').save()
+      require('agent-cockpit.persist').save()
     end)
   end
-  require('agent.persist').save()
+  require('agent-cockpit.persist').save()
   if prompt then
     -- Deliver the initial prompt through the terminal, not the command line:
     -- kimi rejects positional prompt args, and a deferred chansend works for
@@ -214,7 +215,7 @@ function M.focus(id)
   if not e then return err(eerr) end
   layout.show(e.buf)
   M._foreground = id
-  require('agent.persist').save()
+  require('agent-cockpit.persist').save()
   return true
 end
 
@@ -222,7 +223,7 @@ function M.hide(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end
   layout.hide(e.buf)
-  require('agent.persist').save()
+  require('agent-cockpit.persist').save()
   return true
 end
 
@@ -239,13 +240,13 @@ function M.kill(id)
   pcall(vim.fn.jobstop, e.job)
   reg.remove(id)
   if M._foreground == id then M._foreground = nil end
-  require('agent.persist').save()
+  require('agent-cockpit.persist').save()
   return true
 end
 
 function M.edit(path)
   layout.open_main(path)
-  require('agent.persist').save()
+  require('agent-cockpit.persist').save()
   return true
 end
 

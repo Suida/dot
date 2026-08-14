@@ -15,7 +15,7 @@ function T.ok(v, msg) T.eq(not not v, true, msg) end
 local function section(name) print('== ' .. name) end
 
 section('presets')
-local presets = require('agent.presets')
+local presets = require('agent-cockpit.presets')
 
 -- default fallback for unknown agent
 local p = presets.resolve('nonexistent-agent', '/nonexistent-root')
@@ -62,7 +62,7 @@ T.eq(presets.ops({ submit = 1, interrupt = 1, newline = 1, resume = 'x' }),
   { 'interrupt', 'newline', 'submit' }, 'ops sorted, resume excluded')
 
 section('registry')
-local reg = require('agent.registry')
+local reg = require('agent-cockpit.registry')
 local e1 = { id = 'w1', buf = 10, job = 5, agent = 'kimi', cmd = 'kimi',
              cwd = '/tmp', task_file = nil, op_overrides = {} }
 local e2 = { id = 'w2', buf = 11, job = 6, agent = 'codex', cmd = 'codex',
@@ -83,7 +83,7 @@ T.eq(#reg.list(), 1, 'list after remove')
 reg.remove('w2')
 
 section('core api')
-local agent = require('agent')
+local agent = require('agent-cockpit')
 agent.setup({ main_agent = false })  -- keymaps only; no auto-spawn in tests
 
 local res, err = agent.spawn('t1', { cmd = '"' .. vim.v.progpath .. '" --headless -u NONE +qa' })
@@ -105,9 +105,9 @@ T.ok(baderr:match('not found') ~= nil, 'PATH error message')
 vim.fn.jobwait({ res.job }, 2000)
 
 T.eq(agent.focus('t1'), true, 'focus ok')
-T.ok(require('agent.registry').visible(require('agent.registry').get('t1')), 'visible after focus')
+T.ok(require('agent-cockpit.registry').visible(require('agent-cockpit.registry').get('t1')), 'visible after focus')
 T.eq(agent.hide('t1'), true, 'hide ok')
-T.eq(require('agent.registry').visible(require('agent.registry').get('t1')), false, 'hidden after hide')
+T.eq(require('agent-cockpit.registry').visible(require('agent-cockpit.registry').get('t1')), false, 'hidden after hide')
 
 -- status file parsing
 vim.fn.mkdir('.agent/status', 'p')
@@ -122,11 +122,11 @@ T.eq(agent.status('nope'), nil, 'status of unknown id errors')
 os.remove('.agent/status/t1.md')
 
 T.eq(agent.kill('t1'), true, 'kill ok')
-T.eq(require('agent.registry').get('t1'), nil, 'unregistered after kill')
+T.eq(require('agent-cockpit.registry').get('t1'), nil, 'unregistered after kill')
 
 section('steering')
-local agent2 = require('agent')
-local reg2 = require('agent.registry')
+local agent2 = require('agent-cockpit')
+local reg2 = require('agent-cockpit.registry')
 
 -- long-lived cat job echoes what we send; we assert on job liveness + no errors
 local sp = agent2.spawn('s1', { cmd = 'cat' })
@@ -164,7 +164,7 @@ agent2.kill('s1')
 agent2.kill('s3')
 
 section('ctl dispatch')
-local ctl = require('agent.ctl')
+local ctl = require('agent-cockpit.ctl')
 local function call(...)
   local args = { ... }
   local lines = {}
@@ -207,8 +207,8 @@ call('kill', 'c1')
 call('kill', 'c2')
 
 section('persist + recovery')
-local agent3 = require('agent')
-local persist = require('agent.persist')
+local agent3 = require('agent-cockpit')
+local persist = require('agent-cockpit.persist')
 agent3._root = vim.fn.getcwd()
 
 agent3.spawn('r1', { cmd = 'cat' })
@@ -242,15 +242,15 @@ cf2:write(vim.json.encode({
 cf2:close()
 agent3._config.auto_recover = 'always'
 agent3._maybe_recover()
-local z = require('agent.registry').get('z1')
+local z = require('agent-cockpit.registry').get('z1')
 T.ok(z ~= nil, 'recovered worker registered')
-T.ok(require('agent.registry').alive(z), 'recovered worker alive')
+T.ok(require('agent-cockpit.registry').alive(z), 'recovered worker alive')
 T.eq(agent3._foreground, 'z1', 'foreground restored')
 agent3.kill('z1')
 
 -- recovery via resume template: preset with `resume` spawns the resume cmd.
 -- No shipped preset resumes into a harmless command, so inject a fake one.
-require('agent.presets').user = { fakecat = { resume = 'cat' } }
+require('agent-cockpit.presets').user = { fakecat = { resume = 'cat' } }
 local cf3 = io.open('.agent/session.json', 'w')
 cf3:write(vim.json.encode({
   version = 1, clean_exit = false,
@@ -260,17 +260,17 @@ cf3:write(vim.json.encode({
 cf3:close()
 agent3._config.auto_recover = 'always'
 agent3._maybe_recover()
-local z9 = require('agent.registry').get('z9')
+local z9 = require('agent-cockpit.registry').get('z9')
 T.ok(z9 ~= nil, 'resume-template worker registered')
-T.ok(require('agent.registry').alive(z9), 'resume-template worker alive (resume cmd spawned)')
+T.ok(require('agent-cockpit.registry').alive(z9), 'resume-template worker alive (resume cmd spawned)')
 agent3.kill('z9')
-require('agent.presets').user = {}
+require('agent-cockpit.presets').user = {}
 
 agent3.kill('r1')
 os.remove('.agent/session.json')
 
 section('sessions')
-local sessions = require('agent.sessions')
+local sessions = require('agent-cockpit.sessions')
 local idx = vim.fn.tempname()
 local idxf = io.open(idx, 'w')
 idxf:write(vim.json.encode({ sessionId = 's1', workDir = 'C:/Foo/Bar' }) .. '\n')
@@ -288,7 +288,7 @@ T.eq(got, 's2', 'capture finds session created after snapshot')
 os.remove(idx)
 
 -- recovery prefers session-targeted resume, keeping the worker's original args
-require('agent.presets').user = { fakecat = { resume = 'bogus-fallback', resume_suffix = '--session {session}' } }
+require('agent-cockpit.presets').user = { fakecat = { resume = 'bogus-fallback', resume_suffix = '--session {session}' } }
 local cf4 = io.open('.agent/session.json', 'w')
 cf4:write(vim.json.encode({
   version = 1, clean_exit = false,
@@ -298,24 +298,24 @@ cf4:write(vim.json.encode({
 cf4:close()
 agent3._config.auto_recover = 'always'
 agent3._maybe_recover()
-local z7 = require('agent.registry').get('z7')
+local z7 = require('agent-cockpit.registry').get('z7')
 T.ok(z7 ~= nil, 'session-resume worker registered')
 T.eq(z7 and z7.cmd, 'cat --session abc123', 'resume_suffix applied to original cmd')
-T.ok(z7 and require('agent.registry').alive(z7), 'session-resume worker alive')
+T.ok(z7 and require('agent-cockpit.registry').alive(z7), 'session-resume worker alive')
 agent3.kill('z7')
-require('agent.presets').user = {}
+require('agent-cockpit.presets').user = {}
 os.remove('.agent/session.json')
 
 section('main agent auto-open')
-local agent4 = require('agent')
+local agent4 = require('agent-cockpit')
 agent4.setup({ main_agent = 'cat' })
-vim.wait(500, function() return require('agent.registry').get('main') ~= nil end)
-local mw = require('agent.registry').get('main')
+vim.wait(500, function() return require('agent-cockpit.registry').get('main') ~= nil end)
+local mw = require('agent-cockpit.registry').get('main')
 T.ok(mw ~= nil, 'main agent spawned on setup')
-T.ok(mw and require('agent.registry').alive(mw), 'main agent alive')
+T.ok(mw and require('agent-cockpit.registry').alive(mw), 'main agent alive')
 T.eq(agent4._foreground, 'main', 'main agent foregrounded')
 agent4.kill('main')
-T.eq(require('agent.registry').get('main'), nil, 'main agent killed')
+T.eq(require('agent-cockpit.registry').get('main'), nil, 'main agent killed')
 
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end

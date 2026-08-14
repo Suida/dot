@@ -1,16 +1,16 @@
 local M = {}
 
 local function root()
-  local ok, agent = pcall(require, 'agent')
+  local ok, agent = pcall(require, 'agent-cockpit')
   return (ok and agent._root) or vim.fn.getcwd()
 end
 
 local function path() return root() .. '/.agent/session.json' end
 
 function M.save()
-  local agent = require('agent')
-  local reg = require('agent.registry')
-  local layout = require('agent.layout')
+  local agent = require('agent-cockpit')
+  local reg = require('agent-cockpit.registry')
+  local layout = require('agent-cockpit.layout')
   local main_file
   local win = layout.main_win()
   if win and vim.api.nvim_win_is_valid(win) then
@@ -30,13 +30,13 @@ function M.save()
   local tmp = path() .. '.tmp'
   local f = io.open(tmp, 'w')
   if not f then
-    vim.notify('nvim-agent: failed to write ' .. tmp, vim.log.levels.WARN)
+    vim.notify('agent-cockpit: failed to write ' .. tmp, vim.log.levels.WARN)
     return
   end
   f:write(vim.json.encode(data))
   f:close()
   if not vim.uv.fs_rename(tmp, path()) then
-    vim.notify('nvim-agent: failed to rename ' .. tmp .. ' -> ' .. path(), vim.log.levels.WARN)
+    vim.notify('agent-cockpit: failed to rename ' .. tmp .. ' -> ' .. path(), vim.log.levels.WARN)
   end
 end
 
@@ -47,7 +47,7 @@ function M.load()
   f:close()
   local ok, data = pcall(vim.json.decode, body)
   if not ok or type(data) ~= 'table' then
-    vim.notify('nvim-agent: corrupt session.json, starting cold', vim.log.levels.WARN)
+    vim.notify('agent-cockpit: corrupt session.json, starting cold', vim.log.levels.WARN)
     return nil
   end
   return data
@@ -60,13 +60,13 @@ function M.mark_clean_exit()
   local tmp = path() .. '.tmp'
   local f = io.open(tmp, 'w')
   if not f then
-    vim.notify('nvim-agent: failed to write ' .. tmp, vim.log.levels.WARN)
+    vim.notify('agent-cockpit: failed to write ' .. tmp, vim.log.levels.WARN)
     return
   end
   f:write(vim.json.encode(data))
   f:close()
   if not vim.uv.fs_rename(tmp, path()) then
-    vim.notify('nvim-agent: failed to rename ' .. tmp .. ' -> ' .. path(), vim.log.levels.WARN)
+    vim.notify('agent-cockpit: failed to rename ' .. tmp .. ' -> ' .. path(), vim.log.levels.WARN)
   end
 end
 

@@ -23,7 +23,7 @@ if [ $# -lt 1 ]; then
 fi
 
 SOCK=$(find_sock) || {
-  echo "no nvim-agent instance found for this project (looked for .agent/nvim.sock upward from $PWD)" >&2
+  echo "no agent-cockpit instance found for this project (looked for .agent/nvim.sock upward from $PWD)" >&2
   exit 1
 }
 
@@ -35,7 +35,7 @@ PAYLOAD=$(printf '%s' "$INNER" | base64 | tr -d '\n')
 # --headless on the client: without it the nvim client starts a TUI and its
 # terminal probe sequences pollute stdout instead of the expression result.
 OUT=$(nvim --headless --server "$SOCK" --remote-expr \
-  "luaeval(\"require('agent.ctl').run(vim.base64.decode('$PAYLOAD'))\")") || {
+  "luaeval(\"require('agent-cockpit.ctl').run(vim.base64.decode('$PAYLOAD'))\")") || {
   echo "agent-ctl: failed to reach nvim at $SOCK" >&2; exit 1
 }
 

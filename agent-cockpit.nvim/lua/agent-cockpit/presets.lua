@@ -16,12 +16,12 @@ local function load_project(root)
   if vim.fn.filereadable(path) ~= 1 then return {} end
   local chunk, err = loadfile(path)
   if not chunk then
-    vim.notify('nvim-agent: .agent/presets.lua: ' .. err, vim.log.levels.WARN)
+    vim.notify('agent-cockpit: .agent/presets.lua: ' .. err, vim.log.levels.WARN)
     return {}
   end
   local ok, tbl = pcall(chunk)
   if not ok or type(tbl) ~= 'table' then
-    vim.notify('nvim-agent: .agent/presets.lua must return a table', vim.log.levels.WARN)
+    vim.notify('agent-cockpit: .agent/presets.lua must return a table', vim.log.levels.WARN)
     return {}
   end
   return tbl

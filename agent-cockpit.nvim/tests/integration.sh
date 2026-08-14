@@ -16,13 +16,13 @@ check() { # check <desc> <expected-substring> <actual>
 # the worker. Boot via a hidden console window there; plain background on Unix.
 NVIM_PID=""
 if [[ "${OSTYPE:-}" == msys || "${OSTYPE:-}" == cygwin ]]; then
-  INIT_WIN=$(cygpath -w "$REPO/nvim-agent/tests/iterm_init.lua")
+  INIT_WIN=$(cygpath -w "$REPO/agent-cockpit.nvim/tests/iterm_init.lua")
   NVIM_PID=$(powershell.exe -NoProfile -Command \
     "\$env:NVIM_APPNAME='nvim-agent'; (Start-Process -PassThru -WindowStyle Hidden -FilePath (Get-Command nvim.exe).Source -ArgumentList '--headless','-u','$INIT_WIN').Id" \
     | tr -d '\r')
   stop_nvim() { taskkill //PID "$NVIM_PID" //F //T >/dev/null 2>&1 || true; }
 else
-  NVIM_APPNAME=nvim-agent nvim --headless -u "$REPO/nvim-agent/tests/iterm_init.lua" &
+  NVIM_APPNAME=nvim-agent nvim --headless -u "$REPO/agent-cockpit.nvim/tests/iterm_init.lua" &
   NVIM_PID=$!
   stop_nvim() { kill "$NVIM_PID" 2>/dev/null || true; }
 fi
@@ -35,9 +35,9 @@ cleanup() {
 trap cleanup EXIT
 
 for _ in $(seq 1 50); do [ -e .agent/nvim.sock ] && break; sleep 0.1; done
-CTL="$REPO/nvim-agent/bin/agent-ctl"
+CTL="$REPO/agent-cockpit.nvim/bin/agent-ctl"
 
-OUT=$("$CTL" spawn w1 --cmd "bash $REPO/nvim-agent/tests/fake-agent.sh $WORK/.agent/status/w1.md")
+OUT=$("$CTL" spawn w1 --cmd "bash $REPO/agent-cockpit.nvim/tests/fake-agent.sh $WORK/.agent/status/w1.md")
 check "spawn" '"ok":true' "$OUT"
 sleep 0.5 # let the fake agent write its initial status file
 
@@ -77,10 +77,10 @@ OUT=$("$CTL" list)
 check "empty after kill" '"data":[]' "$OUT"
 
 OUT=$(cd / && "$CTL" list 2>&1 || true)
-check "no socket error" 'no nvim-agent instance found' "$OUT"
+check "no socket error" 'no agent-cockpit instance found' "$OUT"
 
 # --- crash recovery ---
-OUT=$("$CTL" spawn r1 --cmd "bash $REPO/nvim-agent/tests/fake-agent.sh $WORK/.agent/status/r1.md")
+OUT=$("$CTL" spawn r1 --cmd "bash $REPO/agent-cockpit.nvim/tests/fake-agent.sh $WORK/.agent/status/r1.md")
 check "spawn r1" '"ok":true' "$OUT"
 "$CTL" focus r1 >/dev/null
 
@@ -96,12 +96,12 @@ fi
 # Reboot with the recovery init (auto_recover=always). Same hidden-console
 # Start-Process path on Windows as the initial boot.
 if [[ "${OSTYPE:-}" == msys || "${OSTYPE:-}" == cygwin ]]; then
-  INIT_WIN=$(cygpath -w "$REPO/nvim-agent/tests/iterm_init_recover.lua")
+  INIT_WIN=$(cygpath -w "$REPO/agent-cockpit.nvim/tests/iterm_init_recover.lua")
   NVIM_PID=$(powershell.exe -NoProfile -Command \
     "\$env:NVIM_APPNAME='nvim-agent'; (Start-Process -PassThru -WindowStyle Hidden -FilePath (Get-Command nvim.exe).Source -ArgumentList '--headless','-u','$INIT_WIN').Id" \
     | tr -d '\r')
 else
-  NVIM_APPNAME=nvim-agent nvim --headless -u "$REPO/nvim-agent/tests/iterm_init_recover.lua" &
+  NVIM_APPNAME=nvim-agent nvim --headless -u "$REPO/agent-cockpit.nvim/tests/iterm_init_recover.lua" &
   NVIM_PID=$!
 fi
 # Wait for the new server: on Windows .agent/nvim.sock is a stale pointer file

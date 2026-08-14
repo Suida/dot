@@ -1,7 +1,7 @@
 local M = {}
 
 function M.open()
-  local agent = require('agent')
+  local agent = require('agent-cockpit')
   local Snacks = require('snacks')
   local items = {}
   for _, w in ipairs(agent.list()) do
@@ -23,7 +23,7 @@ function M.open()
     -- the worker's status file, falling back to its registry fields.
     preview = function(ctx)
       local w = ctx.item.worker
-      local root = require('agent')._root or vim.fn.getcwd()
+      local root = require('agent-cockpit')._root or vim.fn.getcwd()
       local status_path = root .. '/.agent/status/' .. w.id .. '.md'
       local lines = vim.fn.filereadable(status_path) == 1
         and vim.fn.readfile(status_path) or {}
