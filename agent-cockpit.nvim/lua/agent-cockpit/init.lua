@@ -285,6 +285,24 @@ function M.dashboard()
   return true
 end
 
+function M.diff(id)
+  local e, eerr = live_entry(id)
+  if not e then return err(eerr) end
+  local lines = vim.fn.systemlist({ 'git', '-C', e.cwd, 'diff', 'HEAD' })
+  if vim.v.shell_error ~= 0 then
+    return err('git diff failed: ' .. table.concat(lines, '\n'))
+  end
+  if #lines == 0 or (#lines == 1 and lines[1] == '') then
+    lines = { '(no uncommitted changes in ' .. e.cwd .. ')' }
+  end
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.bo[buf].filetype = 'diff'
+  vim.bo[buf].bufhidden = 'wipe'
+  zones.show_in_review(buf, 'file')
+  return true
+end
+
 function M.hide(id)
   local e, eerr = live_entry(id)
   if not e then return err(eerr) end

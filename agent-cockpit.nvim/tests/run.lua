@@ -614,6 +614,32 @@ T.eq(death_note and death_note.lvl, vim.log.levels.WARN, 'death is a warning')
 agent.kill('d9')
 zones.arrange()
 
+section('diff')
+-- scratch git repo with an uncommitted change
+local grepo = vim.fn.tempname()
+vim.fn.mkdir(grepo, 'p')
+vim.fn.system({ 'git', '-C', grepo, 'init', '-q' })
+vim.fn.system({ 'git', '-C', grepo, 'config', 'user.email', 't@t' })
+vim.fn.system({ 'git', '-C', grepo, 'config', 'user.name', 't' })
+local gf = io.open(grepo .. '/a.txt', 'w'); gf:write('one\n'); gf:close()
+vim.fn.system({ 'git', '-C', grepo, 'add', 'a.txt' })
+vim.fn.system({ 'git', '-C', grepo, 'commit', '-qm', 'init' })
+gf = io.open(grepo .. '/a.txt', 'w'); gf:write('one\ntwo\n'); gf:close()
+
+fake_worker('coder9')
+reg.get('coder9').cwd = grepo
+local dok, derr = agent.diff('coder9')
+T.eq(dok, true, 'diff ok: ' .. tostring(derr))
+T.eq(zones.review_state().open, true, 'review area open for diff')
+local dcontent = table.concat(
+  vim.api.nvim_buf_get_lines(vim.api.nvim_win_get_buf(zones._review_win), 0, -1, false), '\n')
+T.ok(dcontent:match('%+two') ~= nil, 'diff shows the added line')
+T.eq(vim.bo[vim.api.nvim_win_get_buf(zones._review_win)].filetype, 'diff', 'diff filetype')
+T.eq(agent.diff('nobody'), nil, 'diff of unknown worker errors')
+zones.close_review()
+cleanup_workers('coder9')
+zones.arrange()
+
 print(('\n%d passed, %d failed'):format(T.pass, T.fail))
 if T.fail > 0 then vim.cmd('cquit 1') end
 vim.cmd('qa!')

@@ -63,6 +63,7 @@ M.commands = {
   end,
   ['send-keys'] = function(pos) return M._simple(agent.send_keys, pos[1], pos[2]) end,
   edit = function(pos) return M._simple(agent.edit, pos[1]) end,
+  diff = function(pos) return M._simple(agent.diff, pos[1]) end,
   list = function() return ok(agent.list()) end,
   status = function(pos)
     local res, e = agent.status(pos[1])
