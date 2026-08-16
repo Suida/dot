@@ -374,6 +374,8 @@ T.eq(agent_win_ids(), { 'coder', 'main' }, 'mode B shows main + focused only')
 
 -- back to A, hide one member
 zones.set_mode('A')
+zones.focus('main')
+T.eq(zones.mode, 'A', 'focusing main keeps mode A')
 zones.hide('reviewer')
 T.eq(agent_win_ids(), { 'coder', 'main' }, 'hidden member leaves mode A')
 T.eq(zones.is_visible('reviewer'), false, 'is_visible false for hidden')

@@ -207,8 +207,8 @@ function M.focus(id)
   if not e then return nil, 'unknown worker: ' .. tostring(id) end
   e.hidden = false
   if id == 'main' then
-    M.mode = 'B'
-    M._focused = nil
+    -- Focusing the main agent never changes the layout mode: it is always
+    -- on screen in both modes. (Entering Mode B is for focusing a member.)
     M.arrange()
     for _, w in ipairs(agent_wins()) do
       if w.id == 'main' then vim.api.nvim_set_current_win(w.win) end
