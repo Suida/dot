@@ -290,7 +290,10 @@ function M.jump(id)
 end
 
 function M.layout(mode)
-  if mode then zones.set_mode(mode) end
+  if mode then
+    zones.set_mode(mode)
+    require('agent-cockpit.persist').save()
+  end
   return { mode = zones.mode, focused = zones._focused }
 end
 
@@ -314,6 +317,7 @@ end
 
 function M.dashboard()
   require('agent-cockpit.dashboard').toggle()
+  require('agent-cockpit.persist').save()
   return true
 end
 
