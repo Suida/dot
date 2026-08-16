@@ -15,7 +15,9 @@ function M.setup(opts)
   M._config = {
     auto_recover = opts.auto_recover or 'ask',
     -- Agent CLI to run as the cockpit's main agent on launch; false disables.
-    main_agent = opts.main_agent == nil and 'kimi' or opts.main_agent,
+    -- The orchestrator needs autonomy flags: without them it stalls on
+    -- per-command approval prompts while driving agent-ctl.
+    main_agent = opts.main_agent == nil and 'kimi --yolo' or opts.main_agent,
   }
   presets.user = opts.presets or {}
   M._root = vim.fn.getcwd()

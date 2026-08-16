@@ -42,7 +42,7 @@ lazy.nvim, from a local checkout:
 
 | opt | default | meaning |
 |---|---|---|
-| `main_agent` | `'kimi'` | CLI to auto-spawn as the main agent; `false` disables |
+| `main_agent` | `'kimi --yolo'` | CLI to auto-spawn as the main agent; `false` disables. Give the orchestrator autonomy flags — without them it stalls on approval prompts |
 | `auto_recover` | `'ask'` | crash recovery: `'ask' \| 'always' \| 'never'` |
 | `presets` | `{}` | user-layer keybinding presets (see below) |
 
