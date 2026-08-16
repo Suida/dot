@@ -136,10 +136,10 @@ function M._recover(m)
       -- e.g. --auto) instead of a cwd-scoped "most recent" resume.
       res, serr = M.spawn(w.id, {
         cmd = w.cmd .. ' ' .. preset.resume_suffix:gsub('{session}', w.session_id),
-        cwd = w.cwd, op_overrides = w.op_overrides })
+        cwd = w.cwd, op_overrides = w.op_overrides, skip_session_capture = true })
     elseif preset.resume then
       res, serr = M.spawn(w.id, { cmd = preset.resume, cwd = w.cwd,
-        op_overrides = w.op_overrides })
+        op_overrides = w.op_overrides, skip_session_capture = true })
     else
       -- No resume template: respawn the original cmd. The crash-note prompt
       -- is only appended when the worker had a task file; a bare cmd like
@@ -189,9 +189,12 @@ function M.spawn(id, o)
 
   -- Snapshot kimi's session index BEFORE spawning so the worker's own
   -- session id can be captured afterwards (kimi creates it on first message).
+  -- Skipped on resume spawns: resuming creates no new index record, and a
+  -- live capture could misclaim another worker's fresh session.
   local sessions = require('agent-cockpit.sessions')
   local cwd = o.cwd or root()
-  local before = head == 'kimi' and sessions.kimi_session_ids(cwd) or nil
+  local before = head == 'kimi' and not o.skip_session_capture
+    and sessions.kimi_session_ids(cwd) or nil
 
   local buf = vim.api.nvim_create_buf(false, true)
   local job
@@ -220,12 +223,21 @@ function M.spawn(id, o)
     hidden = o.hidden or false,
   })
   if before then
+    -- A unique substring of the initial prompt disambiguates concurrent
+    -- same-cwd kimi spawns (the wire log's first user message is the prompt).
+    local match
+    if o.task_file then
+      match = ('.agent/status/%s.md'):format(id)
+    elseif prompt then
+      match = prompt:match('[^\n]+'):sub(1, 40)
+    end
+    M._claimed_sessions = M._claimed_sessions or {}
     sessions.capture_kimi(cwd, before, function(session_id)
       local e = reg.get(id)
       if not e then return end
       e.session_id = session_id
       require('agent-cockpit.persist').save()
-    end)
+    end, { match = match, claimed = M._claimed_sessions })
   end
   require('agent-cockpit.persist').save()
   if prompt then

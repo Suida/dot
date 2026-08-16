@@ -297,13 +297,45 @@ T.ok(sessions.kimi_session_ids('c:\\foo\\bar', idx)['s1'], 'index parsed, slash/
 T.eq(sessions.kimi_session_ids('/elsewhere', idx)['s1'], nil, 'other cwd excluded')
 local before = sessions.kimi_session_ids('c:\\foo\\bar', idx)
 local got
-sessions.capture_kimi('c:\\foo\\bar', before, function(id) got = id end, idx, 5)
+sessions.capture_kimi('c:\\foo\\bar', before, function(id) got = id end,
+  { index_path = idx, attempts = 5 })
 idxf = io.open(idx, 'a')
 idxf:write(vim.json.encode({ sessionId = 's2', workDir = 'C:/foo/bar' }) .. '\n')
 idxf:close()
 vim.wait(3000, function() return got ~= nil end, 100)
 T.eq(got, 's2', 'capture finds session created after snapshot')
 os.remove(idx)
+
+-- concurrent same-cwd captures claim by wire-log content, not first-new-wins
+local sroot = vim.fn.tempname()
+local function fake_session(sid, marker)
+  local dir = sroot .. '/' .. sid .. '/agents/main'
+  vim.fn.mkdir(dir, 'p')
+  local wf = io.open(dir .. '/wire.jsonl', 'w')
+  wf:write('{"role":"user","content":"read .agent/status/' .. marker .. '.md"}\n')
+  wf:close()
+  return sroot .. '/' .. sid
+end
+local idx2 = vim.fn.tempname()
+local idx2f = io.open(idx2, 'w')
+idx2f:write(vim.json.encode({ sessionId = 'sa', workDir = 'C:/Foo/Bar',
+  sessionDir = fake_session('sa', 'aaa') }) .. '\n')
+idx2f:write(vim.json.encode({ sessionId = 'sb', workDir = 'C:/Foo/Bar',
+  sessionDir = fake_session('sb', 'bbb') }) .. '\n')
+idx2f:close()
+-- both workers snapshotted before either session existed
+local before2 = {}
+local claimed = {}
+local got_a, got_b
+sessions.capture_kimi('C:/Foo/Bar', before2, function(id) got_a = id end,
+  { index_path = idx2, attempts = 3, match = 'status/aaa.md', claimed = claimed })
+sessions.capture_kimi('C:/Foo/Bar', before2, function(id) got_b = id end,
+  { index_path = idx2, attempts = 3, match = 'status/bbb.md', claimed = claimed })
+vim.wait(1000, function() return got_a ~= nil and got_b ~= nil end, 100)
+T.eq(got_a, 'sa', 'capture A claims its own session by content')
+T.eq(got_b, 'sb', 'capture B claims its own session by content')
+os.remove(idx2)
+vim.fn.delete(sroot, 'rf')
 
 -- recovery prefers session-targeted resume, keeping the worker's original args
 require('agent-cockpit.presets').user = { fakecat = { resume = 'bogus-fallback', resume_suffix = '--session {session}' } }
