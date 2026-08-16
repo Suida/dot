@@ -1,5 +1,8 @@
 -- Plugin specs for lazy.nvim. snacks.nvim is the only dependency.
-local src = debug.getinfo(1, 'S').source:sub(2):gsub('\\', '/')
+-- resolve(): this profile is usually loaded through the %LOCALAPPDATA%\nvim-agent
+-- junction; the realpath points into the actual repo, whose root also holds
+-- the agent-cockpit.nvim plugin dir.
+local src = vim.fn.resolve(debug.getinfo(1, 'S').source:sub(2)):gsub('\\', '/')
 local repo = vim.fn.fnamemodify(src, ':h:h:h') -- <repo>/nvim-agent/lua/plugins.lua -> <repo>
 return {
   {
