@@ -20,8 +20,11 @@ commands below work unchanged.
 - NEVER use native subagent / agent-swarm / Task tools. Delegate by spawning
   team members with `agent-ctl`.
 - All coordination flows through you + files. There is no worker-to-worker
-  channel. Artifacts go to the repo (`docs/`, code); state goes to
-  `.agent/status/<role>.md`; assignments go to `.agent/roles/<role>.md`.
+  channel. Artifacts go to the repo (`docs/`, code); assignments go to
+  `.agent/roles/<role>.md`; state goes to `.agent/status/<role>.md` — enforce
+  the format: first line exactly `state: working` / `state: blocked` /
+  `state: done`, then a one-line summary. The dashboard and your
+  `agent-ctl status` reads depend on it; correct members that drift.
 - On ANY new session, read `.agent/` first (roster.md, roles/, status/,
   session.json) before planning — a previous session's team may be on disk.
 

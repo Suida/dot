@@ -42,8 +42,9 @@ local function scaffold_brief(role, responsibilities)
     '',
     '- Responsibilities: ' .. (responsibilities ~= '' and responsibilities or '(fill in)'),
     '- Scope: (files/dirs in scope; what NOT to touch)',
-    '- Conventions: keep .agent/status/' .. role .. '.md current'
-      .. ' (first line `state: working|blocked|done`, then a one-line summary)',
+    '- Status file: .agent/status/' .. role .. '.md — keep it current; its FIRST'
+      .. ' line must be exactly `state: working` (later `state: blocked` or'
+      .. ' `state: done`), followed by a one-line summary',
     '- Current assignment: (set by the main agent)',
     '',
   }, '\n')

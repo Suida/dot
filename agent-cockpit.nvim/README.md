@@ -45,6 +45,7 @@ lazy.nvim, from a local checkout:
 | `main_agent` | `'kimi --yolo'` | CLI to auto-spawn as the main agent; `false` disables. Give the orchestrator autonomy flags — without them it stalls on approval prompts |
 | `auto_recover` | `'ask'` | crash recovery: `'ask' \| 'always' \| 'never'` |
 | `presets` | `{}` | user-layer keybinding presets (see below) |
+| `prompt_delay` | `5000` | ms before a spawned member's initial prompt is typed (must cover slow TUI boots); submit is retried automatically |
 
 The ready-made **profile** in `../nvim-agent/` launches a standalone cockpit
 config: `NVIM_APPNAME=nvim-agent nvim`.

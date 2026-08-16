@@ -171,8 +171,9 @@ function M._recover(m)
 end
 
 local function default_prompt(id, task_file)
-  return ('Read %s and follow it. Keep the status file .agent/status/%s.md current.')
-    :format(task_file, id)
+  return ('Read %s and follow it. Keep .agent/status/%s.md current: its first'
+    .. ' line must be exactly `state: working` (later `state: blocked` or'
+    .. ' `state: done`), followed by a one-line summary.'):format(task_file, id)
 end
 
 function M.spawn(id, o)
@@ -230,11 +231,23 @@ function M.spawn(id, o)
   if prompt then
     -- Deliver the initial prompt through the terminal, not the command line:
     -- kimi rejects positional prompt args, and a deferred chansend works for
-    -- every CLI (the pty queues input until the program reads it).
+    -- every CLI (the pty queues input until the program reads it). The delay
+    -- must cover slow TUI boots (kimi takes several seconds).
+    local delay = (M._config and M._config.prompt_delay) or 5000
     vim.defer_fn(function()
       local e = reg.get(id)
-      if e and reg.alive(e) then M.prompt(id, prompt) end
-    end, 1500)
+      if not (e and reg.alive(e)) then return end
+      M.send(id, prompt)
+      -- Submit separately, and retry: agent TUIs treat a CR arriving in the
+      -- same input burst as a newline, and a CR sent while the TUI is still
+      -- booting is swallowed entirely. Empty submits are harmless no-ops.
+      for _, d in ipairs({ 300, 1500, 3000 }) do
+        vim.defer_fn(function()
+          local e2 = reg.get(id)
+          if e2 and reg.alive(e2) then M.op(id, 'submit') end
+        end, d)
+      end
+    end, delay)
   end
   zones.arrange()
   pcall(function() require('agent-cockpit.dashboard').render() end)
@@ -374,12 +387,24 @@ local function read_status(id)
   local path = root() .. '/.agent/status/' .. id .. '.md'
   local f = io.open(path, 'r')
   if not f then return 'unknown', '' end
-  local first = f:read('l') or ''
-  local rest = f:read('a') or ''
+  local body = f:read('a') or ''
   f:close()
-  local state = first:match('^state:%s*(%S+)')
-  if not state then return 'unknown', (first .. '\n' .. rest) end
-  return state, vim.trim(rest)
+  -- Scan the first 10 lines for a state line: optional bullet, optional
+  -- backticks, case-insensitive `state: <token>`. Markdown headers are
+  -- skipped: `# Status: dev` is a title, not a state.
+  local ln = 0
+  for line in (body .. '\n'):gmatch('([^\n]*)\n') do
+    ln = ln + 1
+    if ln > 10 then break end
+    if not line:match('^%s*#') then
+      local token = line:match("^%s*[-*]?%s*`?[Ss][Tt][Aa][Tt][Ee]`?%s*:%s*`?(%w[%w_-]*)")
+      if token then
+        local summary = vim.trim((body:gsub(vim.pesc(line), '', 1)))
+        return token:lower(), summary
+      end
+    end
+  end
+  return 'unknown', vim.trim(body)
 end
 
 local function live_job(id)

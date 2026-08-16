@@ -123,6 +123,22 @@ T.eq(agent.status('t1').alive, false, 'dead job reported (nvim +qa exited)')
 T.eq(agent.status('nope'), nil, 'status of unknown id errors')
 os.remove('.agent/status/t1.md')
 
+-- tolerant status parsing: case, bullets, backticks, header lines
+local function write_status(body)
+  local f = io.open('.agent/status/t1.md', 'w'); f:write(body); f:close()
+end
+write_status('State: waiting\non the reviewer\n')
+T.eq(agent.status('t1').state, 'waiting', 'capitalized state accepted')
+write_status('- State: in-review\n- looking at calc.py\n')
+T.eq(agent.status('t1').state, 'in-review', 'bulleted state accepted')
+write_status('# Status: dev\n\n## Assignment\nstate: done\nshipped\n')
+T.eq(agent.status('t1').state, 'done', 'header skipped, later state line found')
+write_status('`state`: `done`\nwrapped in backticks\n')
+T.eq(agent.status('t1').state, 'done', 'backticked state accepted')
+write_status('# no state here\njust prose\n')
+T.eq(agent.status('t1').state, 'unknown', 'missing state is unknown')
+os.remove('.agent/status/t1.md')
+
 T.eq(agent.kill('t1'), true, 'kill ok')
 T.eq(require('agent-cockpit.registry').get('t1'), nil, 'unregistered after kill')
 
