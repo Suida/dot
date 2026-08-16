@@ -3,6 +3,21 @@ local utils = require 'user.utils'
 -- Set the locale to English to avoid potential encoding issues
 os.setlocale("English")
 
+-- Fix broken 'shell' combo on Windows when sshd exports SHELL=<pwsh path>:
+-- nvim adopts it as 'shell' but keeps cmd-style shellcmdflag (/s /c), so every
+-- shell-with-command call becomes `pwsh /s /c <cmd>`; pwsh prefix-binds /s to
+-- -SSHS (PSRP server mode), leaving terminals blank and dead on first input.
+-- Only rewrite when that exact broken combo is detected (cmd default shell
+-- and already-correct configs are left untouched).
+if utils.get_os_type() == 'win32'
+    and vim.o.shell:lower():find('pwsh')
+    and vim.o.shellcmdflag == '/s /c' then
+  vim.o.shell = 'pwsh.exe'
+  vim.o.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command'
+  vim.o.shellquote = ''
+  vim.o.shellxquote = ''
+end
+
 
 -- Set leader
 vim.g.mapleader = " "
